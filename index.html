@@ -584,7 +584,29 @@
             ])
           ]) : React.createElement('input', { type: 'text', onChange: e => handleChange(e, attr.key) })
         ])),
-        React.createElement('button', { onClick: generate }, 'Generate JSON'),
+        React.createElement('div', {}, [
+          React.createElement('button', { onClick: generate }, 'Generate JSON'),
+          React.createElement('div', {
+            style: {
+              marginTop: '10px',
+              textAlign: 'center',
+              fontSize: '14px'
+            }
+          }, [
+            'Upload your agent card using ',
+            React.createElement('a', {
+              href: 'https://docs.agntcy.org/dir/scenarios/',
+              target: '_blank',
+              style: { textDecoration: 'underline', color: 'var(--primary)' }
+            }, 'AGNTCY dirctl instructions'),
+            ' to reference Agent Directory at ',
+            React.createElement('a', {
+              href: 'https://agent-directory.outshift.com/',
+              target: '_blank',
+              style: { textDecoration: 'underline', color: 'var(--primary)' }
+            }, 'agent-directory.outshift.com')
+          ])
+        ]),
         output && React.createElement('div', {}, [
           React.createElement('pre', { dangerouslySetInnerHTML: { __html: syntaxHighlight(output) } }),
           React.createElement('button', { className: 'copy-btn', onClick: copyToClipboard }, 'Copy JSON')
