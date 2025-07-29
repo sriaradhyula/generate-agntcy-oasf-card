@@ -567,13 +567,59 @@
       };
 
       const downloadJSON = () => {
-        // Parse the JSON to get the agent name
-        const jsonData = JSON.parse(output);
-        // Use the agent name for the filename, or default to 'agent-card' if not available
-        const fileName = (jsonData.name || 'agent-card').replace(/[^a-z0-9-]/gi, '-').toLowerCase() + '.json';
+        // Parse the JSON to get the agent name and other data
+        const cardData = JSON.parse(output);
 
-        // Create a blob with the JSON data
-        const blob = new Blob([output], { type: 'application/json' });
+        // Create a full agent record JSON structure
+        const currentDate = new Date().toISOString();
+        const fullAgentRecord = {
+          "name": cardData.name || "agent-card",
+          "version": (cardData.attributes.find(attr => attr.version)?.version?.value) || "v1",
+          "description": cardData.description || "OASF Agent Card",
+          "signature": {
+            "signature": "oasf-agent-card-generator",
+            "signed_at": currentDate,
+            "content_type": "application/json",
+            "certificate": "self-signed",
+            "algorithm": "none",
+            "content_bundle": cardData.name || "agent-card"
+          },
+          "skills": [
+            {
+              "id": cardData.uid || 10000,
+              "name": (cardData.attributes.find(attr => attr.name)?.name?.enum) ?
+                      Object.keys(cardData.attributes.find(attr => attr.name)?.name?.enum)[0] :
+                      "schema.oasf.agntcy.org/features/agent"
+            }
+          ],
+          "schema_version": "v0.5.0",
+          "authors": [
+            "AGNTCY OASF Agent Card Generator"
+          ],
+          "created_at": currentDate,
+          "locators": [
+            {
+              "type": "agent_card",
+              "url": "https://agent-directory.outshift.com/"
+            }
+          ],
+          "extensions": [
+            cardData
+          ]
+        };
+
+        // Add annotations if available
+        const annotationsAttr = cardData.attributes.find(attr => attr.annotations);
+        if (annotationsAttr && annotationsAttr.annotations.value) {
+          fullAgentRecord.annotations = annotationsAttr.annotations.value;
+        }
+
+        // Use the agent name for the filename, or default to 'agent-card' if not available
+        const fileName = (cardData.name || 'agent-card').replace(/[^a-z0-9-]/gi, '-').toLowerCase() + '.json';
+
+        // Create a blob with the full JSON data
+        const jsonString = JSON.stringify(fullAgentRecord, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
 
         // Create a temporary link element to trigger the download
@@ -664,7 +710,7 @@
             React.createElement('button', {
               className: 'copy-btn',
               onClick: downloadJSON
-            }, '⬇️ Download JSON')
+            }, '⬇️ Download Full JSON Record')
           ])
         ]),
         React.createElement('footer', { 
