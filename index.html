@@ -11,6 +11,8 @@
       --container-bg: #ffffff;
       --primary: #0078d4;
       --primary-hover: #005a9e;
+      --accent: #4caf50;
+      --accent-hover: #388e3c;
     }
 
     [data-theme="dark"] {
@@ -19,6 +21,8 @@
       --container-bg: #1e1e1e;
       --primary: #80cbc4;
       --primary-hover: #4db6ac;
+      --accent: #4caf50;
+      --accent-hover: #388e3c;
     }
 
     body {
@@ -131,12 +135,12 @@
     }
 
     .copy-btn {
-      background: #4caf50;
+      background: var(--accent);
       margin-left: 10px;
     }
 
     .copy-btn:hover {
-      background: #388e3c;
+      background: var(--accent-hover);
     }
 
     .toggle-btn {
@@ -238,6 +242,24 @@
     function App() {
       const [cardType, setCardType] = React.useState('A2A');
       const [form, setForm] = React.useState({ annotations: [] });
+      const [formModified, setFormModified] = React.useState(false);
+
+      // Add warning when user tries to refresh or leave the page
+      React.useEffect(() => {
+        const handleBeforeUnload = (e) => {
+          if (formModified) {
+            e.preventDefault();
+            e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+            return e.returnValue;
+          }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+          window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+      }, [formModified]);
       const [annotationKey, setAnnotationKey] = React.useState('');
       const [annotationValue, setAnnotationValue] = React.useState('');
       const [output, setOutput] = React.useState('');
@@ -252,19 +274,24 @@
         }
         
         setForm(updatedForm);
+        setFormModified(true); // Mark form as modified
       };
 
       const addAnnotation = () => {
         if (annotationKey.trim() !== '') {
-          const newAnnotation = `${annotationKey.trim()}=${annotationValue.trim()}`;
-          setForm({ ...form, annotations: [...form.annotations, newAnnotation] });
+          const annotation = `${annotationKey.trim()}=${annotationValue.trim() || ''}`;
+          setForm({ ...form, annotations: [...form.annotations, annotation] });
           setAnnotationKey('');
           setAnnotationValue('');
+          setFormModified(true); // Mark form as modified
         }
       };
 
-      const removeAnnotation = (i) => {
-        setForm({ ...form, annotations: form.annotations.filter((_, idx) => idx !== i) });
+      const removeAnnotation = (index) => {
+        const newAnnotations = [...form.annotations];
+        newAnnotations.splice(index, 1);
+        setForm({ ...form, annotations: newAnnotations });
+        setFormModified(true); // Mark form as modified
       };
 
       const generate = () => {
@@ -531,11 +558,34 @@
         }
         
         setOutput(JSON.stringify(card, null, 2));
+        // Keep formModified true since user still has unsaved changes that would be lost on refresh
       };
 
       const copyToClipboard = () => {
         navigator.clipboard.writeText(output);
         showToast();
+      };
+
+      const downloadJSON = () => {
+        // Parse the JSON to get the agent name
+        const jsonData = JSON.parse(output);
+        // Use the agent name for the filename, or default to 'agent-card' if not available
+        const fileName = (jsonData.name || 'agent-card').replace(/[^a-z0-9-]/gi, '-').toLowerCase() + '.json';
+
+        // Create a blob with the JSON data
+        const blob = new Blob([output], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        // Create a temporary link element to trigger the download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
       };
 
       return React.createElement('div', { className: 'container' }, [
@@ -609,7 +659,13 @@
         ]),
         output && React.createElement('div', {}, [
           React.createElement('pre', { dangerouslySetInnerHTML: { __html: syntaxHighlight(output) } }),
-          React.createElement('button', { className: 'copy-btn', onClick: copyToClipboard }, 'Copy JSON')
+          React.createElement('div', { style: { display: 'flex', gap: '10px', justifyContent: 'flex-end' } }, [
+            React.createElement('button', { className: 'copy-btn', onClick: copyToClipboard }, 'Copy JSON'),
+            React.createElement('button', {
+              className: 'copy-btn',
+              onClick: downloadJSON
+            }, '⬇️ Download JSON')
+          ])
         ]),
         React.createElement('footer', { 
           style: { 
