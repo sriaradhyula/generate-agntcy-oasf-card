@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AGNTCY OASF Agent Card Generator</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --fg: #000;
+      --container-bg: #ffffff;
+      --primary: #0078d4;
+      --primary-hover: #005a9e;
+    }
+
+    [data-theme="dark"] {
+      --bg: #121212;
+      --fg: #e0e0e0;
+      --container-bg: #1e1e1e;
+      --primary: #80cbc4;
+      --primary-hover: #4db6ac;
+    }
+
+    body {
+      font-family: Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      margin: 0;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: var(--container-bg);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: var(--container-bg);
+      color: var(--fg);
+    }
+
+    .annotation-tag {
+      display: inline-flex;
+      align-items: center;
+      background: var(--primary);
+      color: white;
+      padding: 3px 3px;
+      border-radius: 6px;
+      margin: 3px;
+      font-size: 12px;
+      max-width: fit-content;
+    }
+
+    .annotation-tag button {
+      background: none;
+      border: none;
+      color: #ffdddd;
+      margin: 3px;
+      padding: 3px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .annotation-tag button:hover {
+      color: #ff6666;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 8px 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+    }
+
+    pre {
+      background: #1e1e1e;
+      color: #f8f8f2;
+      padding: 10px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    .copy-btn {
+      background: #4caf50;
+      margin-left: 10px;
+    }
+
+    .copy-btn:hover {
+      background: #388e3c;
+    }
+
+    .toggle-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 20px;
+    }
+
+    .string {
+      color: #c3e88d;
+    }
+
+    .number {
+      color: #82aaff;
+    }
+
+    .boolean {
+      color: #ffcb6b;
+    }
+
+    .null {
+      color: #f78c6c;
+    }
+
+    .key {
+      color: #c792ea;
+    }
+  </style>
+</head>
+<body>
+  <button id="themeToggle" class="toggle-btn">🌙</button>
+  <div id="root"></div>
+  <div id="toast" class="toast">JSON copied to clipboard!</div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script>
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.dataset.theme = prefersDark ? 'dark' : 'light';
+
+    const btn = document.getElementById('themeToggle');
+    btn.textContent = document.body.dataset.theme === 'dark' ? '☀️' : '🌙';
+    btn.onclick = () => {
+      document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+      btn.textContent = document.body.dataset.theme === 'dark' ? '☀️' : '🌙';
+    };
+
+    function showToast() {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function syntaxHighlight(json) {
+      if (!json) return '';
+      json = json.replace(/(&|<|>)/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(?=:)|\b(true|false)\b|null|"(.*?)"|\b([0-9]+)\b)/g, match => {
+        if (/^".*"$/.test(match)) return '<span class="string">' + match + '</span>';
+        if (/true|false/.test(match)) return '<span class="boolean">' + match + '</span>';
+        if (/null/.test(match)) return '<span class="null">' + match + '</span>';
+        return '<span class="number">' + match + '</span>';
+      });
+    }
+
+    const schemas = {
+      A2A: [
+        { key: 'name', label: 'Name', type: 'text', required: true },
+        { key: 'description', label: 'Description', type: 'text', required: true },
+        { key: 'version', label: 'Version', type: 'text', required: false },
+        { key: 'versionDescription', label: 'Version Description', type: 'text', required: false },
+        { key: 'annotations', label: 'Annotations', type: 'annotations', required: false }
+      ],
+      MCP: [
+        { key: 'name', label: 'Name', type: 'text', required: true },
+        { key: 'description', label: 'Description', type: 'text', required: true },
+        { key: 'version', label: 'Version', type: 'text', required: false },
+        { key: 'versionDescription', label: 'Version Description', type: 'text', required: false },
+        { key: 'annotations', label: 'Annotations', type: 'annotations', required: false }
+      ]
+    };
+
+    function App() {
+      const [cardType, setCardType] = React.useState('A2A');
+      const [form, setForm] = React.useState({ annotations: [] });
+      const [annotationKey, setAnnotationKey] = React.useState('');
+      const [annotationValue, setAnnotationValue] = React.useState('');
+      const [output, setOutput] = React.useState('');
+
+      const handleChange = (e, key) => {
+        const newValue = e.target.value;
+        const updatedForm = { ...form, [key]: newValue };
+        
+        // Auto-fill version description when version is entered
+        if (key === 'version' && newValue && !form.versionDescription) {
+          updatedForm.versionDescription = `The agent extension version. For example: <code>${newValue}</code>.`;
+        }
+        
+        setForm(updatedForm);
+      };
+
+      const addAnnotation = () => {
+        if (annotationKey.trim() !== '') {
+          const newAnnotation = `${annotationKey.trim()}=${annotationValue.trim()}`;
+          setForm({ ...form, annotations: [...form.annotations, newAnnotation] });
+          setAnnotationKey('');
+          setAnnotationValue('');
+        }
+      };
+
+      const removeAnnotation = (i) => {
+        setForm({ ...form, annotations: form.annotations.filter((_, idx) => idx !== i) });
+      };
+
+      const generate = () => {
+        const annotationsObj = Object.fromEntries(form.annotations.map(a => a.split('=')));
+        
+        // Create the new JSON schema format
+        const card = {
+          "attributes": [
+            {
+              "data": {
+                "type": "json_t",
+                "description": "Data supported by the agent for A2A card.",
+                "reference": "a2a_card_data",
+                "references": [
+                  {
+                    "description": "A2A Card Data Schema",
+                    "url": "https://github.com/google-a2a/A2A/blob/main/docs/specification.md#55-agentcard-object-structure"
+                  }
+                ],
+                "requirement": "required",
+                "_source": "a2a",
+                "caption": "Data",
+                "type_name": "JSON"
+              }
+            },
+            {
+              "name": {
+                "type": "string_t",
+                "enum": {
+                  [form.name || "schema.oasf.agntcy.org/features/a2a"]: {
+                    "description": form.description || "Describes A2A card details for communication and usage with A2A protocol.",
+                    "caption": "A2A Card"
+                  }
+                },
+                "description": form.description || "Describes A2A card details for communication and usage with A2A protocol.",
+                "requirement": "required",
+                "_source": "a2a",
+                "caption": "Name",
+                "type_name": "String"
+              }
+            },
+            {
+              "version": {
+                "type": "string_t",
+                "description": form.versionDescription || "The agent extension version. For example: <code>1.0.0-alpha.2</code>.",
+                "requirement": "optional",
+                "_source": "base_feature",
+                "caption": "Version",
+                "type_name": "String",
+                "value": form.version || ""
+              }
+            },
+            {
+              "annotations": {
+                "type": "string_map_t",
+                "description": "Additional metadata associated with the agent extension.",
+                "requirement": "optional",
+                "_source": "base_feature",
+                "caption": "Annotations",
+                "type_name": "String Map",
+                "value": annotationsObj
+              }
+            }
+          ],
+          "name": form.name || "a2a",
+          "family": "feature",
+          "description": form.description || "Describes A2A card details for communication and usage with A2A protocol.",
+          "uid": 305,
+          "extends": "runtime",
+          "category": "runtime",
+          "caption": "A2A Card",
+          "category_name": "Runtime"
+        };
+        
+        setOutput(JSON.stringify(card, null, 2));
+      };
+
+      const copyToClipboard = () => {
+        navigator.clipboard.writeText(output);
+        showToast();
+      };
+
+      return React.createElement('div', { className: 'container' }, [
+        React.createElement('h1', {}, '🔮 AGNTCY OASF Agent Card Generator UI Tool 🔮'),
+        React.createElement('div', { 
+          style: { 
+            padding: '10px', 
+            marginBottom: '20px', 
+            background: 'rgba(0,0,0,0.05)', 
+            borderRadius: '6px',
+            fontSize: '14px',
+            textAlign: 'center'
+          } 
+        }, '🔒 This is a browser-only tool. No data is transmitted outside of your browser. 🔒'),
+        React.createElement('label', {}, 'Card Type'),
+        React.createElement('select', { value: cardType, onChange: e => setCardType(e.target.value) }, [
+          React.createElement('option', { value: 'A2A' }, 'A2A'),
+          React.createElement('option', { value: 'MCP' }, 'MCP')
+        ]),
+        ...schemas[cardType].map(attr => React.createElement('div', {}, [
+          React.createElement('label', {}, attr.label + (attr.required ? ' *' : '')),
+          attr.type === 'annotations' ? React.createElement('div', {}, [
+            form.annotations.map((ann, i) => React.createElement('span', { className: 'annotation-tag' }, [
+              ann,
+              React.createElement('button', { onClick: () => removeAnnotation(i) }, 'x')
+            ])),
+            React.createElement('div', { style: { display: 'flex', gap: '10px' } }, [
+              React.createElement('input', {
+                type: 'text',
+                value: annotationKey,
+                onChange: e => setAnnotationKey(e.target.value),
+                placeholder: 'Key'
+              }),
+              React.createElement('input', {
+                type: 'text',
+                value: annotationValue,
+                onChange: e => setAnnotationValue(e.target.value),
+                placeholder: 'Value'
+              }),
+              React.createElement('button', {
+                onClick: addAnnotation,
+                style: { marginTop: '0' }
+              }, 'Add')
+            ])
+          ]) : React.createElement('input', { type: 'text', onChange: e => handleChange(e, attr.key) })
+        ])),
+        React.createElement('button', { onClick: generate }, 'Generate JSON'),
+        output && React.createElement('div', {}, [
+          React.createElement('pre', { dangerouslySetInnerHTML: { __html: syntaxHighlight(output) } }),
+          React.createElement('button', { className: 'copy-btn', onClick: copyToClipboard }, 'Copy JSON')
+        ]),
+        React.createElement('footer', { 
+          style: { 
+            marginTop: '30px', 
+            textAlign: 'center', 
+            padding: '15px',
+            borderTop: '1px solid rgba(0,0,0,0.1)',
+            fontSize: '14px'
+          } 
+        }, [
+          React.createElement('p', {}, [
+            '✨ Created with ',
+            React.createElement('span', { style: { color: '#ff6b6b' } }, '❤️'),
+            ' by ',
+            React.createElement('a', { 
+              href: 'https://github.com/sriaradhyula', 
+              target: '_blank',
+              style: { textDecoration: 'none' }
+            }, '👨‍💻 sriaradhyula'),
+            ' ✨'
+          ])
+        ])
+      ]);
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+  </script>
+</body>
+</html>
