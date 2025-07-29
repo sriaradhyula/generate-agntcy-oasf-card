@@ -217,6 +217,20 @@
         { key: 'version', label: 'Version', type: 'text', required: false },
         { key: 'versionDescription', label: 'Version Description', type: 'text', required: false },
         { key: 'annotations', label: 'Annotations', type: 'annotations', required: false }
+      ],
+      Model: [
+        { key: 'name', label: 'Name', type: 'text', required: true },
+        { key: 'description', label: 'Description', type: 'text', required: true },
+        { key: 'version', label: 'Version', type: 'text', required: false },
+        { key: 'versionDescription', label: 'Version Description', type: 'text', required: false },
+        { key: 'annotations', label: 'Annotations', type: 'annotations', required: false }
+      ],
+      Prompt: [
+        { key: 'name', label: 'Name', type: 'text', required: true },
+        { key: 'description', label: 'Description', type: 'text', required: true },
+        { key: 'version', label: 'Version', type: 'text', required: false },
+        { key: 'versionDescription', label: 'Version Description', type: 'text', required: false },
+        { key: 'annotations', label: 'Annotations', type: 'annotations', required: false }
       ]
     };
 
@@ -255,74 +269,265 @@
       const generate = () => {
         const annotationsObj = Object.fromEntries(form.annotations.map(a => a.split('=')));
         
-        // Create the new JSON schema format
-        const card = {
-          "attributes": [
-            {
-              "data": {
-                "type": "json_t",
-                "description": "Data supported by the agent for A2A card.",
-                "reference": "a2a_card_data",
-                "references": [
-                  {
-                    "description": "A2A Card Data Schema",
-                    "url": "https://github.com/google-a2a/A2A/blob/main/docs/specification.md#55-agentcard-object-structure"
-                  }
-                ],
-                "requirement": "required",
-                "_source": "a2a",
-                "caption": "Data",
-                "type_name": "JSON"
+        // Create the new JSON schema format based on card type
+        let card;
+        
+        if (cardType === 'A2A') {
+          card = {
+            "attributes": [
+              {
+                "data": {
+                  "type": "json_t",
+                  "description": "Data supported by the agent for A2A card.",
+                  "reference": "a2a_card_data",
+                  "references": [
+                    {
+                      "description": "A2A Card Data Schema",
+                      "url": "https://github.com/google-a2a/A2A/blob/main/docs/specification.md#55-agentcard-object-structure"
+                    }
+                  ],
+                  "requirement": "required",
+                  "_source": "a2a",
+                  "caption": "Data",
+                  "type_name": "JSON"
+                }
+              },
+              {
+                "name": {
+                  "type": "string_t",
+                  "enum": {
+                    [form.name || "schema.oasf.agntcy.org/features/a2a"]: {
+                      "description": form.description || "Describes A2A card details for communication and usage with A2A protocol.",
+                      "caption": "A2A Card"
+                    }
+                  },
+                  "description": form.description || "Describes A2A card details for communication and usage with A2A protocol.",
+                  "requirement": "required",
+                  "_source": "a2a",
+                  "caption": "Name",
+                  "type_name": "String"
+                }
+              },
+              {
+                "version": {
+                  "type": "string_t",
+                  "description": form.versionDescription || "The agent extension version. For example: <code>1.0.0-alpha.2</code>.",
+                  "requirement": "optional",
+                  "_source": "base_feature",
+                  "caption": "Version",
+                  "type_name": "String",
+                  "value": form.version || ""
+                }
+              },
+              {
+                "annotations": {
+                  "type": "string_map_t",
+                  "description": "Additional metadata associated with the agent extension.",
+                  "requirement": "optional",
+                  "_source": "base_feature",
+                  "caption": "Annotations",
+                  "type_name": "String Map",
+                  "value": annotationsObj
+                }
               }
-            },
-            {
-              "name": {
-                "type": "string_t",
-                "enum": {
-                  [form.name || "schema.oasf.agntcy.org/features/a2a"]: {
-                    "description": form.description || "Describes A2A card details for communication and usage with A2A protocol.",
-                    "caption": "A2A Card"
-                  }
-                },
-                "description": form.description || "Describes A2A card details for communication and usage with A2A protocol.",
-                "requirement": "required",
-                "_source": "a2a",
-                "caption": "Name",
-                "type_name": "String"
+            ],
+            "name": form.name || "a2a",
+            "family": "feature",
+            "description": form.description || "Describes A2A card details for communication and usage with A2A protocol.",
+            "uid": 305,
+            "extends": "runtime",
+            "category": "runtime",
+            "caption": "A2A Card",
+            "category_name": "Runtime"
+          };
+        } else if (cardType === 'MCP') {
+          card = {
+            "attributes": [
+              {
+                "data": {
+                  "type": "object_t",
+                  "description": "Data supported by the agent for MCP server.",
+                  "reference": "mcp_server_data",
+                  "requirement": "required",
+                  "_source": "mcp",
+                  "caption": "Data",
+                  "object_type": "mcp_server_data",
+                  "object_name": "MCP Server Configuration"
+                }
+              },
+              {
+                "name": {
+                  "type": "string_t",
+                  "enum": {
+                    [form.name || "schema.oasf.agntcy.org/features/mcp"]: {
+                      "description": form.description || "Describes MCP servers required to run and interact with the agent.",
+                      "caption": "MCP"
+                    }
+                  },
+                  "description": form.description || "Describes MCP servers required to run and interact with the agent.",
+                  "requirement": "required",
+                  "_source": "mcp",
+                  "caption": "Name",
+                  "type_name": "String"
+                }
+              },
+              {
+                "version": {
+                  "type": "string_t",
+                  "description": form.versionDescription || "The agent extension version. For example: <code>1.0.0-alpha.2</code>.",
+                  "requirement": "optional",
+                  "_source": "base_feature",
+                  "caption": "Version",
+                  "type_name": "String",
+                  "value": form.version || ""
+                }
+              },
+              {
+                "annotations": {
+                  "type": "string_map_t",
+                  "description": "Additional metadata associated with the agent extension.",
+                  "requirement": "optional",
+                  "_source": "base_feature",
+                  "caption": "Annotations",
+                  "type_name": "String Map",
+                  "value": annotationsObj
+                }
               }
-            },
-            {
-              "version": {
-                "type": "string_t",
-                "description": form.versionDescription || "The agent extension version. For example: <code>1.0.0-alpha.2</code>.",
-                "requirement": "optional",
-                "_source": "base_feature",
-                "caption": "Version",
-                "type_name": "String",
-                "value": form.version || ""
+            ],
+            "name": form.name || "mcp",
+            "family": "feature",
+            "description": form.description || "Describes MCP servers required to run and interact with the agent.",
+            "uid": 302,
+            "extends": "runtime",
+            "category": "runtime",
+            "caption": "MCP",
+            "category_name": "Runtime"
+          };
+        } else if (cardType === 'Model') {
+          card = {
+            "attributes": [
+              {
+                "data": {
+                  "type": "object_t",
+                  "description": "Data supported by the agent for LLM model.",
+                  "reference": "llm_model_data",
+                  "requirement": "required",
+                  "_source": "model",
+                  "caption": "Data",
+                  "object_type": "llm_model_data",
+                  "object_name": "LLM Model Data"
+                }
+              },
+              {
+                "name": {
+                  "type": "string_t",
+                  "enum": {
+                    [form.name || "schema.oasf.agntcy.org/features/model"]: {
+                      "description": form.description || "Describes LLM support and its configuration for a given agent.",
+                      "caption": "LLM Model"
+                    }
+                  },
+                  "description": form.description || "Describes LLM support and its configuration for a given agent.",
+                  "requirement": "required",
+                  "_source": "model",
+                  "caption": "Name",
+                  "type_name": "String"
+                }
+              },
+              {
+                "version": {
+                  "type": "string_t",
+                  "description": form.versionDescription || "The agent extension version. For example: <code>1.0.0-alpha.2</code>.",
+                  "requirement": "optional",
+                  "_source": "base_feature",
+                  "caption": "Version",
+                  "type_name": "String",
+                  "value": form.version || ""
+                }
+              },
+              {
+                "annotations": {
+                  "type": "string_map_t",
+                  "description": "Additional metadata associated with the agent extension.",
+                  "requirement": "optional",
+                  "_source": "base_feature",
+                  "caption": "Annotations",
+                  "type_name": "String Map",
+                  "value": annotationsObj
+                }
               }
-            },
-            {
-              "annotations": {
-                "type": "string_map_t",
-                "description": "Additional metadata associated with the agent extension.",
-                "requirement": "optional",
-                "_source": "base_feature",
-                "caption": "Annotations",
-                "type_name": "String Map",
-                "value": annotationsObj
+            ],
+            "name": form.name || "model",
+            "family": "feature",
+            "description": form.description || "Describes LLM support and its configuration for a given agent.",
+            "uid": 303,
+            "extends": "runtime",
+            "category": "runtime",
+            "caption": "LLM Model",
+            "category_name": "Runtime"
+          };
+        } else if (cardType === 'Prompt') {
+          card = {
+            "attributes": [
+              {
+                "data": {
+                  "type": "object_t",
+                  "description": "Data supported by the agent for LLM prompt.",
+                  "reference": "llm_prompt_data",
+                  "requirement": "required",
+                  "caption": "Data",
+                  "object_name": "LLM Prompt Data",
+                  "object_type": "llm_prompt_data",
+                  "_source": "prompt"
+                }
+              },
+              {
+                "name": {
+                  "type": "string_t",
+                  "enum": {
+                    [form.name || "schema.oasf.agntcy.org/features/prompt"]: {
+                      "description": form.description || "Describes common LLM interaction prompts to use the agent.",
+                      "caption": "LLM Prompt"
+                    }
+                  },
+                  "description": form.description || "Describes common LLM interaction prompts to use the agent.",
+                  "requirement": "required",
+                  "caption": "Name",
+                  "type_name": "String",
+                  "_source": "prompt"
+                }
+              },
+              {
+                "version": {
+                  "type": "string_t",
+                  "description": form.versionDescription || "The agent extension version. For example: <code>1.0.0-alpha.2</code>.",
+                  "requirement": "optional",
+                  "caption": "Version",
+                  "type_name": "String",
+                  "_source": "base_feature"
+                }
+              },
+              {
+                "annotations": {
+                  "type": "string_map_t",
+                  "description": "Additional metadata associated with the agent extension.",
+                  "requirement": "optional",
+                  "caption": "Annotations",
+                  "type_name": "String Map",
+                  "_source": "base_feature"
+                }
               }
-            }
-          ],
-          "name": form.name || "a2a",
-          "family": "feature",
-          "description": form.description || "Describes A2A card details for communication and usage with A2A protocol.",
-          "uid": 305,
-          "extends": "runtime",
-          "category": "runtime",
-          "caption": "A2A Card",
-          "category_name": "Runtime"
-        };
+            ],
+            "name": form.name || "prompt",
+            "family": "feature",
+            "description": form.description || "Describes common LLM interaction prompts to use the agent.",
+            "uid": 304,
+            "extends": "runtime",
+            "category": "runtime",
+            "caption": "LLM Prompt",
+            "category_name": "Runtime"
+          };
+        }
         
         setOutput(JSON.stringify(card, null, 2));
       };
@@ -333,7 +538,7 @@
       };
 
       return React.createElement('div', { className: 'container' }, [
-        React.createElement('h1', {}, '🔮 AGNTCY OASF Agent Card Generator UI Tool 🔮'),
+        React.createElement('h1', {}, '🔮 AGNTCY OASF Agent Card Generator 🔮'),
         React.createElement('div', { 
           style: { 
             padding: '10px', 
@@ -347,7 +552,9 @@
         React.createElement('label', {}, 'Card Type'),
         React.createElement('select', { value: cardType, onChange: e => setCardType(e.target.value) }, [
           React.createElement('option', { value: 'A2A' }, 'A2A'),
-          React.createElement('option', { value: 'MCP' }, 'MCP')
+          React.createElement('option', { value: 'MCP' }, 'MCP'),
+          React.createElement('option', { value: 'Model' }, 'LLM Model'),
+          React.createElement('option', { value: 'Prompt' }, 'LLM Prompt')
         ]),
         ...schemas[cardType].map(attr => React.createElement('div', {}, [
           React.createElement('label', {}, attr.label + (attr.required ? ' *' : '')),
