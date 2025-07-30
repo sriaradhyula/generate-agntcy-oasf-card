@@ -7,41 +7,66 @@
   <style>
     :root {
       /* Material Design Light Theme */
-      --bg: #f5f5f5;
-      --fg: #212121;
+      --bg: #f8fafc;
+      --fg: #1e293b;
       --container-bg: #ffffff;
-      --primary: #0078d4;
-      --primary-hover: #005a9e;
-      --accent: #4caf50;
-      --accent-hover: #388e3c;
-      --danger: #cf6679;
-      --border-color: #e0e0e0;
+      --primary: #187ADC;
+      --primary-hover: #146BB8;
+      --primary-light: #E8F4FD;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-light: #d1fae5;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --danger-light: #fee2e2;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --border-color: #e2e8f0;
+      --border-hover: #cbd5e1;
       --input-bg: #ffffff;
-      --input-fg: #212121;
+      --input-fg: #1e293b;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     [data-theme="dark"] {
       /* Material Design Dark Theme */
-      --bg: #121212;
-      --fg: #e0e0e0;
-      --container-bg: #1e1e1e;
-      --primary: #0078d4;
-      --primary-hover: #005a9e;
-      --accent: #4caf50;
-      --accent-hover: #388e3c;
-      --danger: #cf6679;
-      --border-color: #424242;
-      --input-bg: #2a2a2a;
-      --input-fg: #e0e0e0;
+      --bg: #0f172a;
+      --fg: #f1f5f9;
+      --container-bg: #1e293b;
+      --primary: #187ADC;
+      --primary-hover: #146BB8;
+      --primary-light: #0f2951;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-light: #064e3b;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --danger-light: #7f1d1d;
+      --warning: #f59e0b;
+      --warning-light: #78350f;
+      --border-color: #334155;
+      --border-hover: #475569;
+      --input-bg: #334155;
+      --input-fg: #f1f5f9;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
     }
 
     body {
-      font-family: Roboto, Arial, sans-serif;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
       color: var(--fg);
       margin: 0;
-      padding: 20px;
-      transition: background 0.3s, color 0.3s;
+      padding: 24px;
+      transition: var(--transition);
+      line-height: 1.6;
+      min-height: 100vh;
     }
 
     .loading {
@@ -88,30 +113,51 @@
 
     .url-input {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border-color, #ccc);
-      border-radius: 4px;
-      font-size: 14px;
-      min-height: 100px;
+      padding: 16px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      min-height: 120px;
       max-height: 400px;
       box-sizing: border-box;
       resize: vertical;
       overflow-y: auto;
-      font-family: monospace;
-      line-height: 1.5;
-      transition: height 0.2s ease, background-color 0.3s, color 0.3s;
+      font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      line-height: 1.6;
+      transition: var(--transition);
       white-space: pre;
-      background-color: var(--input-bg, #fff);
-      color: var(--input-fg, #333);
+      background-color: var(--input-bg);
+      color: var(--input-fg);
+    }
+
+    .url-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .url-input:hover {
+      border-color: var(--border-hover);
     }
 
     .example-link {
-      margin-bottom: 8px;
-      font-size: 14px;
+      margin-bottom: 12px;
+      font-size: 0.875rem;
+      padding: 12px;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
     }
 
     .example-link a {
       word-break: break-all;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .example-link a:hover {
+      text-decoration: underline;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -123,30 +169,36 @@
     }
 
     .url-button {
-      padding: 0 16px;
-      background-color: var(--primary);
+      padding: 12px 20px;
+      background: var(--primary);
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: var(--radius);
       cursor: pointer;
-      font-weight: 500;
-      transition: background-color 0.2s, opacity 0.2s;
-      height: 42px;
-      min-width: 140px;
+      font-weight: 600;
+      transition: var(--transition);
+      height: 48px;
+      min-width: 160px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.875rem;
+      box-shadow: var(--shadow-sm);
     }
 
     .url-button:hover {
-      background-color: var(--primary-hover);
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
     }
 
     .url-button:disabled {
-      background-color: var(--disabled-bg, #cccccc);
-      color: var(--disabled-fg, #666666);
+      background: var(--border-color);
+      color: var(--fg);
       cursor: not-allowed;
-      opacity: 0.7;
+      opacity: 0.6;
+      transform: none;
+      box-shadow: none;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -188,11 +240,18 @@
     }
 
     .server-container {
-      border: 1px solid var(--border-color, #ccc);
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
-      background-color: var(--container-bg);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      background: var(--container-bg);
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .server-container:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow);
     }
 
     .server-header {
@@ -205,6 +264,8 @@
     .server-header h3 {
       margin: 0;
       color: var(--fg);
+      font-size: 1.125rem;
+      font-weight: 700;
     }
 
     .server-fields {
@@ -223,35 +284,41 @@
     }
 
     .error-message {
-      background: #ffebee;
-      color: #c62828;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 15px;
-      border-left: 4px solid #c62828;
+      background: var(--danger-light);
+      color: var(--danger);
+      padding: 16px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      border-left: 4px solid var(--danger);
+      font-weight: 500;
+      box-shadow: var(--shadow-sm);
     }
 
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
       background: var(--container-bg);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
       position: relative;
+      border: 1px solid var(--border-color);
     }
 
     .toast {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--primary);
+      bottom: 24px;
+      right: 24px;
+      background: var(--accent);
       color: white;
-      padding: 10px 16px;
-      border-radius: 4px;
+      padding: 16px 20px;
+      border-radius: var(--radius);
       opacity: 0;
       transform: translateY(20px);
-      transition: opacity 0.3s, transform 0.3s;
+      transition: var(--transition);
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
     }
 
     .toast.show {
@@ -261,22 +328,45 @@
 
     h1 {
       text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #187ADC 0%, #09C0E9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     label {
-      font-weight: 500;
+      font-weight: 600;
       display: block;
-      margin-top: 10px;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      color: var(--fg);
+      font-size: 0.875rem;
     }
 
     input, select {
       width: 100%;
-      padding: 8px;
+      padding: 12px 16px;
       margin-top: 4px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background: var(--container-bg);
-      color: var(--fg);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius);
+      background: var(--input-bg);
+      color: var(--input-fg);
+      font-size: 0.875rem;
+      transition: var(--transition);
+      box-sizing: border-box;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    input:hover, select:hover {
+      border-color: var(--border-hover);
     }
 
     .annotation-tag {
@@ -284,41 +374,60 @@
       align-items: center;
       background: var(--primary);
       color: white;
-      padding: 3px 3px;
-      border-radius: 6px;
-      margin: 3px;
-      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      margin: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
       max-width: fit-content;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .annotation-tag:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
     }
 
     .annotation-tag button {
       background: none;
       border: none;
-      color: #ffdddd;
-      margin: 3px;
-      padding: 3px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-left: 8px;
+      padding: 2px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 0.75rem;
+      border-radius: 2px;
+      transition: var(--transition);
     }
 
     .annotation-tag button:hover {
-      color: #ff6666;
+      color: white;
+      background: rgba(255, 255, 255, 0.2);
     }
 
     button {
-      margin-top: 20px;
-      padding: 8px 14px;
+      margin-top: 24px;
+      padding: 12px 24px;
       background: var(--primary);
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius);
       cursor: pointer;
-      font-size: 14px;
-      transition: background 0.3s;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
     }
 
     button:hover {
       background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     pre {
@@ -332,22 +441,32 @@
     }
 
     .copy-btn {
-      background: var(--accent);
-      margin-left: 10px;
+      background: var(--primary);
+      margin-left: 12px;
     }
 
     .copy-btn:hover {
-      background: var(--accent-hover);
+      background: var(--primary-hover);
     }
 
     .toggle-btn {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 16px;
+      right: 16px;
       cursor: pointer;
-      background: none;
-      border: none;
-      font-size: 20px;
+      background: var(--border-color);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 1.25rem;
+      padding: 8px;
+      transition: var(--transition);
+      color: var(--fg);
+    }
+
+    .toggle-btn:hover {
+      background: var(--border-hover);
+      border-color: var(--border-hover);
+      transform: scale(1.05);
     }
 
     .string {
@@ -368,6 +487,116 @@
 
     .key {
       color: #c792ea;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+      
+      .container {
+        padding: 24px;
+        margin: 0;
+        border-radius: var(--radius);
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .url-table {
+        border-spacing: 8px 0;
+      }
+      
+      .url-table td:last-child {
+        width: 120px;
+      }
+      
+      .url-button {
+        min-width: 120px;
+        font-size: 0.8rem;
+      }
+      
+      .server-container {
+        padding: 16px;
+      }
+      
+      .dynamic-list-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      
+      .server-env-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 16px;
+      }
+      
+      .url-table {
+        display: block;
+      }
+      
+      .url-table td {
+        display: block;
+        width: 100% !important;
+        padding: 4px 0;
+      }
+      
+      .url-button {
+        width: 100%;
+        margin-top: 8px;
+      }
+    }
+
+    /* Loading animations */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading {
+      animation: pulse 2s infinite;
+    }
+
+    /* Focus improvements for accessibility */
+    *:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Button variants */
+    .btn-danger {
+      background: var(--danger) !important;
+      color: white !important;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger-hover) !important;
+    }
+
+    .btn-primary {
+      background: var(--primary) !important;
+      color: white !important;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover) !important;
+    }
+
+    .btn-small {
+      padding: 6px 12px !important;
+      font-size: 0.75rem !important;
+      margin-top: 8px !important;
+    }
+
+    .btn-full {
+      width: 100% !important;
     }
   </style>
 </head>
@@ -755,9 +984,18 @@
             // Patterns: 
             // https://github.com/owner/repo/... -> repo
             // https://raw.githubusercontent.com/owner/repo/... -> repo
-            const githubMatch = input.match(/github(?:usercontent)?\.com\/[^\/]+\/([^\/]+)/);
+            const githubMatch = input.match(/github(?:usercontent)?\.com\/([^\/]+)\/([^\/]+)/);
             if (githubMatch) {
-              newForm.agentDirOrgRepo = githubMatch[1];
+              const owner = githubMatch[1];
+              const repo = githubMatch[2];
+              
+              // Set repo name for agentDirOrgRepo
+              newForm.agentDirOrgRepo = repo;
+              
+              // Set owner as author if no authors exist in the card data
+              if (!cardData.authors || cardData.authors.length === 0) {
+                setAuthorsList([owner]);
+              }
             }
           } else {
             // If not from GitHub, leave empty for user to input manually
@@ -1089,12 +1327,14 @@
         React.createElement('h1', {}, '🔮 AGNTCY OASF Agent Card Generator 🔮'),
         React.createElement('div', {
           style: {
-            padding: '10px',
-            marginBottom: '20px',
-            background: 'rgba(0,0,0,0.05)',
-            borderRadius: '6px',
-            fontSize: '14px',
-            textAlign: 'center'
+            padding: '16px',
+            marginBottom: '24px',
+            background: 'var(--accent-light)',
+            borderRadius: 'var(--radius)',
+            fontSize: '0.875rem',
+            textAlign: 'center',
+            border: '1px solid var(--border-color)',
+            color: 'var(--fg)'
           }
         }, '🔒 This is a browser-only tool. No data is transmitted outside of your browser. 🔒'),
         loading ? React.createElement('div', { className: 'loading' }, [
@@ -1104,12 +1344,14 @@
         error ? React.createElement('div', { className: 'error-message' }, error) : null,
         latestVersion ? React.createElement('div', {
           style: {
-            padding: '10px',
-            marginBottom: '20px',
-            background: 'rgba(0,120,0,0.05)',
-            borderRadius: '6px',
-            fontSize: '14px',
-            textAlign: 'center'
+            padding: '16px',
+            marginBottom: '24px',
+            background: 'var(--primary-light)',
+            borderRadius: 'var(--radius)',
+            fontSize: '0.875rem',
+            textAlign: 'center',
+            border: '1px solid var(--border-color)',
+            color: 'var(--fg)'
           }
         }, [
           'Using latest ',
@@ -1253,7 +1495,7 @@
                 color: 'var(--input-fg, #333)'
               }
             }) : attr.type === 'h4-header' ? React.createElement('h4', { style: { marginTop: '24px', marginBottom: '8px', color: '#333', fontSize: '18px', fontWeight: 'bold' } }, attr.content
-            ) : attr.type === 'extension-skills-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: '#e6f7ff', padding: '16px', borderRadius: '8px', marginBottom: '16px' } },
+            ) : attr.type === 'extension-skills-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: 'var(--primary-light)', padding: '24px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
                 extensionSkillsList.map((skill, skillIndex) => {
                 return React.createElement('div', { key: skillIndex, className: 'server-container' }, [
                   // Skill header with name and remove button
@@ -1265,12 +1507,15 @@
                         setExtensionSkillsList(newList);
                       },
                       style: {
-                        padding: '4px 8px',
-                        backgroundColor: 'var(--danger, #cf6679)',
+                        padding: '8px 16px',
+                        backgroundColor: 'var(--danger)',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
+                        borderRadius: 'var(--radius)',
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        transition: 'var(--transition)'
                       }
                     }, 'Remove Skill') : null
                   ]),
@@ -1521,7 +1766,7 @@
                   width: '100%'
                 }
               }, '+ Add Skill')
-            ) : attr.type === 'oasf-skills-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: '#00ffff33', padding: '16px', borderRadius: '8px', marginBottom: '16px' } },
+            ) : attr.type === 'oasf-skills-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: 'var(--accent-light)', padding: '24px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
               oasfSkillsList.map((skill, skillIndex) => {
                 return React.createElement('div', { key: skillIndex, className: 'server-container' }, [
                   // Skill header with name and remove button
@@ -1662,7 +1907,7 @@
                   width: '100%'
                 }
               }, '+ Add OASF Skill')
-            ) : attr.type === 'locators-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: '#ffd70033', padding: '16px', borderRadius: '8px', marginBottom: '16px' } },
+            ) : attr.type === 'locators-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: 'var(--warning-light)', padding: '24px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
               locatorsList.map((locator, locatorIndex) => {
                 return React.createElement('div', { key: locatorIndex, className: 'server-container' }, [
                   // Locator header with type and remove button
