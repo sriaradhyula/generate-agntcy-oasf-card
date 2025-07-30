@@ -749,6 +749,21 @@
           // Update form with card data
           const newForm = { ...form };
 
+          // Auto-extract Agent Directory Org Repo Name from URL if it's a GitHub URL
+          if (input.includes('github.com') || input.includes('githubusercontent.com')) {
+            // Extract just the repo name from GitHub URLs
+            // Patterns: 
+            // https://github.com/owner/repo/... -> repo
+            // https://raw.githubusercontent.com/owner/repo/... -> repo
+            const githubMatch = input.match(/github(?:usercontent)?\.com\/[^\/]+\/([^\/]+)/);
+            if (githubMatch) {
+              newForm.agentDirOrgRepo = githubMatch[1];
+            }
+          } else {
+            // If not from GitHub, leave empty for user to input manually
+            newForm.agentDirOrgRepo = "";
+          }
+
           // Basic fields
           newForm.name = cardData.name || '';
           newForm.description = cardData.description || '';
@@ -819,6 +834,14 @@
               if (extensionSkills.length > 0) {
                 setExtensionSkillsList(extensionSkills);
               }
+            }
+          }
+
+          // Load authors if they exist in the card data
+          if (cardData.authors && Array.isArray(cardData.authors)) {
+            const filteredAuthors = cardData.authors.filter(author => author && author.trim() !== '');
+            if (filteredAuthors.length > 0) {
+              setAuthorsList(filteredAuthors);
             }
           }
 
