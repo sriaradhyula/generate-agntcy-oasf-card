@@ -43,7 +43,7 @@
       padding: 20px;
       transition: background 0.3s, color 0.3s;
     }
-    
+
     .loading {
       display: flex;
       align-items: center;
@@ -51,7 +51,7 @@
       padding: 20px;
       font-weight: 500;
     }
-    
+
     .loading-spinner {
       border: 4px solid rgba(0, 0, 0, 0.1);
       border-left: 4px solid var(--primary);
@@ -61,31 +61,31 @@
       animation: spin 1s linear infinite;
       margin-right: 10px;
     }
-    
+
     :root {
       --primary-hover: #0056b3;
     }
-    
+
     .url-table {
       width: 100%;
       margin-bottom: 20px;
       border-collapse: separate;
       border-spacing: 10px 0;
     }
-    
+
     .url-table td {
       padding: 0;
       vertical-align: middle;
     }
-    
+
     .url-table td:first-child {
       width: 100%;
     }
-    
+
     .url-table td:last-child {
       width: 140px;
     }
-    
+
     .url-input {
       width: 100%;
       padding: 10px 12px;
@@ -104,7 +104,7 @@
       background-color: var(--input-bg, #fff);
       color: var(--input-fg, #333);
     }
-    
+
     .example-link {
       margin-bottom: 8px;
       font-size: 14px;
@@ -121,7 +121,7 @@
         --border-color: #555;
       }
     }
-    
+
     .url-button {
       padding: 0 16px;
       background-color: var(--primary);
@@ -137,36 +137,36 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     .url-button:hover {
       background-color: var(--primary-hover);
     }
-    
+
     .url-button:disabled {
       background-color: var(--disabled-bg, #cccccc);
       color: var(--disabled-fg, #666666);
       cursor: not-allowed;
       opacity: 0.7;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       :root {
         --disabled-bg: #555555;
         --disabled-fg: #aaaaaa;
       }
     }
-    
+
     .url-button-content {
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100%;
     }
-    
+
     .dynamic-list-container {
       width: 100%;
     }
-    
+
     .dynamic-list-item {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -174,7 +174,7 @@
       margin-bottom: 8px;
       align-items: center;
     }
-    
+
     .server-env-item {
       display: grid;
       grid-template-columns: 1fr 1fr auto;
@@ -419,7 +419,7 @@
         return 'v0.5.0'; // Default fallback version
       }
     }
-      
+
     // Function to fetch the latest record JSON
     async function fetchRecordJson(version) {
       try {
@@ -434,7 +434,7 @@
         return null;
       }
     }
-    
+
     // Fetch latest OASF version
     async function fetchLatestVersion() {
       try {
@@ -479,11 +479,13 @@
         { key: 'defaultOutputModes', label: 'Default Output Modes', type: 'dynamic-list', required: false, extensionField: true, extensionType: 'a2a' },
         { key: 'protocolVersion', label: 'Protocol Version', type: 'text', required: false, extensionField: true, extensionType: 'a2a' },
         { key: 'url', label: 'URL', type: 'text', required: false, extensionField: true, extensionType: 'a2a' },
-        { key: 'skillId', label: 'Skill ID', type: 'text', required: false, extensionField: true, extensionType: 'a2a' },
-        { key: 'skillName', label: 'Skill Name', type: 'text', required: false, extensionField: true, extensionType: 'a2a' },
-        { key: 'skillDescription', label: 'Skill Description', type: 'textarea', required: false, extensionField: true, extensionType: 'a2a' },
-        { key: 'skillExamples', label: 'Skill Examples', type: 'dynamic-list', required: false, extensionField: true, extensionType: 'a2a' },
-        { key: 'skillTags', label: 'Skill Tags', type: 'dynamic-list', required: false, extensionField: true, extensionType: 'a2a' }
+
+        { key: 'extension-skills-header', label: '', type: 'h4-header', content: 'A2A Skills', required: false, extensionField: true, extensionType: 'a2a' },
+        { key: 'extension-skills', label: '', type: 'extension-skills-list', required: false, extensionField: true, extensionType: 'a2a' },
+        { key: 'oasf-skills-header', label: '', type: 'h4-header', content: 'OASF Skill List', required: false },
+        { key: 'oasf-skills', label: '', type: 'oasf-skills-list', required: false },
+        { key: 'locators-header', label: '', type: 'h4-header', content: 'OASF Locators', required: false },
+        { key: 'locators', label: '', type: 'locators-list', required: false }
       ],
       MCP: [
         { key: 'name', label: 'Name', type: 'text', required: true },
@@ -517,7 +519,7 @@
       const [error, setError] = React.useState(null);
       const [cardUrl, setCardUrl] = React.useState('');
       const [loadingCard, setLoadingCard] = React.useState(false);
-      
+
       // State for dynamic lists
       const [skillExamplesList, setSkillExamplesList] = React.useState(['']);
       const [skillTagsList, setSkillTagsList] = React.useState(['']);
@@ -528,26 +530,43 @@
       const [serversList, setServersList] = React.useState([
         { id: 1, name: '', type: '', url: '', envVars: [{ key: '', value: '' }] }
       ]);
-      
+
+      // State for extension skills list
+      const [extensionSkillsList, setExtensionSkillsList] = React.useState([
+        { id: '', name: '', description: '', examples: [''], tags: [''] }
+      ]);
+
+      // State for OASF skills list
+      const [oasfSkillsList, setOasfSkillsList] = React.useState([
+        { class_uid: 10101, category_uid: 1, category_name: 'Natural Language Processing', class_name: 'Contextual Comprehension' }
+      ]);
+
+      // State for OASF locators list
+      const [locatorsList, setLocatorsList] = React.useState([
+        { type: 'source_code', url: 'https://github.com/' }
+      ]);
+
+
+
       // Function to handle adding a new item to a dynamic list
       const handleAddListItem = (listSetter, currentList) => {
         listSetter([...currentList, '']);
       };
-      
+
       // Function to handle updating an item in a dynamic list
       const handleListItemChange = (listSetter, currentList, index, value) => {
         const newList = [...currentList];
         newList[index] = value;
         listSetter(newList);
       };
-      
+
       // Function to handle removing an item from a dynamic list
       const handleRemoveListItem = (listSetter, currentList, index) => {
         if (currentList.length <= 1) return; // Always keep at least one input
         const newList = currentList.filter((_, i) => i !== index);
         listSetter(newList);
       };
-      
+
       // Function to handle key press in dynamic list inputs
       const handleListKeyPress = (e, listSetter, currentList, index, listType) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -570,7 +589,7 @@
         try {
           setLoadingCard(true);
           setError(null);
-          
+
           // First, check if the URL is HTTP or HTTPS
           const isHttp = url.startsWith('http://');
           let fetchUrl = url;
@@ -585,7 +604,7 @@
               },
               mode: 'cors'
             });
-            
+
             // If the original URL fails and it's HTTP, try with HTTPS
             if (!response.ok && isHttp) {
               console.log('HTTP URL failed, trying with HTTPS...');
@@ -616,43 +635,71 @@
             }
             // Continue to fallback
           }
-          
+
           // If we reach here, either the fetch failed or CORS blocked it
           // For demo purposes, return example data based on the URL
           if (url.includes('locahost') || url.includes('agent.json')) {
             return {
-              "capabilities": {
-                "pushNotifications": true,
-                "streaming": true
+              "name": "Sample A2A Card",
+              "version": "0.1.0",
+              "description": "Sample A2A card description",
+              "signature": {
+                "signature": "ol",
+                "signed_at": new Date().toISOString(),
+                "content_type": "application/json",
+                "certificate": "self-signed",
+                "algorithm": "none",
+                "content_bundle": "lm"
               },
-              "defaultInputModes": [
-                "text",
-                "text/plain"
-              ],
-              "defaultOutputModes": [
-                "text",
-                "text/plain"
-              ],
-              "description": "Sample A2A card",
-              "name": "Sample A2A card",
-              "protocolVersion": "0.2.6",
-              "skills": [
+              "extensions": [
                 {
-                  "description": "Sample A2A card",
-                  "examples": [
-                    "Sample Example 1",
-                    "Sample Example 2"
-                  ],
-                  "id": "sample_a2a_card",
-                  "name": "Sample A2A card",
-                  "tags": [
-                    "sample",
-                    "a2a"
-                  ]
+                  "data": {
+                    "capabilities": {
+                      "pushNotifications": true,
+                      "streaming": true
+                    },
+                    "defaultInputModes": [
+                      "text",
+                      "text/plain"
+                    ],
+                    "defaultOutputModes": [
+                      "text",
+                      "text/plain"
+                    ],
+                    "description": "Sample A2A card description",
+                    "name": "Sample A2A Card",
+                    "protocolVersion": "0.2.6",
+                    "url": "http://localhost:8000/",
+                    "version": "0.1.0",
+                    "skills": [
+                      {
+                        "description": "An AI Platform Engineer is a multi-agent system designed to manage operations across various tools.",
+                        "examples": [
+                          "Create a new ArgoCD application named 'my-app'.",
+                          "Get the status of the 'frontend' ArgoCD application.",
+                          "Update the image version for 'backend' app."
+                        ],
+                        "id": "ai_platform_engineer",
+                        "name": "AI Platform Engineer",
+                        "tags": [
+                          "github",
+                          "devops"
+                        ]
+                      }
+                    ]
+                  },
+                  "name": "schema.oasf.agntcy.org/features/a2a"
                 }
               ],
-              "url": "http://localhost:8000/",
-              "version": "0.1.0"
+              "schema_version": "v0.5.0",
+              "authors": ["Sample Author"],
+              "created_at": new Date().toISOString(),
+              "locators": [
+                {
+                  "type": "source_code",
+                  "url": "https://github.com/"
+                }
+              ]
             };
           } else {
             throw new Error(`Could not fetch A2A card from ${url}. CORS may be blocking the request.`);
@@ -665,23 +712,25 @@
           setLoadingCard(false);
         }
       };
-      
+
       // Load A2A card data into form
       const loadCardData = async () => {
         if (!cardUrl.trim()) {
           setError('Please enter a valid URL or JSON data');
           return;
         }
-        
+
         let cardData;
         const input = cardUrl.trim();
-        
+
+
         // Check if input is JSON data
         if (input.startsWith('{') && input.endsWith('}')) {
           try {
             setLoadingCard(true);
             setError(null);
             cardData = JSON.parse(input);
+
           } catch (error) {
             console.error('Error parsing JSON:', error);
             setError(`Invalid JSON data: ${error.message}`);
@@ -692,21 +741,21 @@
           // Input is a URL
           cardData = await fetchCardFromUrl(input);
         }
-        
+
         if (cardData) {
           // Set card type to A2A
           setCardType('A2A');
-          
+
           // Update form with card data
           const newForm = { ...form };
-          
+
           // Basic fields
           newForm.name = cardData.name || '';
           newForm.description = cardData.description || '';
           newForm.version = cardData.version || '';
           newForm.url = cardData.url || '';
           newForm.protocolVersion = cardData.protocolVersion || '';
-          
+
           // Input/Output modes
           if (cardData.defaultInputModes && Array.isArray(cardData.defaultInputModes)) {
             newForm.defaultInputModes = cardData.defaultInputModes.join(', ');
@@ -719,7 +768,7 @@
           } else {
             setInputModesList(['text']);
           }
-          
+
           if (cardData.defaultOutputModes && Array.isArray(cardData.defaultOutputModes)) {
             newForm.defaultOutputModes = cardData.defaultOutputModes.join(', ');
             // Update the dynamic list state
@@ -731,56 +780,54 @@
           } else {
             setOutputModesList(['text']);
           }
-          
+
           // Capabilities
           if (cardData.capabilities) {
             newForm.capabilities_pushNotifications = cardData.capabilities.pushNotifications || false;
             newForm.capabilities_streaming = cardData.capabilities.streaming || false;
           }
-          
-          // Skills
-          if (cardData.skills && cardData.skills.length > 0) {
-            const skill = cardData.skills[0];
-            newForm.skillId = skill.id || '';
-            newForm.skillName = skill.name || '';
-            newForm.skillDescription = skill.description || '';
-            
-            // Handle examples as a multi-line string and update the dynamic list
-            if (skill.examples && Array.isArray(skill.examples)) {
-              newForm.skillExamples = skill.examples.join('\n');
-              // Update the dynamic list state
-              if (skill.examples.length > 0) {
-                setSkillExamplesList(skill.examples);
-              } else {
-                setSkillExamplesList(['']);
-              }
-            } else {
-              setSkillExamplesList(['']);
+
+          // Check for skills in the loaded card data
+
+          // First, check if skills are directly at the top level (original A2A format)
+          if (cardData.skills && Array.isArray(cardData.skills)) {
+            const topLevelSkills = cardData.skills.map(skill => ({
+              id: skill.id || '',
+              name: skill.name || '',
+              description: skill.description || '',
+              examples: Array.isArray(skill.examples) && skill.examples.length > 0 ? skill.examples : [''],
+              tags: Array.isArray(skill.tags) && skill.tags.length > 0 ? skill.tags : ['']
+            }));
+
+            if (topLevelSkills.length > 0) {
+              setExtensionSkillsList(topLevelSkills);
             }
-            
-            // Handle tags and update the dynamic list
-            if (skill.tags && Array.isArray(skill.tags)) {
-              newForm.skillTags = skill.tags.join(', ');
-              // Update the dynamic list state
-              if (skill.tags.length > 0) {
-                setSkillTagsList(skill.tags);
-              } else {
-                setSkillTagsList(['']);
-              }
-            } else {
-              setSkillTagsList(['']);
-            }
-            
-            // Store the entire skills array in the form for later use
-            newForm.skillsData = cardData.skills;
           }
-          
+          // Then, check if skills are inside the extensions array (OASF format)
+          else if (cardData.extensions && Array.isArray(cardData.extensions)) {
+            const a2aExtension = cardData.extensions.find(ext => ext.name === 'schema.oasf.agntcy.org/features/a2a');
+            if (a2aExtension && a2aExtension.data && a2aExtension.data.skills && Array.isArray(a2aExtension.data.skills)) {
+              // Update extensionSkillsList with skills from the A2A extension
+              const extensionSkills = a2aExtension.data.skills.map(skill => ({
+                id: skill.id || '',
+                name: skill.name || '',
+                description: skill.description || '',
+                examples: Array.isArray(skill.examples) && skill.examples.length > 0 ? skill.examples : [''],
+                tags: Array.isArray(skill.tags) && skill.tags.length > 0 ? skill.tags : ['']
+              }));
+
+              if (extensionSkills.length > 0) {
+                setExtensionSkillsList(extensionSkills);
+              }
+            }
+          }
+
           setForm(newForm);
           setFormModified(true);
           setLoadingCard(false);
         }
       };
-      
+
       // Fetch latest OASF version and record JSON on mount
       React.useEffect(() => {
         async function fetchData() {
@@ -823,16 +870,16 @@
 
       const handleChange = (e, key) => {
         let newValue;
-        
+
         // Handle different input types
         if (e.target.type === 'checkbox') {
           newValue = e.target.checked;
         } else {
           newValue = e.target.value;
         }
-        
+
         const updatedForm = { ...form, [key]: newValue };
-        
+
         setForm(updatedForm);
         setFormModified(true); // Mark form as modified
       };
@@ -859,27 +906,27 @@
           setOutput(JSON.stringify(recordJson, null, 2));
           return;
         }
-        
+
         // Validate mandatory fields
         const currentSchema = schemas[cardType];
         const missingFields = [];
-        
+
         currentSchema.forEach(field => {
           if (field.required && (!form[field.key] || form[field.key].trim() === '')) {
             missingFields.push(field.label);
           }
         });
-        
+
         if (missingFields.length > 0) {
           setError(`Please fill in all mandatory fields: ${missingFields.join(', ')}`);
           return;
         }
-        
+
         // Clear any previous errors
         setError(null);
-        
+
         let extensions = [];
-        
+
         // Create A2A extension data
         if (cardType === 'A2A') {
           const a2aData = {
@@ -894,29 +941,23 @@
             protocolVersion: form.protocolVersion || "0.2.6",
             url: form.url || "http://localhost:8000/",
             version: form.version || "0.1.0",
-            skills: form.skillsData && Array.isArray(form.skillsData) ? form.skillsData : [
-              {
-                description: form.skillDescription || form.description || "Sample A2A Agent",
-                examples: form.skillExamples ? form.skillExamples.split('\n').filter(line => line.trim().length > 0) : [
-                  "Sample skill example 1",
-                  "Sample skill example 2",
-                ],
-                id: form.skillId || "sample_skill",
-                name: form.skillName || form.name || "Sample A2A Agent",
-                tags: form.skillTags ? form.skillTags.split(',').map(tag => tag.trim()) : [
-                  "github",
-                  "devops",
-                ]
-              }
-            ]
+            skills: extensionSkillsList.map(skill => {
+              return {
+                description: skill.description,
+                examples: skill.examples.filter(example => example.trim() !== ''),
+                id: skill.id,
+                name: skill.name,
+                tags: skill.tags.filter(tag => tag.trim() !== '')
+              };
+            })
           };
-          
+
           extensions.push({
             "data": a2aData,
             "name": "schema.oasf.agntcy.org/features/a2a"
           });
         }
-        
+
         // Create MCP extension data
         if (cardType === 'MCP') {
           // Process servers from the serversList state
@@ -953,13 +994,13 @@
               }
             ]
           };
-          
+
           extensions.push({
             "data": mcpData,
             "name": "schema.oasf.agntcy.org/features/mcp"
           });
         }
-        
+
         // Create the full record structure
         const currentDate = new Date().toISOString();
         const fullRecord = {
@@ -975,26 +1016,24 @@
             "content_bundle": "lm"
           },
           "extensions": extensions,
-          "skills": [
-            {
-              "class_uid": 10101,
-              "category_uid": 1,
-              "category_name": "Natural Language Processing",
-              "class_name": "Contextual Comprehension"
-            }
-          ],
+          "skills": oasfSkillsList.map(skill => ({
+            "class_uid": skill.class_uid,
+            "category_uid": skill.category_uid,
+            "category_name": skill.category_name,
+            "class_name": skill.class_name
+          })),
           "schema_version": latestVersion || "v0.5.0",
           "authors": authorsList.filter(author => author.trim() !== ''),
           "created_at": currentDate,
-          "locators": [
-            {
-              "type": "source_code",
-              "url": "https://github.com/"
-            }
-          ]
+          "locators": locatorsList.map(locator => ({
+            "type": locator.type,
+            "url": locator.url
+          }))
         };
-        
-        setOutput(JSON.stringify(fullRecord, null, 2));
+
+        const jsonOutput = JSON.stringify(fullRecord, null, 2);
+        console.log('Setting output:', jsonOutput);
+        setOutput(jsonOutput);
         // Keep formModified true since user still has unsaved changes that would be lost on refresh
       };
 
@@ -1006,18 +1045,18 @@
       const downloadJSON = () => {
         // The output is already in the correct format, so we can just use it directly
         const fileName = (form.name || 'agent-card').replace(/[^a-z0-9-]/gi, '-').toLowerCase() + '.json';
-        
+
         // Create a blob with the JSON data
         const blob = new Blob([output], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
-        
+
         // Create a temporary link element to trigger the download
         const link = document.createElement('a');
         link.href = url;
         link.download = fileName;
         document.body.appendChild(link);
         link.click();
-        
+
         // Clean up
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
@@ -1025,30 +1064,30 @@
 
       return React.createElement('div', { className: 'container' }, [
         React.createElement('h1', {}, '🔮 AGNTCY OASF Agent Card Generator 🔮'),
-        React.createElement('div', { 
-          style: { 
-            padding: '10px', 
-            marginBottom: '20px', 
-            background: 'rgba(0,0,0,0.05)', 
+        React.createElement('div', {
+          style: {
+            padding: '10px',
+            marginBottom: '20px',
+            background: 'rgba(0,0,0,0.05)',
             borderRadius: '6px',
             fontSize: '14px',
             textAlign: 'center'
-          } 
+          }
         }, '🔒 This is a browser-only tool. No data is transmitted outside of your browser. 🔒'),
         loading ? React.createElement('div', { className: 'loading' }, [
           React.createElement('div', { className: 'loading-spinner' }),
           React.createElement('span', {}, 'Loading OASF schema version...')
         ]) : null,
         error ? React.createElement('div', { className: 'error-message' }, error) : null,
-        latestVersion ? React.createElement('div', { 
-          style: { 
-            padding: '10px', 
-            marginBottom: '20px', 
-            background: 'rgba(0,120,0,0.05)', 
+        latestVersion ? React.createElement('div', {
+          style: {
+            padding: '10px',
+            marginBottom: '20px',
+            background: 'rgba(0,120,0,0.05)',
             borderRadius: '6px',
             fontSize: '14px',
             textAlign: 'center'
-          } 
+          }
         }, [
           'Using latest ',
           React.createElement('a', {
@@ -1057,11 +1096,11 @@
             style: { textDecoration: 'underline', color: 'var(--primary)' }
           }, `OASF schema version: ${latestVersion}`)
         ]) : null,
-        
+
         // Card Type Selection
         React.createElement('label', {}, 'Card Type'),
-        React.createElement('select', { 
-          value: cardType, 
+        React.createElement('select', {
+          value: cardType,
           onChange: e => {
             setCardType(e.target.value);
             // Clear URL input when switching to MCP
@@ -1073,10 +1112,10 @@
           React.createElement('option', { key: 'a2a-option', value: 'A2A' }, 'A2A'),
           React.createElement('option', { key: 'mcp-option', value: 'MCP' }, 'MCP')
         ]),
-        
+
         // Add spacing
         React.createElement('div', { style: { marginTop: '20px' } }),
-        
+
         // A2A Card URL input - only show for A2A card type
         cardType === 'A2A' ? React.createElement('div', { className: 'url-input-container' }, [
           React.createElement('div', { className: 'example-link' }, [
@@ -1098,18 +1137,18 @@
             onPaste: e => {
               // Get pasted content
               const pastedText = e.clipboardData.getData('text');
-              
+
               // Check if it looks like JSON but isn't properly formatted
               if (pastedText.includes('{') && pastedText.includes('}')) {
                 try {
                   // Try to parse and format the JSON
                   const jsonObj = JSON.parse(pastedText);
                   const formattedJson = JSON.stringify(jsonObj, null, 2);
-                  
+
                   // Prevent default paste and use formatted JSON
                   e.preventDefault();
                   setCardUrl(formattedJson);
-                  
+
                   // Dynamically adjust the height based on content
                   setTimeout(() => {
                     const lines = formattedJson.split('\n').length;
@@ -1129,28 +1168,30 @@
             className: 'url-button',
             onClick: loadCardData,
             disabled: loadingCard || !cardUrl.trim()
-          }, React.createElement('div', { className: 'url-button-content' }, 
+          }, React.createElement('div', { className: 'url-button-content' },
             loadingCard ? [
               React.createElement('div', { className: 'loading-spinner', style: { width: '16px', height: '16px', marginRight: '8px' } }),
               'Loading...'
             ] : '🔃 Load A2A Card'
           ))
         ]) : null,
-        
+
         // Error message for card loading
         cardType === 'A2A' && error && cardUrl ? React.createElement('div', { className: 'error-message' }, error) : null,
+
+
         ...schemas[cardType].map(attr => {
           // Only show fields that are not extension-specific or match the current card type
           if (attr.extensionField && attr.extensionType.toLowerCase() !== cardType.toLowerCase()) {
             return null;
           }
-          
+
           return React.createElement('div', {}, [
             React.createElement('label', {}, attr.label + (attr.required ? ' *' : '')),
             attr.type === 'annotations' ? React.createElement('div', {}, [
               form.annotations.map((ann, i) => React.createElement('span', { className: 'annotation-tag' }, [
                 ann,
-                React.createElement('button', { onClick: () => removeAnnotation(i) }, 'x')
+                React.createElement('button', { onClick: () => removeAnnotation(i) }, 'Remove')
               ])),
               React.createElement('div', { style: { display: 'flex', gap: '10px' } }, [
                 React.createElement('input', {
@@ -1188,7 +1229,824 @@
                 backgroundColor: 'var(--input-bg, #fff)',
                 color: 'var(--input-fg, #333)'
               }
-            }) : attr.type === 'server-list' ? React.createElement('div', { className: 'server-list-container' },
+            }) : attr.type === 'h4-header' ? React.createElement('h4', { style: { marginTop: '24px', marginBottom: '8px', color: '#333', fontSize: '18px', fontWeight: 'bold' } }, attr.content
+            ) : attr.type === 'extension-skills-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: '#e6f7ff', padding: '16px', borderRadius: '8px', marginBottom: '16px' } },
+                extensionSkillsList.map((skill, skillIndex) => {
+                return React.createElement('div', { key: skillIndex, className: 'server-container' }, [
+                  // Skill header with name and remove button
+                  React.createElement('div', { className: 'server-header' }, [
+                    React.createElement('h3', { style: { margin: '0', flex: '1' } }, `Skill ${skillIndex + 1}: ${skill.name || 'New Skill'}`),
+                    extensionSkillsList.length > 1 ? React.createElement('button', {
+                      onClick: () => {
+                        const newList = extensionSkillsList.filter((_, i) => i !== skillIndex);
+                        setExtensionSkillsList(newList);
+                      },
+                      style: {
+                        padding: '4px 8px',
+                        backgroundColor: 'var(--danger, #cf6679)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }
+                    }, 'Remove Skill') : null
+                  ]),
+
+                  // Skill fields
+                  React.createElement('div', { className: 'server-fields' }, [
+                    // ID field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Skill ID'),
+                      React.createElement('input', {
+                        type: 'text',
+                        value: skill.id,
+                        onChange: (e) => {
+                          const newList = [...extensionSkillsList];
+                          newList[skillIndex].id = e.target.value;
+                          setExtensionSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Name field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Skill Name'),
+                      React.createElement('input', {
+                        type: 'text',
+                        value: skill.name,
+                        onChange: (e) => {
+                          const newList = [...extensionSkillsList];
+                          newList[skillIndex].name = e.target.value;
+                          setExtensionSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Description field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Description'),
+                      React.createElement('textarea', {
+                        value: skill.description,
+                        onChange: (e) => {
+                          const newList = [...extensionSkillsList];
+                          newList[skillIndex].description = e.target.value;
+                          setExtensionSkillsList(newList);
+                        },
+                        rows: 3,
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          fontFamily: 'inherit',
+                          resize: 'vertical',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Skill Examples
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Skill Examples'),
+                      React.createElement('div', { className: 'dynamic-list-container' },
+                        skill.examples.map((example, exampleIndex) => {
+                          return React.createElement('div', { key: exampleIndex, className: 'dynamic-list-item' }, [
+                            // Example input
+                            React.createElement('input', {
+                              type: 'text',
+                              value: example,
+                              placeholder: 'Enter skill example',
+                              onChange: (e) => {
+                                const newSkillsList = [...extensionSkillsList];
+                                newSkillsList[skillIndex].examples[exampleIndex] = e.target.value;
+                                setExtensionSkillsList(newSkillsList);
+                              },
+                              onKeyPress: (e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault();
+                                  const newSkillsList = [...extensionSkillsList];
+                                  newSkillsList[skillIndex].examples.push('');
+                                  setExtensionSkillsList(newSkillsList);
+                                }
+                              },
+                              style: {
+                                width: '100%',
+                                padding: '8px',
+                                border: '1px solid var(--border-color, #ccc)',
+                                borderRadius: '4px',
+                                backgroundColor: 'var(--input-bg, #fff)',
+                                color: 'var(--input-fg, #333)'
+                              }
+                            }),
+                            // Remove button
+                            React.createElement('button', {
+                              onClick: () => {
+                                if (skill.examples.length <= 1) return;
+                                const newSkillsList = [...extensionSkillsList];
+                                newSkillsList[skillIndex].examples = skill.examples.filter((_, i) => i !== exampleIndex);
+                                setExtensionSkillsList(newSkillsList);
+                              },
+                              disabled: skill.examples.length <= 1,
+                              style: {
+                                marginLeft: '8px',
+                                marginBottom: '16px',
+                                padding: '4px 8px',
+                                backgroundColor: 'var(--danger, #cf6679)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer'
+                              }
+                            }, 'Remove')
+                          ]);
+                        })
+                      ),
+                      // Add example button
+                      React.createElement('button', {
+                        onClick: () => {
+                          const newSkillsList = [...extensionSkillsList];
+                          newSkillsList[skillIndex].examples.push('');
+                          setExtensionSkillsList(newSkillsList);
+                        },
+                        style: {
+                          marginTop: '8px',
+                          padding: '4px 8px',
+                          backgroundColor: 'var(--primary)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }
+                      }, '+ Add Example')
+                    ]),
+
+                    // Skill Tags
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Skill Tags'),
+                      React.createElement('div', { className: 'dynamic-list-container' },
+                        skill.tags.map((tag, tagIndex) => {
+                          return React.createElement('div', { key: tagIndex, className: 'dynamic-list-item' }, [
+                            // Tag input
+                            React.createElement('input', {
+                              type: 'text',
+                              value: tag,
+                              placeholder: 'Enter skill tag',
+                              onChange: (e) => {
+                                const newSkillsList = [...extensionSkillsList];
+                                newSkillsList[skillIndex].tags[tagIndex] = e.target.value;
+                                setExtensionSkillsList(newSkillsList);
+                              },
+                              onKeyPress: (e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault();
+                                  const newSkillsList = [...extensionSkillsList];
+                                  newSkillsList[skillIndex].tags.push('');
+                                  setExtensionSkillsList(newSkillsList);
+                                }
+                              },
+                              style: {
+                                width: '100%',
+                                padding: '8px',
+                                border: '1px solid var(--border-color, #ccc)',
+                                borderRadius: '4px',
+                                backgroundColor: 'var(--input-bg, #fff)',
+                                color: 'var(--input-fg, #333)'
+                              }
+                            }),
+                            // Remove button
+                            React.createElement('button', {
+                              onClick: () => {
+                                if (skill.tags.length <= 1) return;
+                                const newSkillsList = [...extensionSkillsList];
+                                newSkillsList[skillIndex].tags = skill.tags.filter((_, i) => i !== tagIndex);
+                                setExtensionSkillsList(newSkillsList);
+                              },
+                              disabled: skill.tags.length <= 1,
+                              style: {
+                                marginBottom: '16px',
+                                padding: '4px 8px',
+                                backgroundColor: 'var(--danger, #cf6679)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer'
+                              }
+                            }, 'Remove')
+                          ]);
+                        })
+                      ),
+                      // Add tag button
+                      React.createElement('button', {
+                        onClick: () => {
+                          const newSkillsList = [...extensionSkillsList];
+                          newSkillsList[skillIndex].tags.push('');
+                          setExtensionSkillsList(newSkillsList);
+                        },
+                        style: {
+                          marginTop: '8px',
+                          padding: '4px 8px',
+                          backgroundColor: 'var(--primary)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }
+                      }, '+ Add Tag')
+                    ])
+                  ])
+                ]);
+              }),
+              // Add skill button
+              React.createElement('button', {
+                onClick: () => {
+                  setExtensionSkillsList([
+                    ...extensionSkillsList,
+                    {
+                      id: `skill_${extensionSkillsList.length + 1}`,
+                      name: 'New Skill',
+                      description: '',
+                      examples: [''],
+                      tags: ['']
+                    }
+                  ]);
+                },
+                style: {
+                  marginTop: '16px',
+                  padding: '8px 16px',
+                  backgroundColor: 'var(--primary)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  width: '100%'
+                }
+              }, '+ Add Skill')
+            ) : attr.type === 'oasf-skills-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: '#00ffff33', padding: '16px', borderRadius: '8px', marginBottom: '16px' } },
+              oasfSkillsList.map((skill, skillIndex) => {
+                return React.createElement('div', { key: skillIndex, className: 'server-container' }, [
+                  // Skill header with name and remove button
+                  React.createElement('div', { className: 'server-header' }, [
+                    React.createElement('h3', { style: { margin: '0', flex: '1' } }, `OASF Skill ${skillIndex + 1}: ${skill.class_name || 'New Skill'}`),
+                    oasfSkillsList.length > 1 ? React.createElement('button', {
+                      onClick: () => {
+                        const newList = oasfSkillsList.filter((_, i) => i !== skillIndex);
+                        setOasfSkillsList(newList);
+                      },
+                      style: {
+                        padding: '4px 8px',
+                        backgroundColor: 'var(--danger, #cf6679)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }
+                    }, 'Remove Skill') : null
+                  ]),
+
+                  // Skill fields
+                  React.createElement('div', { className: 'server-fields' }, [
+                    // Class UID field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Class UID'),
+                      React.createElement('input', {
+                        type: 'number',
+                        value: skill.class_uid,
+                        onChange: (e) => {
+                          const newList = [...oasfSkillsList];
+                          newList[skillIndex].class_uid = parseInt(e.target.value) || 0;
+                          setOasfSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Category UID field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Category UID'),
+                      React.createElement('input', {
+                        type: 'number',
+                        value: skill.category_uid,
+                        onChange: (e) => {
+                          const newList = [...oasfSkillsList];
+                          newList[skillIndex].category_uid = parseInt(e.target.value) || 0;
+                          setOasfSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Category Name field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Category Name'),
+                      React.createElement('input', {
+                        type: 'text',
+                        value: skill.category_name,
+                        onChange: (e) => {
+                          const newList = [...oasfSkillsList];
+                          newList[skillIndex].category_name = e.target.value;
+                          setOasfSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Class Name field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Class Name'),
+                      React.createElement('input', {
+                        type: 'text',
+                        value: skill.class_name,
+                        onChange: (e) => {
+                          const newList = [...oasfSkillsList];
+                          newList[skillIndex].class_name = e.target.value;
+                          setOasfSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ])
+                  ])
+                ]);
+              }),
+              // Add skill button
+              React.createElement('button', {
+                onClick: () => {
+                  setOasfSkillsList([
+                    ...oasfSkillsList,
+                    {
+                      class_uid: 10101,
+                      category_uid: 1,
+                      category_name: 'Natural Language Processing',
+                      class_name: 'Contextual Comprehension',
+                      description: '',
+                      examples: [''],
+                      tags: ['']
+                    }
+                  ]);
+                },
+                style: {
+                  marginTop: '16px',
+                  padding: '8px 16px',
+                  backgroundColor: 'var(--primary)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  width: '100%'
+                }
+              }, '+ Add OASF Skill')
+            ) : attr.type === 'locators-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: '#ffd70033', padding: '16px', borderRadius: '8px', marginBottom: '16px' } },
+              locatorsList.map((locator, locatorIndex) => {
+                return React.createElement('div', { key: locatorIndex, className: 'server-container' }, [
+                  // Locator header with type and remove button
+                  React.createElement('div', { className: 'server-header' }, [
+                    React.createElement('h3', { style: { margin: '0', flex: '1' } }, `Locator ${locatorIndex + 1}: ${locator.type || 'New Locator'}`),
+                    locatorsList.length > 1 ? React.createElement('button', {
+                      onClick: () => {
+                        const newList = locatorsList.filter((_, i) => i !== locatorIndex);
+                        setLocatorsList(newList);
+                      },
+                      style: {
+                        padding: '4px 8px',
+                        backgroundColor: 'var(--danger, #cf6679)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }
+                    }, 'Remove Locator') : null
+                  ]),
+
+                  // Locator fields
+                  React.createElement('div', { className: 'server-fields' }, [
+                    // Type field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Type'),
+                      React.createElement('input', {
+                        type: 'text',
+                        value: locator.type,
+                        onChange: (e) => {
+                          const newList = [...locatorsList];
+                          newList[locatorIndex].type = e.target.value;
+                          setLocatorsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // URL field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'URL'),
+                      React.createElement('input', {
+                        type: 'text',
+                        value: locator.url,
+                        onChange: (e) => {
+                          const newList = [...locatorsList];
+                          newList[locatorIndex].url = e.target.value;
+                          setLocatorsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ])
+                  ])
+                ]);
+              }),
+              // Add locator button
+              React.createElement('button', {
+                onClick: () => {
+                  setLocatorsList([
+                    ...locatorsList,
+                    {
+                      type: 'source_code',
+                      url: 'https://github.com/'
+                    }
+                  ]);
+                },
+                style: {
+                  marginTop: '16px',
+                  padding: '8px 16px',
+                  backgroundColor: 'var(--primary)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  width: '100%'
+                }
+              }, '+ Add Locator')
+            ) : attr.type === 'skills-list' ? React.createElement('div', { className: 'server-list-container' },
+              skillsList.map((skill, skillIndex) => {
+                return React.createElement('div', { key: skillIndex, className: 'server-container' }, [
+                  // Skill header with name and remove button
+                  React.createElement('div', { className: 'server-header' }, [
+                    React.createElement('h3', { style: { margin: '0', flex: '1' } }, `Skill ${skillIndex + 1}: ${skill.class_name || 'New Skill'}`),
+                    skillsList.length > 1 ? React.createElement('button', {
+                      onClick: () => {
+                        const newList = skillsList.filter((_, i) => i !== skillIndex);
+                        setSkillsList(newList);
+                      },
+                      style: {
+                        padding: '4px 8px',
+                        backgroundColor: 'var(--danger, #cf6679)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }
+                    }, 'Remove Skill') : null
+                  ]),
+
+                  // Skill fields
+                  React.createElement('div', { className: 'server-fields' }, [
+                    // Class UID field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Class UID'),
+                      React.createElement('input', {
+                        type: 'number',
+                        value: skill.class_uid,
+                        onChange: (e) => {
+                          const newList = [...skillsList];
+                          newList[skillIndex].class_uid = parseInt(e.target.value) || 0;
+                          setSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Category UID field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Category UID'),
+                      React.createElement('input', {
+                        type: 'number',
+                        value: skill.category_uid,
+                        onChange: (e) => {
+                          const newList = [...skillsList];
+                          newList[skillIndex].category_uid = parseInt(e.target.value) || 0;
+                          setSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Category Name field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Category Name'),
+                      React.createElement('input', {
+                        type: 'text',
+                        value: skill.category_name,
+                        onChange: (e) => {
+                          const newList = [...skillsList];
+                          newList[skillIndex].category_name = e.target.value;
+                          setSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Class Name field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Class Name'),
+                      React.createElement('input', {
+                        type: 'text',
+                        value: skill.class_name,
+                        onChange: (e) => {
+                          const newList = [...skillsList];
+                          newList[skillIndex].class_name = e.target.value;
+                          setSkillsList(newList);
+                        },
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Description field
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Description'),
+                      React.createElement('textarea', {
+                        value: skill.description,
+                        onChange: (e) => {
+                          const newList = [...skillsList];
+                          newList[skillIndex].description = e.target.value;
+                          setSkillsList(newList);
+                        },
+                        rows: 3,
+                        style: {
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid var(--border-color, #ccc)',
+                          borderRadius: '4px',
+                          fontFamily: 'inherit',
+                          resize: 'vertical',
+                          backgroundColor: 'var(--input-bg, #fff)',
+                          color: 'var(--input-fg, #333)'
+                        }
+                      })
+                    ]),
+
+                    // Skill Examples
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Skill Examples'),
+                      React.createElement('div', { className: 'dynamic-list-container' },
+                        skill.examples.map((example, exampleIndex) => {
+                          return React.createElement('div', { key: exampleIndex, className: 'dynamic-list-item' }, [
+                            // Example input
+                            React.createElement('input', {
+                              type: 'text',
+                              value: example,
+                              placeholder: 'Enter skill example',
+                              onChange: (e) => {
+                                const newSkillsList = [...skillsList];
+                                newSkillsList[skillIndex].examples[exampleIndex] = e.target.value;
+                                setSkillsList(newSkillsList);
+                              },
+                              onKeyPress: (e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault();
+                                  const newSkillsList = [...skillsList];
+                                  newSkillsList[skillIndex].examples.push('');
+                                  setSkillsList(newSkillsList);
+                                }
+                              },
+                              style: {
+                                width: '100%',
+                                padding: '8px',
+                                border: '1px solid var(--border-color, #ccc)',
+                                borderRadius: '4px',
+                                backgroundColor: 'var(--input-bg, #fff)',
+                                color: 'var(--input-fg, #333)'
+                              }
+                            }),
+                            // Remove button
+                            React.createElement('button', {
+                              onClick: () => {
+                                if (skill.examples.length <= 1) return;
+                                const newSkillsList = [...skillsList];
+                                newSkillsList[skillIndex].examples = skill.examples.filter((_, i) => i !== exampleIndex);
+                                setSkillsList(newSkillsList);
+                              },
+                              disabled: skill.examples.length <= 1,
+                              style: {
+                                marginBottom: '16px',
+                                padding: '4px 8px',
+                                backgroundColor: 'var(--danger, #cf6679)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer'
+                              }
+                            }, 'Remove')
+                          ]);
+                        })
+                      ),
+                      // Add example button
+                      React.createElement('button', {
+                        onClick: () => {
+                          const newSkillsList = [...skillsList];
+                          newSkillsList[skillIndex].examples.push('');
+                          setSkillsList(newSkillsList);
+                        },
+                        style: {
+                          marginTop: '8px',
+                          padding: '4px 8px',
+                          backgroundColor: 'var(--primary)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }
+                      }, '+ Add Example')
+                    ]),
+
+                    // Skill Tags
+                    React.createElement('div', { className: 'server-field' }, [
+                      React.createElement('label', {}, 'Skill Tags'),
+                      React.createElement('div', { className: 'dynamic-list-container' },
+                        skill.tags.map((tag, tagIndex) => {
+                          return React.createElement('div', { key: tagIndex, className: 'dynamic-list-item' }, [
+                            // Tag input
+                            React.createElement('input', {
+                              type: 'text',
+                              value: tag,
+                              placeholder: 'Enter skill tag',
+                              onChange: (e) => {
+                                const newSkillsList = [...skillsList];
+                                newSkillsList[skillIndex].tags[tagIndex] = e.target.value;
+                                setSkillsList(newSkillsList);
+                              },
+                              onKeyPress: (e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault();
+                                  const newSkillsList = [...skillsList];
+                                  newSkillsList[skillIndex].tags.push('');
+                                  setSkillsList(newSkillsList);
+                                }
+                              },
+                              style: {
+                                width: '100%',
+                                padding: '8px',
+                                border: '1px solid var(--border-color, #ccc)',
+                                borderRadius: '4px',
+                                backgroundColor: 'var(--input-bg, #fff)',
+                                color: 'var(--input-fg, #333)'
+                              }
+                            }),
+                            // Remove button
+                            React.createElement('button', {
+                              onClick: () => {
+                                if (skill.tags.length <= 1) return;
+                                const newSkillsList = [...skillsList];
+                                newSkillsList[skillIndex].tags = skill.tags.filter((_, i) => i !== tagIndex);
+                                setSkillsList(newSkillsList);
+                              },
+                              disabled: skill.tags.length <= 1,
+                              style: {
+                                marginBottom: '16px',
+                                padding: '4px 8px',
+                                backgroundColor: 'var(--danger, #cf6679)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer'
+                              }
+                            }, 'Remove')
+                          ]);
+                        })
+                      ),
+                      // Add tag button
+                      React.createElement('button', {
+                        onClick: () => {
+                          const newSkillsList = [...skillsList];
+                          newSkillsList[skillIndex].tags.push('');
+                          setSkillsList(newSkillsList);
+                        },
+                        style: {
+                          marginTop: '8px',
+                          padding: '4px 8px',
+                          backgroundColor: 'var(--primary)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }
+                      }, '+ Add Tag')
+                    ])
+                  ])
+                ]);
+              }),
+              // Add skill button
+              React.createElement('button', {
+                onClick: () => {
+                  const newId = skillsList.length > 0 ? Math.max(...skillsList.map(s => s.id)) + 1 : 1;
+                  setSkillsList([
+                    ...skillsList,
+                    {
+                      id: newId,
+                      class_uid: 10101,
+                      category_uid: 1,
+                      category_name: 'Natural Language Processing',
+                      class_name: 'Contextual Comprehension',
+                      description: '',
+                      examples: [''],
+                      tags: ['']
+                    }
+                  ]);
+                },
+                style: {
+                  marginTop: '16px',
+                  padding: '8px 16px',
+                  backgroundColor: 'var(--primary)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  width: '100%'
+                }
+              }, '+ Add Skill')
+            ) : attr.type === 'server-list' ? React.createElement('div', { className: 'server-list-container' },
               serversList.map((server, serverIndex) => {
                 return React.createElement('div', { key: serverIndex, className: 'server-container' }, [
                   // Server header with name and remove button
@@ -1507,9 +2365,9 @@
                 }, '+ Add Environment Variable')
               ])
             ) : attr.type === 'dynamic-list' ? React.createElement('div', { className: 'dynamic-list-container' },
-              (attr.key === 'skillExamples' ? skillExamplesList : 
-               attr.key === 'skillTags' ? skillTagsList : 
-               attr.key === 'defaultInputModes' ? inputModesList : 
+              (attr.key === 'skillExamples' ? skillExamplesList :
+               attr.key === 'skillTags' ? skillTagsList :
+               attr.key === 'defaultInputModes' ? inputModesList :
                attr.key === 'authors' ? authorsList :
                outputModesList).map((item, index) => {
                 return React.createElement('div', { key: index, className: 'dynamic-list-item' }, [
@@ -1521,7 +2379,7 @@
                     onChange: (e) => {
                       const value = e.target.value;
                       let currentList, setterFunction, updatedList;
-                      
+
                       if (attr.key === 'skillExamples') {
                         currentList = skillExamplesList;
                         setterFunction = setSkillExamplesList;
@@ -1538,9 +2396,9 @@
                         currentList = authorsList;
                         setterFunction = setAuthorsList;
                       }
-                      
+
                       handleListItemChange(setterFunction, currentList, index, value);
-                      
+
                       // Also update the form state for compatibility
                       updatedList = [...currentList.slice(0, index), value, ...currentList.slice(index + 1)];
                       const separator = attr.key === 'skillExamples' ? '\n' : ', ';
@@ -1559,9 +2417,9 @@
                         handleListKeyPress(e, setAuthorsList, authorsList, index, 'authors');
                       }
                     },
-                    placeholder: attr.key === 'skillExamples' ? 'Enter example and press Enter for new line' : 
-                               attr.key === 'skillTags' ? 'Enter tag and press Enter for new tag' : 
-                               attr.key === 'defaultInputModes' ? 'Enter input mode (e.g. text, text/plain)' : 
+                    placeholder: attr.key === 'skillExamples' ? 'Enter example and press Enter for new line' :
+                               attr.key === 'skillTags' ? 'Enter tag and press Enter for new tag' :
+                               attr.key === 'defaultInputModes' ? 'Enter input mode (e.g. text, text/plain)' :
                                attr.key === 'authors' ? 'Enter author and press Enter for next entry' :
                                attr.key === 'defaultOutputModes' ? 'Enter output mode (e.g. text, text/plain)' :
                                attr.key === 'servers' ? 'Enter server and press Enter for next entry' :
@@ -1578,7 +2436,7 @@
                   React.createElement('button', {
                     onClick: () => {
                       let currentList, setterFunction, updatedList;
-                      
+
                       if (attr.key === 'skillExamples') {
                         currentList = skillExamplesList;
                         setterFunction = setSkillExamplesList;
@@ -1595,17 +2453,17 @@
                         currentList = authorsList;
                         setterFunction = setAuthorsList;
                       }
-                      
+
                       handleRemoveListItem(setterFunction, currentList, index);
-                      
+
                       // Also update the form state for compatibility
                       updatedList = currentList.filter((_, i) => i !== index);
                       const separator = attr.key === 'skillExamples' ? '\n' : ', ';
                       handleChange({ target: { value: updatedList.join(separator) } }, attr.key);
                     },
-                    disabled: (attr.key === 'skillExamples' ? skillExamplesList : 
-                              attr.key === 'skillTags' ? skillTagsList : 
-                              attr.key === 'defaultInputModes' ? inputModesList : 
+                    disabled: (attr.key === 'skillExamples' ? skillExamplesList :
+                              attr.key === 'skillTags' ? skillTagsList :
+                              attr.key === 'defaultInputModes' ? inputModesList :
                               attr.key === 'defaultOutputModes' ? outputModesList :
                               attr.key === 'servers' ? serversList :
                               attr.key === 'authors' ? authorsList :
@@ -1662,9 +2520,23 @@
           ]);
         }).filter(Boolean),
         React.createElement('div', {}, [
-          React.createElement('button', { onClick: generate }, '⚙️ Generate OASF Record'),
+          React.createElement('button', {
+            onClick: () => {
+              console.log('Generate button clicked');
+              generate();
+            },
+            style: {
+              padding: '8px 16px',
+              backgroundColor: 'var(--primary)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }
+          }, '⚙️ Generate OASF Record'),
           // Show validation error message if present
-          error ? React.createElement('div', { 
+          error ? React.createElement('div', {
             className: 'error-message',
             style: {
               marginTop: '10px',
@@ -1694,8 +2566,11 @@
             }, 'agent-directory.outshift.com')
           ])
         ]),
-        output && React.createElement('div', {}, [
-          React.createElement('pre', { dangerouslySetInnerHTML: { __html: syntaxHighlight(output) } }),
+        React.createElement('div', {}, [
+          React.createElement('pre', {
+            style: { minHeight: '100px', border: '1px solid #ccc', padding: '10px' },
+            dangerouslySetInnerHTML: { __html: output ? syntaxHighlight(output) : 'Click "Generate OASF Record" to see the output here.' }
+          }),
           React.createElement('div', { style: { display: 'flex', gap: '10px', justifyContent: 'flex-end' } }, [
             React.createElement('button', { className: 'copy-btn', onClick: copyToClipboard }, '🖨️ Copy OASF Record'),
             React.createElement('button', {
@@ -1704,21 +2579,21 @@
             }, '⬇️ Download OASF Record')
           ])
         ]),
-        React.createElement('footer', { 
-          style: { 
-            marginTop: '30px', 
-            textAlign: 'center', 
+        React.createElement('footer', {
+          style: {
+            marginTop: '30px',
+            textAlign: 'center',
             padding: '15px',
             borderTop: '1px solid rgba(0,0,0,0.1)',
             fontSize: '14px'
-          } 
+          }
         }, [
           React.createElement('p', {}, [
             '✨ Created with ',
             React.createElement('span', { style: { color: '#ff6b6b' } }, '❤️'),
             ' by ',
-            React.createElement('a', { 
-              href: 'https://github.com/sriaradhyula', 
+            React.createElement('a', {
+              href: 'https://github.com/sriaradhyula',
               target: '_blank',
               style: { textDecoration: 'none' }
             }, '👨‍💻 sriaradhyula'),
