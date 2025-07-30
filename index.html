@@ -14,7 +14,7 @@
       --primary-hover: #005a9e;
       --accent: #4caf50;
       --accent-hover: #388e3c;
-      --danger: #b00020;
+      --danger: #cf6679;
       --border-color: #e0e0e0;
       --input-bg: #ffffff;
       --input-fg: #212121;
@@ -105,6 +105,15 @@
       color: var(--input-fg, #333);
     }
     
+    .example-link {
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .example-link a {
+      word-break: break-all;
+    }
+
     @media (prefers-color-scheme: dark) {
       :root {
         --input-bg: #2a2a2a;
@@ -1048,9 +1057,20 @@
         
         // A2A Card URL input - only show for A2A card type
         cardType === 'A2A' ? React.createElement('div', { className: 'url-input-container' }, [
+          React.createElement('div', { className: 'example-link' }, [
+            React.createElement('span', {}, 'Example: '),
+            React.createElement('a', {
+              href: '#',
+              onClick: (e) => {
+                e.preventDefault();
+                setCardUrl('https://raw.githubusercontent.com/sriaradhyula/generate-agntcy-oasf-card/refs/heads/main/.well-known/agent.json');
+              },
+              style: { color: 'var(--primary)', textDecoration: 'underline' }
+            }, 'https://raw.githubusercontent.com/sriaradhyula/generate-agntcy-oasf-card/refs/heads/main/.well-known/agent.json')
+          ]),
           React.createElement('textarea', {
             className: 'url-input',
-            placeholder: 'Enter A2A card URL (e.g. http://localhost:8000/.well-known/agent.json) or JSON data',
+            placeholder: 'Enter A2A card URL (e.g. https://localhost:8000/.well-known/agent.json) or JSON data',
             value: cardUrl,
             onChange: e => setCardUrl(e.target.value),
             onPaste: e => {
@@ -1159,7 +1179,7 @@
                       },
                       style: {
                         padding: '4px 8px',
-                        backgroundColor: 'var(--danger, #ff4d4f)',
+                        backgroundColor: 'var(--danger, #cf6679)',
                         color: 'white',
                         border: 'none',
                         borderRadius: '4px',
@@ -1335,7 +1355,7 @@
                               style: {
                                 marginBottom: '16px',
                                 padding: '4px 8px',
-                                backgroundColor: 'var(--danger, #ff4d4f)',
+                                backgroundColor: 'var(--danger, #cf6679)',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '4px',
@@ -1439,7 +1459,7 @@
                     style: {
                       marginBottom: '16px',
                       padding: '4px 8px',
-                      backgroundColor: 'var(--danger, #ff4d4f)',
+                      backgroundColor: 'var(--danger, #cf6679)',
                       color: 'white',
                       border: 'none',
                       borderRadius: '4px',
@@ -1557,7 +1577,7 @@
                       marginLeft: '8px',
                       marginBottom: '14px',
                       padding: '4px 8px',
-                      backgroundColor: 'var(--danger, #ff4d4f)',
+                      backgroundColor: 'var(--danger, #cf6679)',
                       color: 'white',
                       border: 'none',
                       borderRadius: '4px',
