@@ -558,22 +558,49 @@
           setLoadingCard(true);
           setError(null);
           
+          // First, check if the URL is HTTP or HTTPS
+          const isHttp = url.startsWith('http://');
+          let fetchUrl = url;
+
           // Create a proxy URL to avoid CORS issues
           // For demo purposes, we'll use a fallback if the fetch fails
           try {
-            const response = await fetch(url, {
+            // First try with the original URL
+            let response = await fetch(fetchUrl, {
               headers: {
                 'Accept': 'application/json'
               },
-              mode: 'cors' // Try with CORS mode
+              mode: 'cors'
             });
             
+            // If the original URL fails and it's HTTP, try with HTTPS
+            if (!response.ok && isHttp) {
+              console.log('HTTP URL failed, trying with HTTPS...');
+              fetchUrl = url.replace('http://', 'https://');
+              response = await fetch(fetchUrl, {
+                headers: {
+                  'Accept': 'application/json'
+                },
+                mode: 'cors'
+              });
+            }
+
             if (response.ok) {
               const data = await response.json();
               return data;
+            } else {
+              console.warn(`Failed to fetch from ${fetchUrl}: ${response.status} ${response.statusText}`);
             }
           } catch (corsError) {
-            console.warn('CORS fetch failed, using demo data:', corsError);
+            console.warn(`CORS/network error with ${fetchUrl}:`, corsError);
+            // If we tried HTTPS already, show a more helpful error message
+            if (fetchUrl.startsWith('https://')) {
+              setError(`Could not load data from ${url}. If this is a local development server, make sure it is running on https or copy the JSON data here.`);
+            } else if (isHttp) {
+              setError(`Could not load data from ${url}. If this is a local development server, make sure it is running on https or copy the JSON data here.`);
+            } else {
+              setError(`Could not load data from ${url}. Please check the URL and try again.`);
+            }
             // Continue to fallback
           }
           
@@ -1012,8 +1039,8 @@
             }
           }
         }, [
-          React.createElement('option', { value: 'A2A' }, 'A2A'),
-          React.createElement('option', { value: 'MCP' }, 'MCP')
+          React.createElement('option', { key: 'a2a-option', value: 'A2A' }, 'A2A'),
+          React.createElement('option', { key: 'mcp-option', value: 'MCP' }, 'MCP')
         ]),
         
         // Add spacing
