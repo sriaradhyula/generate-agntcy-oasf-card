@@ -471,6 +471,7 @@
         { key: 'name', label: 'A2A Agent Name', type: 'text', required: true },
         { key: 'description', label: 'Description', type: 'text', required: true },
         { key: 'version', label: 'Version', type: 'text', required: true },
+        { key: 'authors', label: 'Authors', type: 'dynamic-list', required: true, placeholder: 'Enter author and press Enter for new author' },
         // A2A specific fields
         { key: 'capabilities_pushNotifications', label: 'Push Notifications', type: 'checkbox', required: false, extensionField: true, extensionType: 'a2a' },
         { key: 'capabilities_streaming', label: 'Streaming', type: 'checkbox', required: false, extensionField: true, extensionType: 'a2a' },
@@ -488,6 +489,7 @@
         { key: 'name', label: 'Name', type: 'text', required: true },
         { key: 'description', label: 'Description', type: 'text', required: true },
         { key: 'version', label: 'Version', type: 'text', required: true },
+        { key: 'authors', label: 'Authors', type: 'dynamic-list', required: true, placeholder: 'Enter author and press Enter for new author' },
         // MCP specific fields
         { key: 'servers', label: 'Servers', type: 'server-list', required: false, extensionField: true, extensionType: 'mcp' }
       ],
@@ -521,6 +523,7 @@
       const [skillTagsList, setSkillTagsList] = React.useState(['']);
       const [inputModesList, setInputModesList] = React.useState(['text']);
       const [outputModesList, setOutputModesList] = React.useState(['text']);
+      const [authorsList, setAuthorsList] = React.useState(['']);
       const [serverEnvList, setServerEnvList] = React.useState([{ key: '', value: '' }]);
       const [serversList, setServersList] = React.useState([
         { id: 1, name: '', type: '', url: '', envVars: [{ key: '', value: '' }] }
@@ -974,14 +977,14 @@
           "extensions": extensions,
           "skills": [
             {
-              "id": 10101,
-              "name": "schema.oasf.agntcy.org/skills/contextual_comprehension"
-            } 
+              "class_uid": 10101,
+              "category_uid": 1,
+              "category_name": "Natural Language Processing",
+              "class_name": "Contextual Comprehension"
+            }
           ],
           "schema_version": latestVersion || "v0.5.0",
-          "authors": [
-            "REPLACE ME - AGNTCY OASF Agent Card Generator"
-          ],
+          "authors": authorsList.filter(author => author.trim() !== ''),
           "created_at": currentDate,
           "locators": [
             {
@@ -1507,6 +1510,7 @@
               (attr.key === 'skillExamples' ? skillExamplesList : 
                attr.key === 'skillTags' ? skillTagsList : 
                attr.key === 'defaultInputModes' ? inputModesList : 
+               attr.key === 'authors' ? authorsList :
                outputModesList).map((item, index) => {
                 return React.createElement('div', { key: index, className: 'dynamic-list-item' }, [
                   React.createElement('input', {
@@ -1530,6 +1534,9 @@
                       } else if (attr.key === 'defaultOutputModes') {
                         currentList = outputModesList;
                         setterFunction = setOutputModesList;
+                      } else if (attr.key === 'authors') {
+                        currentList = authorsList;
+                        setterFunction = setAuthorsList;
                       }
                       
                       handleListItemChange(setterFunction, currentList, index, value);
@@ -1548,12 +1555,17 @@
                         handleListKeyPress(e, setInputModesList, inputModesList, index, 'defaultInputModes');
                       } else if (attr.key === 'defaultOutputModes') {
                         handleListKeyPress(e, setOutputModesList, outputModesList, index, 'defaultOutputModes');
+                      } else if (attr.key === 'authors') {
+                        handleListKeyPress(e, setAuthorsList, authorsList, index, 'authors');
                       }
                     },
                     placeholder: attr.key === 'skillExamples' ? 'Enter example and press Enter for new line' : 
                                attr.key === 'skillTags' ? 'Enter tag and press Enter for new tag' : 
                                attr.key === 'defaultInputModes' ? 'Enter input mode (e.g. text, text/plain)' : 
-                               'Enter output mode (e.g. text, text/plain)',
+                               attr.key === 'authors' ? 'Enter author and press Enter for next entry' :
+                               attr.key === 'defaultOutputModes' ? 'Enter output mode (e.g. text, text/plain)' :
+                               attr.key === 'servers' ? 'Enter server and press Enter for next entry' :
+                               'Press Enter to add new entry',
                     style: {
                       flex: 1,
                       padding: '8px',
@@ -1579,6 +1591,9 @@
                       } else if (attr.key === 'defaultOutputModes') {
                         currentList = outputModesList;
                         setterFunction = setOutputModesList;
+                      } else if (attr.key === 'authors') {
+                        currentList = authorsList;
+                        setterFunction = setAuthorsList;
                       }
                       
                       handleRemoveListItem(setterFunction, currentList, index);
@@ -1591,6 +1606,9 @@
                     disabled: (attr.key === 'skillExamples' ? skillExamplesList : 
                               attr.key === 'skillTags' ? skillTagsList : 
                               attr.key === 'defaultInputModes' ? inputModesList : 
+                              attr.key === 'defaultOutputModes' ? outputModesList :
+                              attr.key === 'servers' ? serversList :
+                              attr.key === 'authors' ? authorsList :
                               outputModesList).length <= 1,
                     style: {
                       marginLeft: '8px',
@@ -1618,6 +1636,10 @@
                       handleAddListItem(setInputModesList, inputModesList);
                     } else if (attr.key === 'defaultOutputModes') {
                       handleAddListItem(setOutputModesList, outputModesList);
+                    } else if (attr.key === 'servers') {
+                      handleAddListItem(setServersList, serversList);
+                    } else if (attr.key === 'authors') {
+                      handleAddListItem(setAuthorsList, authorsList);
                     }
                   },
                   style: {
