@@ -1,5 +1,7 @@
 # Generate AGNTCY OASF Card 🎉
 
+**Published URL: https://sriaradhyula.github.io/generate-agntcy-oasf-card/**
+
 AGNTCY OASF Agent Card Generator to generate JSON based on this AGNTCY OASF specification https://schema.oasf.outshift.com/
 
 ## Local Run
