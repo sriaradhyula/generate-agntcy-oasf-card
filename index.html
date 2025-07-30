@@ -700,7 +700,7 @@
         { key: 'name', label: 'A2A Agent Name', type: 'text', required: true },
         { key: 'description', label: 'Description', type: 'text', required: true },
         { key: 'version', label: 'Version', type: 'text', required: true },
-        { key: 'authors', label: 'Authors', type: 'dynamic-list', required: true, placeholder: 'Enter author and press Enter for new author' },
+        { key: 'authors', label: 'Authors', type: 'dynamic-list', required: true, placeholder: 'Enter author name and press Enter to add another' },
         // A2A specific fields
         { key: 'capabilities_pushNotifications', label: 'Push Notifications', type: 'checkbox', required: false, extensionField: true, extensionType: 'a2a' },
         { key: 'capabilities_streaming', label: 'Streaming', type: 'checkbox', required: false, extensionField: true, extensionType: 'a2a' },
@@ -720,7 +720,7 @@
         { key: 'name', label: 'Name', type: 'text', required: true },
         { key: 'description', label: 'Description', type: 'text', required: true },
         { key: 'version', label: 'Version', type: 'text', required: true },
-        { key: 'authors', label: 'Authors', type: 'dynamic-list', required: true, placeholder: 'Enter author and press Enter for new author' },
+        { key: 'authors', label: 'Authors', type: 'dynamic-list', required: true, placeholder: 'Enter author name and press Enter to add another' },
         // MCP specific fields
         { key: 'servers', label: 'Servers', type: 'server-list', required: false, extensionField: true, extensionType: 'mcp' }
       ],
@@ -872,14 +872,6 @@
               "name": "Sample A2A Card",
               "version": "0.1.0",
               "description": "Sample A2A card description",
-              "signature": {
-                "signature": "ol",
-                "signed_at": new Date().toISOString(),
-                "content_type": "application/json",
-                "certificate": "self-signed",
-                "algorithm": "none",
-                "content_bundle": "lm"
-              },
               "extensions": [
                 {
                   "data": {
@@ -1173,8 +1165,27 @@
         const missingFields = [];
 
         currentSchema.forEach(field => {
-          if (field.required && (!form[field.key] || form[field.key].trim() === '')) {
-            missingFields.push(field.label);
+          if (field.required) {
+            let isEmpty = false;
+            
+            // Special handling for dynamic-list fields
+            if (field.type === 'dynamic-list') {
+              if (field.key === 'authors') {
+                isEmpty = !authorsList || authorsList.length === 0 || authorsList.every(author => !author || author.trim() === '');
+              } else if (field.key === 'defaultInputModes') {
+                isEmpty = !inputModesList || inputModesList.length === 0 || inputModesList.every(mode => !mode || mode.trim() === '');
+              } else if (field.key === 'defaultOutputModes') {
+                isEmpty = !outputModesList || outputModesList.length === 0 || outputModesList.every(mode => !mode || mode.trim() === '');
+              } else {
+                isEmpty = !form[field.key] || form[field.key].trim() === '';
+              }
+            } else {
+              isEmpty = !form[field.key] || form[field.key].trim() === '';
+            }
+            
+            if (isEmpty) {
+              missingFields.push(field.label);
+            }
           }
         });
 
@@ -1268,14 +1279,6 @@
           "name": form.agentDirOrgRepo || "Sample OASF Record",
           "version": form.version || "v2.0",
           "description": form.description || "Sample OASF Record Description",
-          "signature": {
-            "signature": "ol",
-            "signed_at": currentDate,
-            "content_type": "application/json",
-            "certificate": "self-signed",
-            "algorithm": "none",
-            "content_bundle": "lm"
-          },
           "extensions": extensions,
           "skills": oasfSkillsList.map(skill => ({
             "class_uid": skill.class_uid,
@@ -1363,7 +1366,7 @@
         ]) : null,
 
         // Card Type Selection
-        React.createElement('label', {}, 'Card Type'),
+        React.createElement('label', {}, 'OASF Record Type'),
         React.createElement('select', {
           value: cardType,
           onChange: e => {
@@ -1494,7 +1497,16 @@
                 backgroundColor: 'var(--input-bg, #fff)',
                 color: 'var(--input-fg, #333)'
               }
-            }) : attr.type === 'h4-header' ? React.createElement('h4', { style: { marginTop: '24px', marginBottom: '8px', color: '#333', fontSize: '18px', fontWeight: 'bold' } }, attr.content
+            }) : attr.type === 'h4-header' ? React.createElement('h4', { style: { marginTop: '24px', marginBottom: '8px', color: 'var(--fg)', fontSize: '18px', fontWeight: 'bold' } }, 
+              attr.content === 'OASF Skill List' ? [
+                attr.content + ' (',
+                React.createElement('a', {
+                  href: 'https://schema.oasf.outshift.com/',
+                  target: '_blank',
+                  style: { color: 'var(--primary)', textDecoration: 'underline', fontSize: '14px', fontWeight: 'normal' }
+                }, 'schema reference'),
+                ')'
+              ] : attr.content
             ) : attr.type === 'extension-skills-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: 'var(--primary-light)', padding: '24px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
                 extensionSkillsList.map((skill, skillIndex) => {
                 return React.createElement('div', { key: skillIndex, className: 'server-container' }, [
@@ -2777,7 +2789,7 @@
                     borderRadius: '4px',
                     cursor: 'pointer'
                   }
-                }, '+ Add ' + (attr.key === 'skillExamples' ? 'Example' : (attr.key === 'defaultInputModes' ? 'Input Mode' : (attr.key === 'defaultOutputModes' ? 'Output Mode' : 'Tag'))))
+                }, '+ Add ' + (attr.key === 'skillExamples' ? 'Example' : (attr.key === 'defaultInputModes' ? 'Input Mode' : (attr.key === 'defaultOutputModes' ? 'Output Mode' : (attr.key === 'authors' ? 'Author' : 'Tag')))))
               ])
             ) : React.createElement('input', {
               type: 'text',
