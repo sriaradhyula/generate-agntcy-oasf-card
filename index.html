@@ -467,9 +467,10 @@
     // Base schemas for different card types
     const schemas = {
       A2A: [
-        { key: 'name', label: 'Name', type: 'text', required: true },
+        { key: 'agentDirOrgRepo', label: 'Agent Directory Org Repo Name', type: 'text', required: true, placeholder: 'e.g. cnoe-io/ai-platform-engineer' },
+        { key: 'name', label: 'A2A Agent Name', type: 'text', required: true },
         { key: 'description', label: 'Description', type: 'text', required: true },
-        { key: 'version', label: 'Version', type: 'text', required: false },
+        { key: 'version', label: 'Version', type: 'text', required: true },
         // A2A specific fields
         { key: 'capabilities_pushNotifications', label: 'Push Notifications', type: 'checkbox', required: false, extensionField: true, extensionType: 'a2a' },
         { key: 'capabilities_streaming', label: 'Streaming', type: 'checkbox', required: false, extensionField: true, extensionType: 'a2a' },
@@ -486,7 +487,7 @@
       MCP: [
         { key: 'name', label: 'Name', type: 'text', required: true },
         { key: 'description', label: 'Description', type: 'text', required: true },
-        { key: 'version', label: 'Version', type: 'text', required: false },
+        { key: 'version', label: 'Version', type: 'text', required: true },
         // MCP specific fields
         { key: 'servers', label: 'Servers', type: 'server-list', required: false, extensionField: true, extensionType: 'mcp' }
       ],
@@ -856,6 +857,24 @@
           return;
         }
         
+        // Validate mandatory fields
+        const currentSchema = schemas[cardType];
+        const missingFields = [];
+        
+        currentSchema.forEach(field => {
+          if (field.required && (!form[field.key] || form[field.key].trim() === '')) {
+            missingFields.push(field.label);
+          }
+        });
+        
+        if (missingFields.length > 0) {
+          setError(`Please fill in all mandatory fields: ${missingFields.join(', ')}`);
+          return;
+        }
+        
+        // Clear any previous errors
+        setError(null);
+        
         let extensions = [];
         
         // Create A2A extension data
@@ -941,7 +960,7 @@
         // Create the full record structure
         const currentDate = new Date().toISOString();
         const fullRecord = {
-          "name": form.name || "Sample OASF Record",
+          "name": form.agentDirOrgRepo || "Sample OASF Record",
           "version": form.version || "v2.0",
           "description": form.description || "Sample OASF Record Description",
           "signature": {
@@ -1615,12 +1634,23 @@
             ) : React.createElement('input', {
               type: 'text',
               value: form[attr.key] || '',
-              onChange: e => handleChange(e, attr.key)
+              onChange: e => handleChange(e, attr.key),
+              placeholder: attr.placeholder || ''
             })
           ]);
         }).filter(Boolean),
         React.createElement('div', {}, [
           React.createElement('button', { onClick: generate }, '⚙️ Generate OASF Record'),
+          // Show validation error message if present
+          error ? React.createElement('div', { 
+            className: 'error-message',
+            style: {
+              marginTop: '10px',
+              padding: '10px',
+              borderRadius: '4px',
+              textAlign: 'left'
+            }
+          }, error) : null,
           React.createElement('div', {
             style: {
               marginTop: '10px',

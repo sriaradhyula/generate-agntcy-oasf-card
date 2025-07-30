@@ -21,7 +21,7 @@
           "Create a new ArgoCD application named 'my-app'.",
           "Get the status of the 'frontend' ArgoCD application.",
           "Update the image version for 'backend' app.",
-          "Delete the 'test-app' from ArgoCD.",
+          "Delete the 'test-app' from ArgoCD."
         ],
         "id": "ai_platform_engineer",
         "name": "AI Platform Engineer",
