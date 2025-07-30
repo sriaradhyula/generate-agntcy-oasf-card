@@ -1507,7 +1507,7 @@
                 }, 'schema reference'),
                 ')'
               ] : attr.content
-            ) : attr.type === 'extension-skills-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: 'var(--primary-light)', padding: '24px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
+            ) : attr.type === 'extension-skills-list' ? React.createElement('div', { style: { backgroundColor: 'var(--primary-light)', padding: '16px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
                 extensionSkillsList.map((skill, skillIndex) => {
                 return React.createElement('div', { key: skillIndex, className: 'server-container' }, [
                   // Skill header with name and remove button
@@ -1778,7 +1778,7 @@
                   width: '100%'
                 }
               }, '+ Add Skill')
-            ) : attr.type === 'oasf-skills-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: 'var(--primary-light)', padding: '24px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
+            ) : attr.type === 'oasf-skills-list' ? React.createElement('div', { style: { backgroundColor: 'var(--primary-light)', padding: '16px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
               oasfSkillsList.map((skill, skillIndex) => {
                 return React.createElement('div', { key: skillIndex, className: 'server-container' }, [
                   // Skill header with name and remove button
@@ -1919,7 +1919,7 @@
                   width: '100%'
                 }
               }, '+ Add OASF Skill')
-            ) : attr.type === 'locators-list' ? React.createElement('div', { className: 'server-list-container', style: { backgroundColor: 'var(--primary-light)', padding: '24px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
+            ) : attr.type === 'locators-list' ? React.createElement('div', { style: { backgroundColor: 'var(--primary-light)', padding: '16px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', border: '1px solid var(--border-color)' } },
               locatorsList.map((locator, locatorIndex) => {
                 return React.createElement('div', { key: locatorIndex, className: 'server-container' }, [
                   // Locator header with type and remove button
