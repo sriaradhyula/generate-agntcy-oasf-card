@@ -3417,12 +3417,12 @@
             .filter(Boolean);
           return {
             name: "Generated Agent",
-            description: "Agent generated using OASF Record Generator",
+            description: "Agent generated using AGNTCY OASF Record Generator",
             version: "1.0.0",
-            authors: ["OASF Generator"],
+            authors: ["Cisco Outshift Contributors"],
             features,
             metadata: {
-              generator: "OASF Record Generator",
+              generator: "AGNTCY OASF Record Generator",
               generated_at: new Date().toISOString(),
             },
           };
@@ -3708,9 +3708,11 @@
             {/* Header */}
             <div className="text-center mb-8">
               <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl font-bold">
-                  📦
-                </div>
+                <img
+                  src="https://agntcy.org/images/logo.png"
+                  alt="AGNTCY Logo"
+                  className="h-10 w-auto mr-2"
+                />
                 <h1 className="text-3xl font-bold">OASF Record Generator</h1>
               </div>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -3776,6 +3778,49 @@
               isVisible={showPreview}
               onClose={() => setShowPreview(false)}
             />
+
+            {/* Footer */}
+            {React.createElement('footer', {
+              style: {
+                marginTop: '30px',
+                textAlign: 'center',
+                padding: '15px',
+                borderTop: '1px solid rgba(0,0,0,0.1)',
+                fontSize: '14px'
+              }
+            }, [
+              React.createElement('div', {
+                style: {
+                  padding: '16px',
+                  marginBottom: '24px',
+                  background: 'var(--accent-light)',
+                  borderRadius: 'var(--radius)',
+                  fontSize: '0.875rem',
+                  textAlign: 'center',
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--fg)'
+                }
+              }, '🔒 This is a browser-only tool. No data is transmitted outside of your browser. 🔒'),
+              React.createElement('p', {}, [
+                '✨ Created with ',
+                React.createElement('span', { style: { color: '#ff6b6b' } }, '❤️'),
+                ' by ',
+                React.createElement('a', {
+                  href: 'https://outshift.cisco.com',
+                  target: '_blank',
+                  style: { textDecoration: 'none' }
+                }, '👨‍💻 Cisco Outshift Contributors'),
+                ' ✨'
+              ]),
+              React.createElement('p', { style: { marginTop: '10px' } }, [
+                '🔍 Source code: ',
+                React.createElement('a', {
+                  href: 'https://github.com/sriaradhyula/generate-agntcy-oasf-card',
+                  target: '_blank',
+                  style: { textDecoration: 'underline', color: 'var(--primary)' }
+                }, 'github.com/sriaradhyula/generate-agntcy-oasf-card')
+              ])
+            ])}
           </div>
         );
       }
