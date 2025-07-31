@@ -298,6 +298,19 @@
         font-size: 0.875rem;
         transition: var(--transition);
         box-sizing: border-box;
+        line-height: 1.4;
+      }
+
+      select {
+        min-height: 2.5rem;
+      }
+
+      select option {
+        padding: 8px 12px;
+        background-color: var(--input-bg);
+        color: var(--input-fg);
+        line-height: 1.4;
+        white-space: nowrap;
       }
 
       input:focus,
@@ -351,8 +364,8 @@
         box-shadow: 0 0 0 3px var(--primary-light);
       }
       .select {
-        display: flex;
-        height: 2.5rem;
+        display: block;
+        min-height: 2.5rem;
         width: 100%;
         border-radius: var(--radius);
         border: 2px solid var(--border-color);
@@ -361,11 +374,19 @@
         padding: 12px 16px;
         font-size: 0.875rem;
         transition: var(--transition);
+        line-height: 1.4;
       }
       .select:focus {
         outline: none;
         border-color: var(--primary);
         box-shadow: 0 0 0 3px var(--primary-light);
+      }
+      .select option {
+        padding: 8px 12px;
+        background-color: var(--input-bg);
+        color: var(--input-fg);
+        line-height: 1.4;
+        white-space: nowrap;
       }
       .label {
         font-weight: 600;
@@ -793,6 +814,82 @@
         border-left: 4px solid var(--danger);
         font-weight: 500;
         box-shadow: var(--shadow-sm);
+      }
+
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+
+      .toast {
+        background: var(--primary);
+        color: white;
+        padding: 8px 16px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        font-size: 0.8rem;
+        font-weight: 400;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transform: translateX(100%);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: auto;
+        max-width: 280px;
+        word-wrap: break-word;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .toast.success {
+        background: var(--primary);
+      }
+
+      .toast.error {
+        background: var(--danger);
+      }
+
+      .toast.warning {
+        background: var(--primary);
+      }
+
+      .toast-close-button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 14px;
+        font-weight: normal;
+        cursor: pointer;
+        padding: 0;
+        margin-left: auto;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 2px;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+      }
+
+      .toast-close-button:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .toast-close-button:focus {
+        outline: 2px solid rgba(255, 255, 255, 0.5);
+        outline-offset: 1px;
       }
       @media (min-width: 640px) {
         .container {
@@ -1289,6 +1386,57 @@
           >
             {isDark ? "☀️" : "🌙"}
           </button>
+        );
+      }
+
+      function Toast({ message, type = "success", onClose }) {
+        const [show, setShow] = useState(false);
+
+        useEffect(() => {
+          const showTimer = setTimeout(() => setShow(true), 100);
+
+          const hideTimer = setTimeout(() => {
+            setShow(false);
+            setTimeout(onClose, 300);
+          }, 3000);
+
+          return () => {
+            clearTimeout(showTimer);
+            clearTimeout(hideTimer);
+          };
+        }, [onClose]);
+
+        const handleClose = () => {
+          setShow(false);
+          setTimeout(onClose, 300);
+        };
+
+        return (
+          <div className={`toast ${type} ${show ? "show" : ""}`}>
+            <span>{message}</span>
+            <button
+              className="toast-close-button"
+              onClick={handleClose}
+              aria-label="Close notification"
+            >
+              ×
+            </button>
+          </div>
+        );
+      }
+
+      function ToastContainer({ toasts, removeToast }) {
+        return (
+          <div className="toast-container">
+            {toasts.map((toast) => (
+              <Toast
+                key={toast.id}
+                message={toast.message}
+                type={toast.type}
+                onClose={() => removeToast(toast.id)}
+              />
+            ))}
+          </div>
         );
       }
       // Extension Gallery Component
@@ -3235,7 +3383,6 @@
         navigator.clipboard
           .writeText(text)
           .then(() => {
-            // Show a temporary notification
             const notification = document.createElement("div");
             notification.textContent = "Copied to clipboard!";
             notification.style.cssText = `
@@ -3588,6 +3735,16 @@
         const [activeExtensions, setActiveExtensions] = useState([]);
         const [showPreview, setShowPreview] = useState(false);
         const [nextId, setNextId] = useState(1);
+        const [toasts, setToasts] = useState([]);
+
+        const addToast = (message, type = "success") => {
+          const id = Date.now() + Math.random();
+          setToasts((prev) => [...prev, { id, message, type }]);
+        };
+
+        const removeToast = (id) => {
+          setToasts((prev) => prev.filter((toast) => toast.id !== id));
+        };
         const availableExtensions = Object.entries(extensionConfigs).map(
           ([id, config]) => ({
             id,
@@ -3621,6 +3778,8 @@
           };
           setActiveExtensions((prev) => [...prev, newExtension]);
           setNextId((prev) => prev + 1);
+
+          addToast(`Added ${config.name}`, "success");
         };
         const updateExtension = (instanceId, data) => {
           setActiveExtensions((prev) =>
@@ -3628,15 +3787,28 @@
           );
         };
         const removeExtension = (instanceId) => {
+          const extension = activeExtensions.find(
+            (ext) => ext.id === instanceId
+          );
+          const config = extension
+            ? extensionConfigs[extension.extensionType]
+            : null;
+
           setActiveExtensions((prev) =>
             prev.filter((ext) => ext.id !== instanceId)
           );
+
+          if (config) {
+            addToast(`Removed ${config.name}`, "warning");
+          }
         };
         const duplicateExtension = (instanceId) => {
           const extension = activeExtensions.find(
             (ext) => ext.id === instanceId
           );
           if (!extension) return;
+
+          const config = extensionConfigs[extension.extensionType];
           const newExtension = {
             ...extension,
             id: `${extension.extensionType}_${nextId}`,
@@ -3644,6 +3816,10 @@
           };
           setActiveExtensions((prev) => [...prev, newExtension]);
           setNextId((prev) => prev + 1);
+
+          if (config) {
+            addToast(`Duplicated ${config.name}`, "success");
+          }
         };
         const toggleExtension = (instanceId) => {
           setActiveExtensions((prev) =>
@@ -3657,6 +3833,169 @@
             )
           );
         };
+
+        const validateAllExtensions = () => {
+          const validationErrors = [];
+
+          activeExtensions.forEach((extension) => {
+            const config = extensionConfigs[extension.extensionType];
+            if (!config) return;
+
+            const missingFields = [];
+            config.fields.forEach((field) => {
+              if (field.required) {
+                const value = extension.data[field.key];
+                if (
+                  !value ||
+                  value === "" ||
+                  (Array.isArray(value) &&
+                    (value.length === 0 ||
+                      value.every((item) => !item || item === "")))
+                ) {
+                  missingFields.push(field.label || field.key);
+                }
+              }
+            });
+
+            if (missingFields.length > 0) {
+              validationErrors.push({
+                extensionName: config.name,
+                missingFields: missingFields,
+              });
+            }
+          });
+
+          return validationErrors;
+        };
+
+        const handleGenerateOASF = () => {
+          const validationErrors = validateAllExtensions();
+
+          if (validationErrors.length > 0) {
+            addToast("Please fill all mandatory fields", "error");
+            return;
+          }
+
+          setShowPreview(true);
+        };
+
+        // Detect if imported JSON is an A2A card format
+        const isA2ACardFormat = (data) => {
+          return (
+            data &&
+            typeof data === "object" &&
+            (data.name ||
+              data.version ||
+              data.description ||
+              data.capabilities ||
+              data.skills) &&
+            !data.features
+          );
+        };
+
+        const convertA2ACardToExtensionData = (cardData) => {
+          const formData = {};
+
+          let githubUrl = null;
+
+          if (cardData.url && cardData.url.includes("github.com")) {
+            githubUrl = cardData.url;
+          }
+
+          if (
+            !githubUrl &&
+            cardData.locators &&
+            Array.isArray(cardData.locators)
+          ) {
+            const githubLocator = cardData.locators.find(
+              (locator) => locator.url && locator.url.includes("github.com")
+            );
+            if (githubLocator) {
+              githubUrl = githubLocator.url;
+            }
+          }
+
+          if (githubUrl) {
+            const githubMatch = githubUrl.match(
+              /github(?:usercontent)?\.com\/([^\/]+)\/([^\/]+)/
+            );
+            if (githubMatch) {
+              const owner = githubMatch[1];
+              const repo = githubMatch[2];
+
+              formData.agentDirOrgRepo = repo;
+
+              if (!cardData.authors || cardData.authors.length === 0) {
+                formData.authors = [owner];
+              } else {
+                formData.authors = cardData.authors;
+              }
+            } else {
+              formData.agentDirOrgRepo = cardData.agentDirOrgRepo || "";
+              formData.authors = cardData.authors || [""];
+            }
+          } else {
+            formData.agentDirOrgRepo = cardData.agentDirOrgRepo || "";
+            formData.authors = cardData.authors || [""];
+          }
+
+          formData.name = cardData.name || "";
+          formData.description = cardData.description || "";
+          formData.version = cardData.version || "";
+          formData.url = cardData.url || "";
+          formData.protocolVersion = cardData.protocolVersion || "";
+
+          if (
+            cardData.defaultInputModes &&
+            Array.isArray(cardData.defaultInputModes)
+          ) {
+            formData.defaultInputModes =
+              cardData.defaultInputModes.length > 0
+                ? cardData.defaultInputModes
+                : ["text"];
+          } else {
+            formData.defaultInputModes = ["text"];
+          }
+
+          if (
+            cardData.defaultOutputModes &&
+            Array.isArray(cardData.defaultOutputModes)
+          ) {
+            formData.defaultOutputModes =
+              cardData.defaultOutputModes.length > 0
+                ? cardData.defaultOutputModes
+                : ["text"];
+          } else {
+            formData.defaultOutputModes = ["text"];
+          }
+
+          if (cardData.capabilities) {
+            formData.capabilities_pushNotifications =
+              !!cardData.capabilities.pushNotifications;
+            formData.capabilities_streaming = !!cardData.capabilities.streaming;
+          }
+
+          if (cardData.skills && Array.isArray(cardData.skills)) {
+            formData["extension-skills"] = cardData.skills.map((skill) => ({
+              id: skill.id || "",
+              name: skill.name || "",
+              description: skill.description || "",
+              examples: skill.examples || [""],
+              tags: skill.tags || [""],
+            }));
+          }
+
+          if (cardData.oasfSkills && Array.isArray(cardData.oasfSkills)) {
+            formData["oasf-skills"] = cardData.oasfSkills;
+          }
+
+          if (cardData.locators && Array.isArray(cardData.locators)) {
+            formData.locators = cardData.locators;
+          }
+
+          return formData;
+        };
+
         const importJson = () => {
           const input = document.createElement("input");
           input.type = "file";
@@ -3668,6 +4007,26 @@
             reader.onload = (e) => {
               try {
                 const data = JSON.parse(e.target.result);
+
+                // Check if it's an A2A card format
+                if (isA2ACardFormat(data)) {
+                  // Create A2A extension with populated data
+                  const a2aData = convertA2ACardToExtensionData(data);
+                  const newExtension = {
+                    id: `a2a_${nextId}`,
+                    extensionType: "a2a",
+                    name: extensionConfigs.a2a.name,
+                    data: a2aData,
+                    collapsed: "false",
+                    order: 0,
+                  };
+
+                  setActiveExtensions((prev) => [...prev, newExtension]);
+                  setNextId((prev) => prev + 1);
+                  addToast("A2A Card imported successfully", "success");
+                  return;
+                }
+
                 if (data.features && Array.isArray(data.features)) {
                   const newExtensions = data.features
                     .map((feature, index) => {
@@ -3689,11 +4048,33 @@
                       return null;
                     })
                     .filter(Boolean);
-                  setActiveExtensions(newExtensions);
-                  setNextId((prev) => prev + newExtensions.length);
+
+                  if (newExtensions.length > 0) {
+                    setActiveExtensions(newExtensions);
+                    setNextId((prev) => prev + newExtensions.length);
+                    addToast(
+                      `Imported ${newExtensions.length} extension(s) from OASF record`,
+                      "success"
+                    );
+                  } else {
+                    addToast(
+                      "No compatible extensions found in the OASF record",
+                      "warning"
+                    );
+                  }
+                  return;
                 }
+
+                addToast(
+                  "Invalid JSON format. Please select an A2A card or OASF record file.",
+                  "error"
+                );
               } catch (error) {
-                alert("Invalid JSON file");
+                console.error("JSON parsing error:", error);
+                addToast(
+                  "Invalid JSON file. Please check the file format.",
+                  "error"
+                );
               }
             };
             reader.readAsText(file);
@@ -3740,7 +4121,7 @@
                   </button>
                   <button
                     className="btn btn-primary"
-                    onClick={() => setShowPreview(true)}
+                    onClick={handleGenerateOASF}
                     disabled={activeExtensions.length === 0}
                   >
                     ⚙️ Generate OASF Record
@@ -3780,47 +4161,73 @@
             />
 
             {/* Footer */}
-            {React.createElement('footer', {
-              style: {
-                marginTop: '30px',
-                textAlign: 'center',
-                padding: '15px',
-                borderTop: '1px solid rgba(0,0,0,0.1)',
-                fontSize: '14px'
-              }
-            }, [
-              React.createElement('div', {
+            {React.createElement(
+              "footer",
+              {
                 style: {
-                  padding: '16px',
-                  marginBottom: '24px',
-                  background: 'var(--accent-light)',
-                  borderRadius: 'var(--radius)',
-                  fontSize: '0.875rem',
-                  textAlign: 'center',
-                  border: '1px solid var(--border-color)',
-                  color: 'var(--fg)'
-                }
-              }, '🔒 This is a browser-only tool. No data is transmitted outside of your browser. 🔒'),
-              React.createElement('p', {}, [
-                '✨ Created with ',
-                React.createElement('span', { style: { color: '#ff6b6b' } }, '❤️'),
-                ' by ',
-                React.createElement('a', {
-                  href: 'https://outshift.cisco.com',
-                  target: '_blank',
-                  style: { textDecoration: 'none' }
-                }, '👨‍💻 Cisco Outshift Contributors'),
-                ' ✨'
-              ]),
-              React.createElement('p', { style: { marginTop: '10px' } }, [
-                '🔍 Source code: ',
-                React.createElement('a', {
-                  href: 'https://github.com/sriaradhyula/generate-agntcy-oasf-card',
-                  target: '_blank',
-                  style: { textDecoration: 'underline', color: 'var(--primary)' }
-                }, 'github.com/sriaradhyula/generate-agntcy-oasf-card')
-              ])
-            ])}
+                  marginTop: "30px",
+                  textAlign: "center",
+                  padding: "15px",
+                  borderTop: "1px solid rgba(0,0,0,0.1)",
+                  fontSize: "14px",
+                },
+              },
+              [
+                React.createElement(
+                  "div",
+                  {
+                    style: {
+                      padding: "16px",
+                      marginBottom: "24px",
+                      background: "var(--primary-light)",
+                      borderRadius: "var(--radius)",
+                      fontSize: "0.875rem",
+                      textAlign: "center",
+                      border: "1px solid var(--border-color)",
+                      color: "var(--fg)",
+                    },
+                  },
+                  "🔒 This is a browser-only tool. No data is transmitted outside of your browser. 🔒"
+                ),
+                React.createElement("p", {}, [
+                  "✨ Created with ",
+                  React.createElement(
+                    "span",
+                    { style: { color: "#ff6b6b" } },
+                    "❤️"
+                  ),
+                  " by ",
+                  React.createElement(
+                    "a",
+                    {
+                      href: "https://outshift.cisco.com",
+                      target: "_blank",
+                      style: { textDecoration: "none" },
+                    },
+                    "👨‍💻 Cisco Outshift Contributors"
+                  ),
+                  " ✨",
+                ]),
+                React.createElement("p", { style: { marginTop: "10px" } }, [
+                  "🔍 Source code: ",
+                  React.createElement(
+                    "a",
+                    {
+                      href: "https://github.com/sriaradhyula/generate-agntcy-oasf-card",
+                      target: "_blank",
+                      style: {
+                        textDecoration: "underline",
+                        color: "var(--primary)",
+                      },
+                    },
+                    "github.com/sriaradhyula/generate-agntcy-oasf-card"
+                  ),
+                ]),
+              ]
+            )}
+
+            {/* Toast Container */}
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
           </div>
         );
       }
