@@ -1,1100 +1,3724 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OASF Card Generator</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --background: hsl(248, 50%, 97%);
-            --foreground: hsl(30, 14%, 16%);
-            --muted: hsl(210, 40%, 96%);
-            --muted-foreground: hsl(215, 16%, 47%);
-            --popover: hsl(0, 0%, 100%);
-            --popover-foreground: hsl(30, 14%, 16%);
-            --card: hsl(0, 0%, 100%);
-            --card-foreground: hsl(30, 14%, 16%);
-            --border: hsl(220, 13%, 91%);
-            --input: hsl(220, 13%, 91%);
-            --primary: hsl(210, 73%, 52%);
-            --primary-foreground: hsl(211, 100%, 99%);
-            --secondary: hsl(210, 40%, 96%);
-            --secondary-foreground: hsl(222, 84%, 5%);
-            --accent: hsl(153, 70%, 44%);
-            --accent-foreground: hsl(153, 85%, 95%);
-            --destructive: hsl(0, 84%, 60%);
-            --destructive-foreground: hsl(60, 9%, 98%);
-            --ring: hsl(30, 14%, 16%);
-            --radius: 0.5rem;
+      :root {
+        --bg: #f8fafc;
+        --fg: #1e293b;
+        --container-bg: #ffffff;
+        --primary: #187adc;
+        --primary-hover: #146bb8;
+        --primary-light: #e8f4fd;
+        --accent: #10b981;
+        --accent-hover: #059669;
+        --accent-light: #d1fae5;
+        --danger: #ef4444;
+        --danger-hover: #dc2626;
+        --danger-light: #fee2e2;
+        --warning: #f59e0b;
+        --warning-light: #fef3c7;
+        --border-color: #e2e8f0;
+        --border-hover: #cbd5e1;
+        --input-bg: #ffffff;
+        --input-fg: #1e293b;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --radius: 8px;
+        --radius-lg: 12px;
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-            /* Custom OASF colors */
-            --primary-light: hsl(210, 100%, 95%);
-            --accent-hover: hsl(153, 61%, 39%);
-            --danger: hsl(0, 84%, 60%);
-            --danger-hover: hsl(0, 79%, 53%);
-            --danger-light: hsl(0, 93%, 94%);
-            --warning: hsl(43, 96%, 56%);
-            --warning-light: hsl(48, 96%, 89%);
-            --container-bg: hsl(0, 0%, 100%);
-            --input-bg: hsl(0, 0%, 100%);
-            --border-hover: hsl(215, 20%, 82%);
-            --shadow-sm: 0 1px 2px 0 hsl(0, 0%, 0%, 0.05);
-            --shadow: 0 1px 3px 0 hsl(0, 0%, 0%, 0.1), 0 1px 2px -1px hsl(0, 0%, 0%, 0.1);
-            --shadow-lg: 0 10px 15px -3px hsl(0, 0%, 0%, 0.1), 0 4px 6px -4px hsl(0, 0%, 0%, 0.1);
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .dark {
-            --background: hsl(222, 84%, 5%);
-            --foreground: hsl(210, 40%, 98%);
-            --muted: hsl(217, 32%, 17%);
-            --muted-foreground: hsl(215, 20%, 65%);
-            --popover: hsl(222, 84%, 5%);
-            --popover-foreground: hsl(210, 40%, 98%);
-            --card: hsl(222, 84%, 5%);
-            --card-foreground: hsl(210, 40%, 98%);
-            --border: hsl(217, 32%, 17%);
-            --input: hsl(217, 32%, 17%);
-            --primary: hsl(210, 73%, 52%);
-            --primary-foreground: hsl(211, 100%, 99%);
-            --secondary: hsl(217, 32%, 17%);
-            --secondary-foreground: hsl(210, 40%, 98%);
-            --accent: hsl(153, 70%, 44%);
-            --accent-foreground: hsl(153, 85%, 95%);
-            --destructive: hsl(0, 63%, 31%);
-            --destructive-foreground: hsl(210, 40%, 98%);
-            --ring: hsl(212, 95%, 83%);
+        /* Legacy variables for compatibility */
+        --background: #f8fafc;
+        --foreground: #1e293b;
+        --card: #ffffff;
+        --card-foreground: #1e293b;
+        --border: #e2e8f0;
+        --muted: #f1f5f9;
+        --muted-foreground: #64748b;
+        --ring: #1e293b;
+      }
 
-            /* Custom OASF dark colors */
-            --primary-light: hsl(210, 95%, 12%);
-            --accent-hover: hsl(153, 61%, 39%);
-            --danger: hsl(0, 84%, 60%);
-            --danger-hover: hsl(0, 79%, 53%);
-            --danger-light: hsl(0, 63%, 16%);
-            --warning: hsl(43, 96%, 56%);
-            --warning-light: hsl(43, 89%, 18%);
-            --container-bg: hsl(222, 84%, 5%);
-            --input-bg: hsl(217, 32%, 17%);
-            --border-hover: hsl(215, 20%, 25%);
-            --shadow-sm: 0 1px 2px 0 hsl(0, 0%, 0%, 0.3);
-            --shadow: 0 1px 3px 0 hsl(0, 0%, 0%, 0.3), 0 1px 2px -1px hsl(0, 0%, 0%, 0.3);
-            --shadow-lg: 0 10px 15px -3px hsl(0, 0%, 0%, 0.3), 0 4px 6px -4px hsl(0, 0%, 0%, 0.3);
-        }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            background-color: var(--background);
-            color: var(--foreground);
-        }
-        .extension-tile {
-            transition: var(--transition);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .extension-tile:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-        .extension-tile::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            opacity: 0;
-            transition: var(--transition);
-        }
-        .extension-tile:hover::before {
-            opacity: 1;
-        }
-        .extension-card {
-            transition: var(--transition);
-            border-left: 4px solid hsl(var(--primary));
-        }
-        .extension-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            font-size: 12px;
-            margin-bottom: 8px;
-        }
-        .a2a-icon {
-            background: linear-gradient(135deg, hsl(269, 100%, 78%) 0%, hsl(213, 89%, 64%) 100%);
-        }
-        .model-icon {
-            background: linear-gradient(135deg, hsl(338, 95%, 75%) 0%, hsl(269, 100%, 78%) 100%);
-        }
-        .mcp-icon {
-            background: linear-gradient(135deg, hsl(26, 91%, 65%) 0%, hsl(338, 95%, 75%) 100%);
-        }
-        .prompt-icon {
-            background: linear-gradient(135deg, hsl(133, 72%, 59%) 0%, hsl(169, 84%, 61%) 100%);
-        }
-        .observability-icon {
-            background: linear-gradient(135deg, hsl(179, 78%, 78%) 0%, hsl(326, 78%, 85%) 100%);
-        }
-        .evaluation-icon {
-            background: linear-gradient(135deg, hsl(35, 77%, 62%) 0%, hsl(179, 78%, 78%) 100%);
-        }
-        .card {
-            background-color: var(--card);
-            color: var(--card-foreground);
-            border: 1px solid var(--border);
-            border-radius: calc(var(--radius) - 2px);
-            box-shadow: var(--shadow-sm);
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: calc(var(--radius) - 2px);
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
-            text-decoration: none;
-        }
-        .btn-primary {
-            background-color: hsl(var(--primary));
-            color: hsl(var(--primary-foreground));
-            padding: 0.5rem 1rem;
-        }
-        .btn-primary:hover {
-            background-color: hsl(var(--primary) / 0.9);
-        }
-        .btn-secondary {
-            background-color: hsl(var(--secondary));
-            color: hsl(var(--secondary-foreground));
-            padding: 0.5rem 1rem;
-        }
-        .btn-secondary:hover {
-            background-color: hsl(var(--secondary) / 0.8);
-        }
-        .btn-destructive {
-            background-color: hsl(var(--destructive));
-            color: hsl(var(--destructive-foreground));
-            padding: 0.5rem 1rem;
-        }
-        .btn-destructive:hover {
-            background-color: hsl(var(--destructive) / 0.9);
-        }
-        .btn-ghost {
-            background-color: transparent;
-            color: hsl(var(--foreground));
-            padding: 0.25rem 0.5rem;
-        }
-        .btn-ghost:hover {
-            background-color: hsl(var(--muted));
-        }
-        .input {
-            display: flex;
-            height: 2.5rem;
-            width: 100%;
-            border-radius: calc(var(--radius) - 2px);
-            border: 1px solid hsl(var(--border));
-            background-color: hsl(var(--background));
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
-            transition: var(--transition);
-        }
-        .input:focus {
-            outline: none;
-            border-color: hsl(var(--ring));
-            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
-        }
-        .textarea {
-            display: flex;
-            min-height: 5rem;
-            width: 100%;
-            border-radius: calc(var(--radius) - 2px);
-            border: 1px solid hsl(var(--border));
-            background-color: hsl(var(--background));
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
-            transition: var(--transition);
-            resize: vertical;
-        }
-        .textarea:focus {
-            outline: none;
-            border-color: hsl(var(--ring));
-            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
-        }
-        .select {
-            display: flex;
-            height: 2.5rem;
-            width: 100%;
-            border-radius: calc(var(--radius) - 2px);
-            border: 1px solid hsl(var(--border));
-            background-color: hsl(var(--background));
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
-            transition: var(--transition);
-        }
-        .select:focus {
-            outline: none;
-            border-color: hsl(var(--ring));
-            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
-        }
-        .label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            line-height: 1;
-        }
-        .text-muted-foreground {
-            color: hsl(var(--muted-foreground));
-        }
-        .text-destructive {
-            color: hsl(var(--destructive));
-        }
-        .bg-muted {
-            background-color: hsl(var(--muted));
-        }
-        .border {
-            border: 1px solid hsl(var(--border));
-        }
-        .hidden {
-            display: none;
-        }
-        .flex {
-            display: flex;
-        }
-        .grid {
-            display: grid;
-        }
-        .items-center {
-            align-items: center;
-        }
-        .justify-between {
-            justify-content: space-between;
-        }
-        .gap-2 {
-            gap: 0.5rem;
-        }
-        .gap-3 {
-            gap: 0.75rem;
-        }
-        .gap-4 {
-            gap: 1rem;
-        }
-        .gap-6 {
-            gap: 1.5rem;
-        }
-        .p-4 {
-            padding: 1rem;
-        }
-        .p-6 {
-            padding: 1.5rem;
-        }
-        .px-4 {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-        .py-2 {
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-        }
-        .mb-2 {
-            margin-bottom: 0.5rem;
-        }
-        .mb-3 {
-            margin-bottom: 0.75rem;
-        }
-        .mb-4 {
-            margin-bottom: 1rem;
-        }
-        .mb-6 {
-            margin-bottom: 1.5rem;
-        }
-        .mb-8 {
-            margin-bottom: 2rem;
-        }
-        .rounded {
-            border-radius: calc(var(--radius) - 2px);
-        }
-        .rounded-lg {
-            border-radius: var(--radius);
-        }
-        .font-semibold {
-            font-weight: 600;
-        }
-        .font-bold {
-            font-weight: 700;
-        }
-        .text-sm {
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-        }
-        .text-lg {
-            font-size: 1.125rem;
-            line-height: 1.75rem;
-        }
-        .text-xl {
-            font-size: 1.25rem;
-            line-height: 1.75rem;
-        }
-        .text-2xl {
-            font-size: 1.5rem;
-            line-height: 2rem;
-        }
-        .text-3xl {
-            font-size: 1.875rem;
-            line-height: 2.25rem;
-        }
-        .w-full {
-            width: 100%;
-        }
-        .h-auto {
-            height: auto;
-        }
-        .max-w-6xl {
-            max-width: 72rem;
-        }
-        .mx-auto {
-            margin-left: auto;
-            margin-right: auto;
-        }
+      [data-theme="dark"] {
+        --bg: #0f172a;
+        --fg: #f1f5f9;
+        --container-bg: #1e293b;
+        --primary: #187adc;
+        --primary-hover: #146bb8;
+        --primary-light: #0f2951;
+        --accent: #10b981;
+        --accent-hover: #059669;
+        --accent-light: #064e3b;
+        --danger: #ef4444;
+        --danger-hover: #dc2626;
+        --danger-light: #7f1d1d;
+        --warning: #f59e0b;
+        --warning-light: #78350f;
+        --border-color: #334155;
+        --border-hover: #475569;
+        --input-bg: #334155;
+        --input-fg: #f1f5f9;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3),
+          0 4px 6px -4px rgb(0 0 0 / 0.3);
+
+        /* Legacy variables for compatibility */
+        --background: #0f172a;
+        --foreground: #f1f5f9;
+        --card: #1e293b;
+        --card-foreground: #f1f5f9;
+        --border: #334155;
+        --muted: #1e293b;
+        --muted-foreground: #94a3b8;
+        --ring: #f1f5f9;
+      }
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        margin: 0;
+        padding: 24px;
+        transition: var(--transition);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+      .extension-tile {
+        transition: var(--transition);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+      .extension-tile:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+      .extension-tile::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        opacity: 0;
+        transition: var(--transition);
+      }
+      .extension-tile:hover::before {
+        opacity: 1;
+      }
+      .extension-card {
+        transition: var(--transition);
+        border-left: 4px solid var(--primary);
+      }
+      .extension-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      .a2a-icon {
+        background: linear-gradient(
+          135deg,
+          hsl(269, 100%, 78%) 0%,
+          hsl(213, 89%, 64%) 100%
+        );
+      }
+      .model-icon {
+        background: linear-gradient(
+          135deg,
+          hsl(338, 95%, 75%) 0%,
+          hsl(269, 100%, 78%) 100%
+        );
+      }
+      .mcp-icon {
+        background: linear-gradient(
+          135deg,
+          hsl(26, 91%, 65%) 0%,
+          hsl(338, 95%, 75%) 100%
+        );
+      }
+      .prompt-icon {
+        background: linear-gradient(
+          135deg,
+          hsl(133, 72%, 59%) 0%,
+          hsl(169, 84%, 61%) 100%
+        );
+      }
+      .observability-icon {
+        background: linear-gradient(
+          135deg,
+          hsl(179, 78%, 78%) 0%,
+          hsl(326, 78%, 85%) 100%
+        );
+      }
+      .evaluation-icon {
+        background: linear-gradient(
+          135deg,
+          hsl(35, 77%, 62%) 0%,
+          hsl(179, 78%, 78%) 100%
+        );
+      }
+      .card {
+        background-color: var(--container-bg);
+        color: var(--fg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+      }
+
+      button {
+        margin-top: 24px;
+        padding: 12px 24px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+      }
+
+      button:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius);
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: var(--transition);
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        padding: 12px 24px;
+        background: var(--primary);
+        color: white;
+        box-shadow: var(--shadow-sm);
+        margin-top: 24px;
+      }
+      .btn:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+      .btn-secondary {
+        background: var(--border-color);
+        color: var(--fg);
+      }
+      .btn-secondary:hover {
+        background: var(--border-hover);
+      }
+      .btn-destructive {
+        background: var(--danger);
+        color: white;
+      }
+      .btn-destructive:hover {
+        background: var(--danger-hover);
+      }
+      .btn-ghost {
+        background-color: transparent;
+        color: var(--fg);
+        padding: 6px 12px;
+      }
+      .btn-ghost:hover {
+        background-color: var(--border-color);
+      }
+
+      \ .btn-danger {
+        background: var(--danger) !important;
+        color: white !important;
+      }
+      .btn-danger:hover {
+        background: var(--danger-hover) !important;
+      }
+      .btn-small {
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
+        margin-top: 8px !important;
+      }
+      .btn-full {
+        width: 100% !important;
+      }
+
+      label {
+        font-weight: 600;
+        display: block;
+        margin-top: 20px;
+        margin-bottom: 8px;
+        color: var(--fg);
+        font-size: 0.875rem;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 16px;
+        margin-top: 4px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius);
+        background: var(--input-bg);
+        color: var(--input-fg);
+        font-size: 0.875rem;
+        transition: var(--transition);
+        box-sizing: border-box;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      input:hover,
+      select:hover,
+      textarea:hover {
+        border-color: var(--border-hover);
+      }
+
+      /* Legacy input classes for compatibility */
+      .input {
+        display: flex;
+        height: 2.5rem;
+        width: 100%;
+        border-radius: var(--radius);
+        border: 2px solid var(--border-color);
+        background-color: var(--input-bg);
+        color: var(--input-fg);
+        padding: 12px 16px;
+        font-size: 0.875rem;
+        transition: var(--transition);
+      }
+      .input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+      .textarea {
+        display: flex;
+        min-height: 5rem;
+        width: 100%;
+        border-radius: var(--radius);
+        border: 2px solid var(--border-color);
+        background-color: var(--input-bg);
+        color: var(--input-fg);
+        padding: 12px 16px;
+        font-size: 0.875rem;
+        transition: var(--transition);
+        resize: vertical;
+      }
+      .textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+      .select {
+        display: flex;
+        height: 2.5rem;
+        width: 100%;
+        border-radius: var(--radius);
+        border: 2px solid var(--border-color);
+        background-color: var(--input-bg);
+        color: var(--input-fg);
+        padding: 12px 16px;
+        font-size: 0.875rem;
+        transition: var(--transition);
+      }
+      .select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+      .label {
+        font-weight: 600;
+        display: block;
+        margin-top: 20px;
+        margin-bottom: 8px;
+        color: var(--fg);
+        font-size: 0.875rem;
+      }
+      .text-muted-foreground {
+        color: var(--fg);
+        opacity: 0.7;
+      }
+      .text-destructive {
+        color: var(--danger);
+      }
+      .bg-muted {
+        background-color: var(--border-color);
+      }
+      .border {
+        border: 1px solid var(--border-color);
+      }
+      .hidden {
+        display: none;
+      }
+      .flex {
+        display: flex;
+      }
+      .grid {
+        display: grid;
+      }
+      .items-center {
+        align-items: center;
+      }
+      .justify-between {
+        justify-content: space-between;
+      }
+      .gap-2 {
+        gap: 0.5rem;
+      }
+      .gap-3 {
+        gap: 0.75rem;
+      }
+      .gap-4 {
+        gap: 1rem;
+      }
+      .gap-6 {
+        gap: 1.5rem;
+      }
+      .p-4 {
+        padding: 1rem;
+      }
+      .p-6 {
+        padding: 1.5rem;
+      }
+      .px-4 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .py-2 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+      .mb-2 {
+        margin-bottom: 0.5rem;
+      }
+      .mb-3 {
+        margin-bottom: 0.75rem;
+      }
+      .mb-4 {
+        margin-bottom: 1rem;
+      }
+      .mb-6 {
+        margin-bottom: 1.5rem;
+      }
+      .mb-8 {
+        margin-bottom: 2rem;
+      }
+      .rounded {
+        border-radius: calc(var(--radius) - 2px);
+      }
+      .rounded-lg {
+        border-radius: var(--radius);
+      }
+      .font-semibold {
+        font-weight: 600;
+      }
+      .font-bold {
+        font-weight: 700;
+      }
+      .text-sm {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+      }
+      .text-lg {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+      }
+      .text-xl {
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+      }
+      .text-2xl {
+        font-size: 1.5rem;
+        line-height: 2rem;
+      }
+      .text-3xl {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+      }
+      .w-full {
+        width: 100%;
+      }
+      .h-auto {
+        height: auto;
+      }
+      .max-w-6xl {
+        max-width: 72rem;
+      }
+      .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .container {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      /* Dynamic list and skills styling */
+      .dynamic-list-container {
+        width: 100%;
+      }
+
+      .dynamic-list-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 16px;
+        margin-bottom: 8px;
+        align-items: center;
+      }
+
+      .skill-container {
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        margin-bottom: 20px;
+        background: var(--container-bg);
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .skill-container:hover {
+        border-color: var(--border-hover);
+        box-shadow: var(--shadow);
+      }
+
+      /* JSON Syntax Highlighting */
+      pre.json-output {
+        background: #1e1e1e;
+        color: #f8f8f2;
+        padding: 16px;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-size: 13px;
+        white-space: pre-wrap;
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+      }
+
+      .json-string {
+        color: #c3e88d;
+      }
+
+      .json-number {
+        color: #82aaff;
+      }
+
+      .json-boolean {
+        color: #ffcb6b;
+      }
+
+      .json-null {
+        color: #f78c6c;
+      }
+
+      .json-key {
+        color: #c792ea;
+      }
+
+      /* A2A Card Loader Styles */
+      .url-input-container {
+        margin-bottom: 24px;
+      }
+
+      .url-input {
+        width: 100%;
+        padding: 16px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius);
+        font-size: 0.875rem;
+        min-height: 120px;
+        max-height: 400px;
+        box-sizing: border-box;
+        resize: vertical;
+        overflow-y: auto;
+        font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+        line-height: 1.6;
+        transition: var(--transition);
+        white-space: pre;
+        background-color: var(--input-bg);
+        color: var(--input-fg);
+      }
+
+      .url-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      .url-input:hover {
+        border-color: var(--border-hover);
+      }
+
+      .example-link {
+        margin-bottom: 12px;
+        font-size: 0.875rem;
+        padding: 12px;
+        background: var(--primary-light);
+        border-radius: var(--radius);
+        border: 1px solid var(--border-color);
+      }
+
+      .example-link a {
+        word-break: break-all;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .example-link a:hover {
+        text-decoration: underline;
+      }
+
+      .url-button {
+        padding: 12px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+        height: 48px;
+        min-width: 160px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        box-shadow: var(--shadow-sm);
+        margin-top: 12px;
+      }
+
+      .url-button:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+
+      .url-button:disabled {
+        background: var(--border-color);
+        color: var(--fg);
+        cursor: not-allowed;
+        opacity: 0.6;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .url-button-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+
+      .loading-spinner {
+        border: 2px solid transparent;
+        border-top: 2px solid currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .text-primary {
+        color: var(--primary);
+      }
+
+      /* Grid utilities */
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .space-y-2 > * + * {
+        margin-top: 0.5rem;
+      }
+
+      .space-y-3 > * + * {
+        margin-top: 0.75rem;
+      }
+
+      .space-y-4 > * + * {
+        margin-top: 1rem;
+      }
+
+      .flex-1 {
+        flex: 1 1 0%;
+      }
+
+      *:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      .text-muted-foreground {
+        color: var(--fg);
+        opacity: 0.7;
+      }
+      .text-destructive {
+        color: var(--danger);
+      }
+      .bg-muted {
+        background-color: var(--border-color);
+      }
+      .border {
+        border: 1px solid var(--border-color);
+      }
+
+      /* URL input specific styling */
+      .url-input {
+        width: 100%;
+        padding: 16px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius);
+        font-size: 0.875rem;
+        min-height: 120px;
+        max-height: 400px;
+        box-sizing: border-box;
+        resize: vertical;
+        overflow-y: auto;
+        font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+        line-height: 1.6;
+        transition: var(--transition);
+        white-space: pre;
+        background-color: var(--input-bg);
+        color: var(--input-fg);
+      }
+
+      .url-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      .url-input:hover {
+        border-color: var(--border-hover);
+      }
+
+      /* Example link styling */
+      .example-link {
+        margin-bottom: 12px;
+        font-size: 0.875rem;
+        padding: 12px;
+        background: var(--primary-light);
+        border-radius: var(--radius);
+        border: 1px solid var(--border-color);
+      }
+
+      .example-link a {
+        word-break: break-all;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .example-link a:hover {
+        text-decoration: underline;
+      }
+
+      /* Loading spinner */
+      .loading-spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left: 4px solid var(--primary);
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        margin-right: 10px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Error messages */
+      .error-message {
+        background: var(--danger-light);
+        color: var(--danger);
+        padding: 16px;
+        border-radius: var(--radius);
+        margin-bottom: 20px;
+        border-left: 4px solid var(--danger);
+        font-weight: 500;
+        box-shadow: var(--shadow-sm);
+      }
+      @media (min-width: 640px) {
         .container {
-            width: 100%;
-            margin-left: auto;
-            margin-right: auto;
-            padding-left: 1rem;
-            padding-right: 1rem;
+          max-width: 640px;
         }
-        @media (min-width: 640px) {
-            .container {
-                max-width: 640px;
-            }
-            .grid-cols-2 {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
+        .grid-cols-2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
-        @media (min-width: 768px) {
-            .container {
-                max-width: 768px;
-            }
-            .md\\:grid-cols-3 {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
+      }
+      @media (min-width: 768px) {
+        .container {
+          max-width: 768px;
         }
-        @media (min-width: 1024px) {
-            .container {
-                max-width: 1024px;
-            }
-            .lg\\:grid-cols-4 {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-            }
+        .md\\:grid-cols-3 {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
         }
-        @media (min-width: 1280px) {
-            .container {
-                max-width: 1280px;
-            }
-            .xl\\:grid-cols-5 {
-                grid-template-columns: repeat(5, minmax(0, 1fr));
-            }
+      }
+      @media (min-width: 1024px) {
+        .container {
+          max-width: 1024px;
         }
-        .space-y-4 > * + * {
-            margin-top: 1rem;
+        .lg\\:grid-cols-4 {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
         }
-        .max-h-80 {
-            max-height: 20rem;
+      }
+      @media (min-width: 1280px) {
+        .container {
+          max-width: 1280px;
         }
-        .max-h-96 {
-            max-height: 24rem;
+        .xl\\:grid-cols-5 {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
         }
-        .overflow-auto {
-            overflow: auto;
-        }
-        .fixed {
-            position: fixed;
-        }
-        .inset-0 {
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-        }
-        .z-50 {
-            z-index: 50;
-        }
-        .bg-black {
-            background-color: rgb(0 0 0);
-        }
-        .bg-opacity-50 {
-            background-color: rgb(0 0 0 / 0.5);
-        }
-        .ml-1 {
-            margin-left: 0.25rem;
-        }
-        .mt-1 {
-            margin-top: 0.25rem;
-        }
-        .block {
-            display: block;
-        }
-        .theme-toggle {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 100;
-        }
-        .mx-auto {
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-xs {
-            font-size: 0.75rem;
-            line-height: 1rem;
-        }
-        .leading-tight {
-            line-height: 1.25;
-        }
+      }
+      .space-y-4 > * + * {
+        margin-top: 1rem;
+      }
+      .max-h-80 {
+        max-height: 20rem;
+      }
+      .max-h-96 {
+        max-height: 24rem;
+      }
+      .overflow-auto {
+        overflow: auto;
+      }
+      .fixed {
+        position: fixed;
+      }
+      .inset-0 {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      .z-50 {
+        z-index: 50;
+      }
+      .bg-black {
+        background-color: rgb(0 0 0);
+      }
+      .bg-opacity-50 {
+        background-color: rgb(0 0 0 / 0.5);
+      }
+      .ml-1 {
+        margin-left: 0.25rem;
+      }
+      .mt-1 {
+        margin-top: 0.25rem;
+      }
+      .block {
+        display: block;
+      }
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 100;
+      }
+      .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .text-xs {
+        font-size: 0.75rem;
+        line-height: 1rem;
+      }
+      .leading-tight {
+        line-height: 1.25;
+      }
+      .grid-cols-6 {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      @media (max-width: 768px) {
         .grid-cols-6 {
-            grid-template-columns: repeat(6, minmax(0, 1fr));
+          grid-template-columns: repeat(3, minmax(0, 1fr));
         }
-        @media (max-width: 768px) {
-            .grid-cols-6 {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
+      }
+      @media (max-width: 480px) {
+        .grid-cols-6 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
-        @media (max-width: 480px) {
-            .grid-cols-6 {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="root"></div>
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        // Extension configurations
-        const extensionConfigs = {
-            a2a: {
-                name: 'A2A Card',
-                icon: '🔗',
-                iconClass: 'a2a-icon',
-                description: 'Agent-to-Agent communication protocol card',
-                schemaName: 'schema.oasf.agntcy.org/features/a2a',
-                fields: [
-                    { key: 'card_url', label: 'A2A Card URL', type: 'url', required: true, placeholder: 'https://example.com/a2a-card.json' },
-                    { key: 'agent_id', label: 'Agent ID', type: 'text', required: true, placeholder: 'unique-agent-identifier' },
-                    { key: 'version', label: 'Version', type: 'text', required: true, placeholder: '1.0.0' },
-                    { key: 'capabilities', label: 'Capabilities', type: 'textarea', placeholder: 'List agent capabilities...' }
-                ]
+      const { useState, useEffect, useRef } = React;
+      // Extension configurations
+      const extensionConfigs = {
+        a2a: {
+          name: "A2A Card",
+          icon: "🔗",
+          iconClass: "a2a-icon",
+          description: "Agent-to-Agent communication protocol card",
+          schemaName: "schema.oasf.agntcy.org/features/a2a",
+          fields: [
+            {
+              key: "a2a-card-loader",
+              label: "",
+              type: "a2a-card-loader",
+              required: false,
             },
-            model: {
-                name: 'LLM Model',
-                icon: '🧠',
-                iconClass: 'model-icon',
-                description: 'Large Language Model configuration',
-                schemaName: 'schema.oasf.agntcy.org/features/model',
-                fields: [
-                    { key: 'provider', label: 'Provider', type: 'select', options: ['OpenAI', 'Anthropic', 'Google', 'Azure', 'AWS', 'Other'], required: true },
-                    { key: 'model_name', label: 'Model Name', type: 'text', required: true, placeholder: 'gpt-4' },
-                    { key: 'api_base', label: 'API Base URL', type: 'url', required: true, placeholder: 'https://api.openai.com/v1' },
-                    { key: 'api_key', label: 'API Key', type: 'password', required: true, placeholder: 'sk-...' },
-                    { key: 'max_tokens', label: 'Max Tokens', type: 'number', placeholder: '4096' },
-                    { key: 'temperature', label: 'Temperature', type: 'number', step: '0.1', min: '0', max: '2', placeholder: '0.7' }
-                ]
+            {
+              key: "agentDirOrgRepo",
+              label: "Agent Directory Org Repo Name",
+              type: "text",
+              required: true,
+              placeholder: "e.g. cnoe-io/ai-platform-engineer",
             },
-            mcp: {
-                name: 'MCP',
-                icon: '🔌',
-                iconClass: 'mcp-icon',
-                description: 'Model Context Protocol server configuration',
-                schemaName: 'schema.oasf.agntcy.org/features/mcp',
-                fields: [
-                    { key: 'server_name', label: 'Server Name', type: 'text', required: true, placeholder: 'my-mcp-server' },
-                    { key: 'server_type', label: 'Server Type', type: 'select', options: ['http', 'stdio', 'sse'], required: true },
-                    { key: 'command', label: 'Command', type: 'text', placeholder: 'python server.py' },
-                    { key: 'url', label: 'Server URL', type: 'url', placeholder: 'http://localhost:3000' },
-                    { key: 'env_vars', label: 'Environment Variables', type: 'keyvalue', placeholder: 'KEY=value' }
-                ]
+            {
+              key: "name",
+              label: "A2A Agent Name",
+              type: "text",
+              required: true,
             },
-            prompt: {
-                name: 'LLM Prompt',
-                icon: '💬',
-                iconClass: 'prompt-icon',
-                description: 'Predefined prompts for agent interactions',
-                schemaName: 'schema.oasf.agntcy.org/features/prompt',
-                fields: [
-                    { key: 'prompt_name', label: 'Prompt Name', type: 'text', required: true, placeholder: 'system_prompt' },
-                    { key: 'description', label: 'Description', type: 'text', required: true, placeholder: 'Main system prompt for the agent' },
-                    { key: 'prompt_text', label: 'Prompt Text', type: 'textarea', required: true, placeholder: 'You are a helpful assistant...' },
-                    { key: 'variables', label: 'Variables', type: 'keyvalue', placeholder: 'variable_name=default_value' }
-                ]
+            {
+              key: "description",
+              label: "Description",
+              type: "text",
+              required: true,
             },
-            observability: {
-                name: 'Observability',
-                icon: '📊',
-                iconClass: 'observability-icon',
-                description: 'Monitoring and observability configuration',
-                schemaName: 'schema.oasf.agntcy.org/features/observability',
-                fields: [
-                    { key: 'protocols', label: 'Communication Protocols', type: 'multiselect', options: ['Otel_OTP_v1', 'HTTP_1.1', 'gRPC', 'SLIM'], required: true },
-                    { key: 'export_format', label: 'Export Format', type: 'select', options: ['json', 'xml', 'csv'], required: true },
-                    { key: 'data_platforms', label: 'Data Platform Integrations', type: 'tags', placeholder: 'prometheus, grafana, datadog' },
-                    { key: 'schema_name', label: 'Data Schema Name', type: 'text', placeholder: 'agntcy-observability-v1' },
-                    { key: 'schema_url', label: 'Data Schema URL', type: 'url', placeholder: 'https://schema.example.com/observability/v1' }
-                ]
+            {
+              key: "version",
+              label: "Version",
+              type: "text",
+              required: true,
             },
-            evaluation: {
-                name: 'Evaluation',
-                icon: '🎯',
-                iconClass: 'evaluation-icon',
-                description: 'Agent evaluation and testing framework',
-                schemaName: 'schema.oasf.agntcy.org/features/evaluation',
-                fields: [
-                    { key: 'evaluation_type', label: 'Evaluation Type', type: 'select', options: ['performance', 'accuracy', 'safety', 'custom'], required: true },
-                    { key: 'metrics', label: 'Metrics to Track', type: 'multiselect', options: ['response_time', 'accuracy_score', 'hallucination_rate', 'user_satisfaction'], required: true },
-                    { key: 'test_dataset', label: 'Test Dataset URL', type: 'url', placeholder: 'https://example.com/test-data.json' },
-                    { key: 'evaluation_frequency', label: 'Evaluation Frequency', type: 'select', options: ['on_demand', 'hourly', 'daily', 'weekly'], required: true },
-                    { key: 'thresholds', label: 'Performance Thresholds', type: 'keyvalue', placeholder: 'accuracy=0.95' }
-                ]
-            }
-        };
-        // Theme Toggle Component
-        function ThemeToggle() {
-            const [isDark, setIsDark] = useState(() => {
-                if (typeof window !== 'undefined') {
-                    return localStorage.getItem('theme') === 'dark' ||
-                           (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                }
-                return false;
-            });
-            useEffect(() => {
-                const root = document.documentElement;
-                if (isDark) {
-                    root.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    root.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                }
-            }, [isDark]);
+            {
+              key: "authors",
+              label: "Authors",
+              type: "dynamic-list",
+              required: true,
+              placeholder: "Enter author name and press Enter to add another",
+            },
+            // A2A specific fields
+            {
+              key: "capabilities_pushNotifications",
+              label: "Push Notifications",
+              type: "checkbox",
+              required: false,
+            },
+            {
+              key: "capabilities_streaming",
+              label: "Streaming",
+              type: "checkbox",
+              required: false,
+            },
+            {
+              key: "defaultInputModes",
+              label: "Default Input Modes",
+              type: "dynamic-list",
+              required: false,
+            },
+            {
+              key: "defaultOutputModes",
+              label: "Default Output Modes",
+              type: "dynamic-list",
+              required: false,
+            },
+            {
+              key: "protocolVersion",
+              label: "Protocol Version",
+              type: "text",
+              required: false,
+            },
+            {
+              key: "url",
+              label: "URL",
+              type: "text",
+              required: false,
+            },
+            {
+              key: "extension-skills-header",
+              label: "",
+              type: "h4-header",
+              content: "A2A Skills",
+              required: false,
+            },
+            {
+              key: "extension-skills",
+              label: "",
+              type: "extension-skills-list",
+              required: false,
+            },
+            {
+              key: "oasf-skills-header",
+              label: "",
+              type: "h4-header",
+              content: "OASF Skill List",
+              required: false,
+            },
+            {
+              key: "oasf-skills",
+              label: "",
+              type: "oasf-skills-list",
+              required: false,
+            },
+            {
+              key: "locators-header",
+              label: "",
+              type: "h4-header",
+              content: "OASF Locators",
+              required: false,
+            },
+            {
+              key: "locators",
+              label: "",
+              type: "locators-list",
+              required: false,
+            },
+          ],
+        },
+        model: {
+          name: "LLM Model",
+          icon: "🧠",
+          iconClass: "model-icon",
+          description: "Large Language Model configuration",
+          schemaName: "schema.oasf.agntcy.org/features/model",
+          fields: [
+            {
+              key: "provider",
+              label: "Provider",
+              type: "select",
+              options: [
+                "OpenAI",
+                "Anthropic",
+                "Google",
+                "Azure",
+                "AWS",
+                "Other",
+              ],
+              required: true,
+            },
+            {
+              key: "model_name",
+              label: "Model Name",
+              type: "text",
+              required: true,
+              placeholder: "gpt-4",
+            },
+            {
+              key: "api_base",
+              label: "API Base URL",
+              type: "url",
+              required: true,
+              placeholder: "https://api.openai.com/v1",
+            },
+            {
+              key: "api_key",
+              label: "API Key",
+              type: "password",
+              required: true,
+              placeholder: "sk-...",
+            },
+            {
+              key: "max_tokens",
+              label: "Max Tokens",
+              type: "number",
+              placeholder: "4096",
+            },
+            {
+              key: "temperature",
+              label: "Temperature",
+              type: "number",
+              step: "0.1",
+              min: "0",
+              max: "2",
+              placeholder: "0.7",
+            },
+          ],
+        },
+        mcp: {
+          name: "MCP",
+          icon: "🔌",
+          iconClass: "mcp-icon",
+          description: "Model Context Protocol server configuration",
+          schemaName: "schema.oasf.agntcy.org/features/mcp",
+          fields: [
+            {
+              key: "server_name",
+              label: "Server Name",
+              type: "text",
+              required: true,
+              placeholder: "my-mcp-server",
+            },
+            {
+              key: "server_type",
+              label: "Server Type",
+              type: "select",
+              options: ["http", "stdio", "sse"],
+              required: true,
+            },
+            {
+              key: "command",
+              label: "Command",
+              type: "text",
+              placeholder: "python server.py",
+            },
+            {
+              key: "url",
+              label: "Server URL",
+              type: "url",
+              placeholder: "http://localhost:3000",
+            },
+            {
+              key: "env_vars",
+              label: "Environment Variables",
+              type: "keyvalue",
+              placeholder: "KEY=value",
+            },
+          ],
+        },
+        prompt: {
+          name: "LLM Prompt",
+          icon: "💬",
+          iconClass: "prompt-icon",
+          description: "Predefined prompts for agent interactions",
+          schemaName: "schema.oasf.agntcy.org/features/prompt",
+          fields: [
+            {
+              key: "prompt_name",
+              label: "Prompt Name",
+              type: "text",
+              required: true,
+              placeholder: "system_prompt",
+            },
+            {
+              key: "description",
+              label: "Description",
+              type: "text",
+              required: true,
+              placeholder: "Main system prompt for the agent",
+            },
+            {
+              key: "prompt_text",
+              label: "Prompt Text",
+              type: "textarea",
+              required: true,
+              placeholder: "You are a helpful assistant...",
+            },
+            {
+              key: "variables",
+              label: "Variables",
+              type: "keyvalue",
+              placeholder: "variable_name=default_value",
+            },
+          ],
+        },
+        observability: {
+          name: "Observability",
+          icon: "📊",
+          iconClass: "observability-icon",
+          description: "Monitoring and observability configuration",
+          schemaName: "schema.oasf.agntcy.org/features/observability",
+          fields: [
+            {
+              key: "protocols",
+              label: "Communication Protocols",
+              type: "multiselect",
+              options: ["Otel_OTP_v1", "HTTP_1.1", "gRPC", "SLIM"],
+              required: true,
+            },
+            {
+              key: "export_format",
+              label: "Export Format",
+              type: "select",
+              options: ["json", "xml", "csv"],
+              required: true,
+            },
+            {
+              key: "data_platforms",
+              label: "Data Platform Integrations",
+              type: "tags",
+              placeholder: "prometheus, grafana, datadog",
+            },
+            {
+              key: "schema_name",
+              label: "Data Schema Name",
+              type: "text",
+              placeholder: "agntcy-observability-v1",
+            },
+            {
+              key: "schema_url",
+              label: "Data Schema URL",
+              type: "url",
+              placeholder: "https://schema.example.com/observability/v1",
+            },
+          ],
+        },
+        evaluation: {
+          name: "Evaluation",
+          icon: "🎯",
+          iconClass: "evaluation-icon",
+          description: "Agent evaluation and testing framework",
+          schemaName: "schema.oasf.agntcy.org/features/evaluation",
+          fields: [
+            {
+              key: "evaluation_type",
+              label: "Evaluation Type",
+              type: "select",
+              options: ["performance", "accuracy", "safety", "custom"],
+              required: true,
+            },
+            {
+              key: "metrics",
+              label: "Metrics to Track",
+              type: "multiselect",
+              options: [
+                "response_time",
+                "accuracy_score",
+                "hallucination_rate",
+                "user_satisfaction",
+              ],
+              required: true,
+            },
+            {
+              key: "test_dataset",
+              label: "Test Dataset URL",
+              type: "url",
+              placeholder: "https://example.com/test-data.json",
+            },
+            {
+              key: "evaluation_frequency",
+              label: "Evaluation Frequency",
+              type: "select",
+              options: ["on_demand", "hourly", "daily", "weekly"],
+              required: true,
+            },
+            {
+              key: "thresholds",
+              label: "Performance Thresholds",
+              type: "keyvalue",
+              placeholder: "accuracy=0.95",
+            },
+          ],
+        },
+      };
+      // Theme Toggle Component
+      function ThemeToggle() {
+        const [isDark, setIsDark] = useState(() => {
+          if (typeof window !== "undefined") {
             return (
-                <button
-                    className="theme-toggle btn btn-ghost"
-                    onClick={() => setIsDark(!isDark)}
-                    style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '8px',
-                        fontSize: '18px'
-                    }}
+              localStorage.getItem("theme") === "dark" ||
+              (!localStorage.getItem("theme") &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches)
+            );
+          }
+          return false;
+        });
+        useEffect(() => {
+          const body = document.body;
+          if (isDark) {
+            body.setAttribute("data-theme", "dark");
+            localStorage.setItem("theme", "dark");
+          } else {
+            body.setAttribute("data-theme", "light");
+            localStorage.setItem("theme", "light");
+          }
+        }, [isDark]);
+        return (
+          <button
+            className="theme-toggle btn btn-ghost"
+            onClick={() => setIsDark(!isDark)}
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "8px",
+              fontSize: "18px",
+            }}
+          >
+            {isDark ? "☀️" : "🌙"}
+          </button>
+        );
+      }
+      // Extension Gallery Component
+      function ExtensionGallery({ extensions, onAddExtension }) {
+        return (
+          <div className="grid grid-cols-6 gap-2">
+            {extensions.map((extension) => (
+              <div
+                key={extension.id}
+                className="card extension-tile p-2 cursor-pointer hover:shadow-lg transition-all duration-200 text-center"
+                onClick={() => onAddExtension(extension.id)}
+                style={{ minHeight: "80px" }}
+              >
+                <div
+                  className={`extension-icon ${extension.iconClass} text-white mx-auto`}
                 >
-                    {isDark ? '☀️' : '🌙'}
+                  {extension.icon}
+                </div>
+                <h3 className="font-semibold text-xs leading-tight">
+                  {extension.name}
+                </h3>
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      // Dynamic List Field Component
+      function DynamicListField({ value, onChange, placeholder }) {
+        const items = Array.isArray(value) ? value : [""];
+
+        const handleItemChange = (index, newValue) => {
+          const newItems = [...items];
+          newItems[index] = newValue;
+          onChange(newItems);
+        };
+
+        const addItem = () => {
+          onChange([...items, ""]);
+        };
+
+        const removeItem = (index) => {
+          if (items.length > 1) {
+            const newItems = items.filter((_, i) => i !== index);
+            onChange(newItems);
+          }
+        };
+
+        return (
+          <div className="space-y-2">
+            {items.map((item, index) => (
+              <div key={index} className="flex gap-2 items-center">
+                <input
+                  className="input flex-1"
+                  type="text"
+                  value={item}
+                  onChange={(e) => handleItemChange(index, e.target.value)}
+                  placeholder={placeholder}
+                />
+                <button
+                  type="button"
+                  className="btn-danger btn-small"
+                  onClick={() => removeItem(index)}
+                  disabled={items.length <= 1}
+                >
+                  ×
                 </button>
-            );
-        }
-        // Extension Gallery Component
-        function ExtensionGallery({ extensions, onAddExtension }) {
-            return (
-                <div className="grid grid-cols-6 gap-2">
-                    {extensions.map((extension) => (
-                        <div
-                            key={extension.id}
-                            className="card extension-tile p-2 cursor-pointer hover:shadow-lg transition-all duration-200 text-center"
-                            onClick={() => onAddExtension(extension.id)}
-                            style={{ minHeight: '80px' }}
-                        >
-                            <div className={`extension-icon ${extension.iconClass} text-white mx-auto`}>
-                                {extension.icon}
-                            </div>
-                            <h3 className="font-semibold text-xs leading-tight">{extension.name}</h3>
-                        </div>
-                    ))}
-                </div>
-            );
-        }
-        // Form Field Component
-        function FormField({ field, value, onChange, error }) {
-            const handleChange = (e) => {
-                onChange(field.key, e.target.value);
-            };
-            const handleKeyValueChange = (e) => {
-                const pairs = e.target.value.split('\n').filter(line => line.trim());
-                const obj = {};
-                pairs.forEach(pair => {
-                    const [key, ...valueParts] = pair.split('=');
-                    if (key && valueParts.length > 0) {
-                        obj[key.trim()] = valueParts.join('=').trim();
-                    }
-                });
-                onChange(field.key, obj);
-            };
-            const handleTagsChange = (e) => {
-                const tags = e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag);
-                onChange(field.key, tags);
-            };
-            const handleMultiSelectChange = (e) => {
-                const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
-                onChange(field.key, selectedOptions);
-            };
-            const renderInput = () => {
-                switch (field.type) {
-                    case 'textarea':
-                        return (
-                            <textarea
-                                className="textarea"
-                                value={value || ''}
-                                onChange={handleChange}
-                                placeholder={field.placeholder}
-                                required={field.required}
-                            />
-                        );
-                    case 'select':
-                        return (
-                            <select
-                                className="select"
-                                value={value || ''}
-                                onChange={handleChange}
-                                required={field.required}
-                            >
-                                <option value="">Select an option</option>
-                                {field.options?.map(option => (
-                                    <option key={option} value={option}>{option}</option>
-                                ))}
-                            </select>
-                        );
-                    case 'multiselect':
-                        return (
-                            <select
-                                className="select"
-                                multiple
-                                value={value || []}
-                                onChange={handleMultiSelectChange}
-                                required={field.required}
-                                style={{ height: '120px' }}
-                            >
-                                {field.options?.map(option => (
-                                    <option key={option} value={option}>{option}</option>
-                                ))}
-                            </select>
-                        );
-                    case 'keyvalue':
-                        const kvValue = typeof value === 'object' && value !== null
-                            ? Object.entries(value).map(([k, v]) => `${k}=${v}`).join('\n')
-                            : '';
-                        return (
-                            <textarea
-                                className="textarea"
-                                value={kvValue}
-                                onChange={handleKeyValueChange}
-                                placeholder={field.placeholder}
-                            />
-                        );
-                    case 'tags':
-                        const tagsValue = Array.isArray(value) ? value.join(', ') : '';
-                        return (
-                            <input
-                                className="input"
-                                type="text"
-                                value={tagsValue}
-                                onChange={handleTagsChange}
-                                placeholder={field.placeholder}
-                            />
-                        );
-                    case 'number':
-                        return (
-                            <input
-                                className="input"
-                                type="number"
-                                value={value || ''}
-                                onChange={handleChange}
-                                placeholder={field.placeholder}
-                                min={field.min}
-                                max={field.max}
-                                step={field.step}
-                                required={field.required}
-                            />
-                        );
-                    case 'password':
-                        return (
-                            <input
-                                className="input"
-                                type="password"
-                                value={value || ''}
-                                onChange={handleChange}
-                                placeholder={field.placeholder}
-                                required={field.required}
-                            />
-                        );
-                    case 'url':
-                        return (
-                            <input
-                                className="input"
-                                type="url"
-                                value={value || ''}
-                                onChange={handleChange}
-                                placeholder={field.placeholder}
-                                required={field.required}
-                            />
-                        );
-                    default:
-                        return (
-                            <input
-                                className="input"
-                                type="text"
-                                value={value || ''}
-                                onChange={handleChange}
-                                placeholder={field.placeholder}
-                                required={field.required}
-                            />
-                        );
-                }
-            };
-            return (
-                <div className="mb-4">
-                    <label className="label mb-2 block">
-                        {field.label}
-                        {field.required && <span className="text-destructive ml-1">*</span>}
-                    </label>
-                    {renderInput()}
-                    {error && <p className="text-destructive text-sm mt-1">{error}</p>}
-                </div>
-            );
-        }
-        // Extension Form Component
-        function ExtensionForm({ config, data, onChange }) {
-            const [formData, setFormData] = useState(data || {});
-            const [errors, setErrors] = useState({});
-            const handleFieldChange = (fieldKey, value) => {
-                const newData = { ...formData, [fieldKey]: value };
-                setFormData(newData);
-                onChange(newData);
+              </div>
+            ))}
+            <button
+              type="button"
+              className="btn btn-secondary btn-small"
+              onClick={addItem}
+            >
+              + Add Item
+            </button>
+          </div>
+        );
+      }
 
-                // Clear error when field is updated
-                if (errors[fieldKey]) {
-                    setErrors(prev => ({ ...prev, [fieldKey]: null }));
-                }
-            };
-            const validateForm = () => {
-                const newErrors = {};
-                config.fields.forEach(field => {
-                    if (field.required && (!formData[field.key] || formData[field.key] === '')) {
-                        newErrors[field.key] = `${field.label} is required`;
-                    }
-                });
-                setErrors(newErrors);
-                return Object.keys(newErrors).length === 0;
-            };
-            useEffect(() => {
-                setFormData(data || {});
-            }, [data]);
-            return (
-                <div className="space-y-4">
-                    {config.fields.map(field => (
-                        <FormField
-                            key={field.key}
-                            field={field}
-                            value={formData[field.key]}
-                            onChange={handleFieldChange}
-                            error={errors[field.key]}
-                        />
-                    ))}
-                </div>
-            );
-        }
-        // Extension Card Component
-        function ExtensionCard({ extension, onUpdate, onRemove, onDuplicate, onToggle }) {
-            const config = extensionConfigs[extension.extensionType];
-            const isCollapsed = extension.collapsed === "true";
-            if (!config) return null;
-            return (
-                <div className={`card extension-card ${isCollapsed ? 'collapsed' : 'expanded'}`}>
-                    <div className="p-6">
-                        {/* Header */}
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                                <div className={`extension-icon ${config.iconClass} text-white`} style={{ width: '32px', height: '32px', fontSize: '18px' }}>
-                                    {config.icon}
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold text-lg">{extension.name}</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        Instance #{extension.id.split('_')[1] || '1'}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <button
-                                    className="btn btn-ghost"
-                                    onClick={() => onToggle(extension.id)}
-                                >
-                                    {isCollapsed ? '▼' : '▲'}
-                                </button>
-                                <button
-                                    className="btn btn-ghost"
-                                    onClick={() => onDuplicate(extension.id)}
-                                >
-                                    📋
-                                </button>
-                                <button
-                                    className="btn btn-ghost"
-                                    onClick={() => onRemove(extension.id)}
-                                >
-                                    🗑️
-                                </button>
-                            </div>
-                        </div>
+      // Extension Skills List Component
+      function ExtensionSkillsList({ value, onChange }) {
+        const skills = Array.isArray(value)
+          ? value
+          : [{ id: "", name: "", description: "", examples: [""], tags: [""] }];
 
-                        {/* Form */}
-                        {!isCollapsed && (
-                            <ExtensionForm
-                                config={config}
-                                data={extension.data}
-                                onChange={(data) => onUpdate(extension.id, data)}
-                            />
-                        )}
-                    </div>
-                </div>
-            );
-        }
-        // JSON Preview Component
-        function JsonPreview({ extensions, isVisible, onClose }) {
-            const generateOASFRecord = () => {
-                const features = extensions.map(ext => {
-                    const config = extensionConfigs[ext.extensionType];
-                    if (!config) return null;
-                    return {
-                        schema: config.schemaName,
-                        data: ext.data
-                    };
-                }).filter(Boolean);
-                return {
-                    name: "Generated Agent",
-                    description: "Agent generated using OASF Card Generator",
-                    version: "1.0.0",
-                    authors: ["OASF Generator"],
-                    features,
-                    metadata: {
-                        generator: "OASF Card Generator",
-                        generated_at: new Date().toISOString()
-                    }
-                };
-            };
-            const downloadJson = () => {
-                const record = generateOASFRecord();
-                const blob = new Blob([JSON.stringify(record, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'oasf-record.json';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            };
-            if (!isVisible) return null;
-            return (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="card max-w-4xl w-full h-auto max-h-96 overflow-hidden">
-                        <div className="p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-xl font-bold">OASF Record Preview</h2>
-                                <div className="flex items-center gap-2">
-                                    <button className="btn btn-primary" onClick={downloadJson}>
-                                        📥 Download JSON
-                                    </button>
-                                    <button className="btn btn-ghost" onClick={onClose}>
-                                        ✕
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="overflow-auto max-h-80">
-                                <pre className="text-sm bg-muted p-4 rounded overflow-auto">
-                                    {JSON.stringify(generateOASFRecord(), null, 2)}
-                                </pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-        // Main App Component
-        function App() {
-            const [activeExtensions, setActiveExtensions] = useState([]);
-            const [showPreview, setShowPreview] = useState(false);
-            const [nextId, setNextId] = useState(1);
-            // Available extensions from config
-            const availableExtensions = Object.entries(extensionConfigs).map(([id, config]) => ({
-                id,
-                ...config,
-                category: id === 'observability' || id === 'evaluation' ? 'monitoring' : 'runtime'
-            }));
-            const addExtension = (extensionType) => {
-                const config = extensionConfigs[extensionType];
-                if (!config) return;
-                const newExtension = {
-                    id: `${extensionType}_${nextId}`,
-                    extensionType,
-                    name: config.name,
-                    data: {},
-                    collapsed: "false",
-                    order: activeExtensions.length
-                };
-                setActiveExtensions(prev => [...prev, newExtension]);
-                setNextId(prev => prev + 1);
-            };
-            const updateExtension = (instanceId, data) => {
-                setActiveExtensions(prev =>
-                    prev.map(ext => ext.id === instanceId ? { ...ext, data } : ext)
-                );
-            };
-            const removeExtension = (instanceId) => {
-                setActiveExtensions(prev => prev.filter(ext => ext.id !== instanceId));
-            };
-            const duplicateExtension = (instanceId) => {
-                const extension = activeExtensions.find(ext => ext.id === instanceId);
-                if (!extension) return;
-                const newExtension = {
-                    ...extension,
-                    id: `${extension.extensionType}_${nextId}`,
-                    order: activeExtensions.length
-                };
-                setActiveExtensions(prev => [...prev, newExtension]);
-                setNextId(prev => prev + 1);
-            };
-            const toggleExtension = (instanceId) => {
-                setActiveExtensions(prev =>
-                    prev.map(ext =>
-                        ext.id === instanceId
-                            ? { ...ext, collapsed: ext.collapsed === "true" ? "false" : "true" }
-                            : ext
-                    )
-                );
-            };
-            const importJson = () => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.json';
-                input.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        try {
-                            const data = JSON.parse(e.target.result);
-                            if (data.features && Array.isArray(data.features)) {
-                                const newExtensions = data.features.map((feature, index) => {
-                                    const schemaName = feature.schema;
-                                    const extensionType = Object.keys(extensionConfigs).find(key =>
-                                        extensionConfigs[key].schemaName === schemaName
-                                    );
+        const updateSkill = (index, field, newValue) => {
+          const newSkills = [...skills];
+          newSkills[index] = { ...newSkills[index], [field]: newValue };
+          onChange(newSkills);
+        };
 
-                                    if (extensionType) {
-                                        return {
-                                            id: `${extensionType}_${nextId + index}`,
-                                            extensionType,
-                                            name: extensionConfigs[extensionType].name,
-                                            data: feature.data || {},
-                                            collapsed: "false",
-                                            order: index
-                                        };
-                                    }
-                                    return null;
-                                }).filter(Boolean);
-                                setActiveExtensions(newExtensions);
-                                setNextId(prev => prev + newExtensions.length);
-                            }
-                        } catch (error) {
-                            alert('Invalid JSON file');
-                        }
-                    };
-                    reader.readAsText(file);
-                };
-                input.click();
-            };
-            return (
-                <div className="container mx-auto py-8">
-                    {/* Theme Toggle */}
-                    <ThemeToggle />
+        const addSkill = () => {
+          onChange([
+            ...skills,
+            { id: "", name: "", description: "", examples: [""], tags: [""] },
+          ]);
+        };
 
-                    {/* Header */}
-                    <div className="text-center mb-8">
-                        <div className="flex items-center justify-center gap-3 mb-4">
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl font-bold">
-                                📦
-                            </div>
-                            <h1 className="text-3xl font-bold">OASF Card Generator</h1>
-                        </div>
-                        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                            Build comprehensive OASF records by adding and configuring extensions
-                        </p>
-                    </div>
-                    {/* Extension Gallery */}
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold mb-4">Available Extensions</h3>
-                        <ExtensionGallery
-                            extensions={availableExtensions}
-                            onAddExtension={addExtension}
-                        />
-                    </div>
-                    {/* Active Extensions */}
-                    <div className="mb-8">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-semibold">Active Extensions</h2>
-                            <div className="flex items-center gap-3">
-                                <button className="btn btn-secondary" onClick={importJson}>
-                                    📁 Import JSON
-                                </button>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => setShowPreview(true)}
-                                    disabled={activeExtensions.length === 0}
-                                >
-                                    👁️ Preview JSON
-                                </button>
-                            </div>
-                        </div>
-                        {activeExtensions.length === 0 ? (
-                            <div className="card p-8 text-center">
-                                <div className="text-6xl mb-4">📦</div>
-                                <h3 className="text-xl font-semibold mb-2">No Extensions Added</h3>
-                                <p className="text-muted-foreground">
-                                    Click on an extension above to add it to your OASF record
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                {activeExtensions.map((extension) => (
-                                    <ExtensionCard
-                                        key={extension.id}
-                                        extension={extension}
-                                        onUpdate={updateExtension}
-                                        onRemove={removeExtension}
-                                        onDuplicate={duplicateExtension}
-                                        onToggle={toggleExtension}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                    {/* JSON Preview Modal */}
-                    <JsonPreview
-                        extensions={activeExtensions}
-                        isVisible={showPreview}
-                        onClose={() => setShowPreview(false)}
+        const removeSkill = (index) => {
+          if (skills.length > 1) {
+            onChange(skills.filter((_, i) => i !== index));
+          }
+        };
+
+        return (
+          <div className="space-y-4">
+            {skills.map((skill, index) => (
+              <div
+                key={index}
+                className="border border-border-color rounded-lg p-4"
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <h5 className="font-medium">Skill #{index + 1}</h5>
+                  <button
+                    type="button"
+                    className="btn-danger btn-small"
+                    onClick={() => removeSkill(index)}
+                    disabled={skills.length <= 1}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="label">ID</label>
+                    <input
+                      className="input"
+                      type="text"
+                      value={skill.id}
+                      onChange={(e) => updateSkill(index, "id", e.target.value)}
+                      placeholder="skill_id"
                     />
+                  </div>
+                  <div>
+                    <label className="label">Name</label>
+                    <input
+                      className="input"
+                      type="text"
+                      value={skill.name}
+                      onChange={(e) =>
+                        updateSkill(index, "name", e.target.value)
+                      }
+                      placeholder="Skill Name"
+                    />
+                  </div>
+                  <div>
+                    <label className="label">Description</label>
+                    <textarea
+                      className="textarea"
+                      value={skill.description}
+                      onChange={(e) =>
+                        updateSkill(index, "description", e.target.value)
+                      }
+                      placeholder="Skill description..."
+                    />
+                  </div>
+                  <div>
+                    <label className="label">Examples</label>
+                    <DynamicListField
+                      value={skill.examples}
+                      onChange={(newValue) =>
+                        updateSkill(index, "examples", newValue)
+                      }
+                      placeholder="Usage example"
+                    />
+                  </div>
+                  <div>
+                    <label className="label">Tags</label>
+                    <DynamicListField
+                      value={skill.tags}
+                      onChange={(newValue) =>
+                        updateSkill(index, "tags", newValue)
+                      }
+                      placeholder="tag"
+                    />
+                  </div>
                 </div>
-            );
-        }
-        ReactDOM.render(<App />, document.getElementById('root'));
+              </div>
+            ))}
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={addSkill}
+            >
+              + Add Skill
+            </button>
+          </div>
+        );
+      }
+
+      // OASF Skills List Component
+      function OasfSkillsList({ value, onChange }) {
+        const skills = Array.isArray(value)
+          ? value
+          : [
+              {
+                class_uid: 10101,
+                category_uid: 1,
+                category_name: "Natural Language Processing",
+                class_name: "Contextual Comprehension",
+              },
+            ];
+
+        const updateSkill = (index, field, newValue) => {
+          const newSkills = [...skills];
+          newSkills[index] = { ...newSkills[index], [field]: newValue };
+          onChange(newSkills);
+        };
+
+        const addSkill = () => {
+          onChange([
+            ...skills,
+            {
+              class_uid: 10101,
+              category_uid: 1,
+              category_name: "",
+              class_name: "",
+            },
+          ]);
+        };
+
+        const removeSkill = (index) => {
+          if (skills.length > 1) {
+            onChange(skills.filter((_, i) => i !== index));
+          }
+        };
+
+        return (
+          <div className="space-y-4">
+            {skills.map((skill, index) => (
+              <div
+                key={index}
+                className="border border-border-color rounded-lg p-4"
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <h5 className="font-medium">OASF Skill #{index + 1}</h5>
+                  <button
+                    type="button"
+                    className="btn-danger btn-small"
+                    onClick={() => removeSkill(index)}
+                    disabled={skills.length <= 1}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="label">Class UID</label>
+                    <input
+                      className="input"
+                      type="number"
+                      value={skill.class_uid}
+                      onChange={(e) =>
+                        updateSkill(
+                          index,
+                          "class_uid",
+                          parseInt(e.target.value) || 0
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="label">Category UID</label>
+                    <input
+                      className="input"
+                      type="number"
+                      value={skill.category_uid}
+                      onChange={(e) =>
+                        updateSkill(
+                          index,
+                          "category_uid",
+                          parseInt(e.target.value) || 0
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="label">Category Name</label>
+                    <input
+                      className="input"
+                      type="text"
+                      value={skill.category_name}
+                      onChange={(e) =>
+                        updateSkill(index, "category_name", e.target.value)
+                      }
+                      placeholder="e.g. Natural Language Processing"
+                    />
+                  </div>
+                  <div>
+                    <label className="label">Class Name</label>
+                    <input
+                      className="input"
+                      type="text"
+                      value={skill.class_name}
+                      onChange={(e) =>
+                        updateSkill(index, "class_name", e.target.value)
+                      }
+                      placeholder="e.g. Contextual Comprehension"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={addSkill}
+            >
+              + Add OASF Skill
+            </button>
+          </div>
+        );
+      }
+
+      // Locators List Component
+      function LocatorsList({ value, onChange }) {
+        const locators = Array.isArray(value)
+          ? value
+          : [{ type: "source_code", url: "https://github.com/" }];
+
+        const updateLocator = (index, field, newValue) => {
+          const newLocators = [...locators];
+          newLocators[index] = { ...newLocators[index], [field]: newValue };
+          onChange(newLocators);
+        };
+
+        const addLocator = () => {
+          onChange([...locators, { type: "source_code", url: "" }]);
+        };
+
+        const removeLocator = (index) => {
+          if (locators.length > 1) {
+            onChange(locators.filter((_, i) => i !== index));
+          }
+        };
+
+        const locatorTypes = [
+          "source_code",
+          "documentation",
+          "api",
+          "demo",
+          "other",
+        ];
+
+        return (
+          <div className="space-y-4">
+            {locators.map((locator, index) => (
+              <div
+                key={index}
+                className="border border-border-color rounded-lg p-4"
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <h5 className="font-medium">Locator #{index + 1}</h5>
+                  <button
+                    type="button"
+                    className="btn-danger btn-small"
+                    onClick={() => removeLocator(index)}
+                    disabled={locators.length <= 1}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="label">Type</label>
+                    <select
+                      className="select"
+                      value={locator.type}
+                      onChange={(e) =>
+                        updateLocator(index, "type", e.target.value)
+                      }
+                    >
+                      {locatorTypes.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="label">URL</label>
+                    <input
+                      className="input"
+                      type="url"
+                      value={locator.url}
+                      onChange={(e) =>
+                        updateLocator(index, "url", e.target.value)
+                      }
+                      placeholder="https://..."
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={addLocator}
+            >
+              + Add Locator
+            </button>
+          </div>
+        );
+      }
+
+      // A2A Card Loader Component
+      function A2ACardLoader({ onLoadCard }) {
+        const [cardUrl, setCardUrl] = useState("");
+        const [loading, setLoading] = useState(false);
+        const [error, setError] = useState("");
+
+        // Fetch card data from URL
+        const fetchCardFromUrl = async (url) => {
+          try {
+            setLoading(true);
+            setError("");
+
+            // First, check if the URL is HTTP or HTTPS
+            const isHttp = url.startsWith("http://");
+            let fetchUrl = url;
+
+            // Try to fetch with CORS handling
+            try {
+              // First try with the original URL
+              let response = await fetch(fetchUrl, {
+                headers: {
+                  Accept: "application/json",
+                },
+                mode: "cors",
+              });
+
+              // If the original URL fails and it's HTTP, try with HTTPS
+              if (!response.ok && isHttp) {
+                console.log("HTTP URL failed, trying with HTTPS...");
+                fetchUrl = url.replace("http://", "https://");
+                response = await fetch(fetchUrl, {
+                  headers: {
+                    Accept: "application/json",
+                  },
+                  mode: "cors",
+                });
+              }
+
+              if (response.ok) {
+                const data = await response.json();
+                return data;
+              } else {
+                console.warn(
+                  `Failed to fetch from ${fetchUrl}: ${response.status} ${response.statusText}`
+                );
+              }
+            } catch (corsError) {
+              console.warn(`CORS/network error with ${fetchUrl}:`, corsError);
+              // If we tried HTTPS already, show a more helpful error message
+              if (fetchUrl.startsWith("https://")) {
+                setError(
+                  `Could not load data from ${url}. If this is a local development server, make sure it is running on https or copy the JSON data here.`
+                );
+              } else if (isHttp) {
+                setError(
+                  `Could not load data from ${url}. If this is a local development server, make sure it is running on https or copy the JSON data here.`
+                );
+              } else {
+                setError(
+                  `Could not load data from ${url}. Please check the URL and try again.`
+                );
+              }
+              // Continue to fallback
+            }
+
+            // If we reach here, either the fetch failed or CORS blocked it
+            // For demo purposes, return example data based on the URL
+            if (url.includes("localhost") || url.includes("agent.json")) {
+              return {
+                name: "Sample A2A Card",
+                version: "0.1.0",
+                description: "Sample A2A card description",
+                capabilities: {
+                  pushNotifications: true,
+                  streaming: true,
+                },
+                defaultInputModes: ["text", "text/plain"],
+                defaultOutputModes: ["text", "text/plain"],
+                protocolVersion: "0.2.6",
+                url: "http://localhost:8000/",
+                authors: ["Sample Author"],
+                skills: [
+                  {
+                    description:
+                      "An AI Platform Engineer is a multi-agent system designed to manage operations across various tools.",
+                    examples: [
+                      "Create a new ArgoCD application named 'my-app'.",
+                      "Get the status of the 'frontend' ArgoCD application.",
+                      "Update the image version for 'backend' app.",
+                    ],
+                    id: "ai_platform_engineer",
+                    name: "AI Platform Engineer",
+                    tags: ["github", "devops"],
+                  },
+                ],
+                locators: [
+                  {
+                    type: "source_code",
+                    url: "https://github.com/",
+                  },
+                ],
+              };
+            } else {
+              throw new Error(
+                `Could not fetch A2A card from ${url}. CORS may be blocking the request.`
+              );
+            }
+          } catch (error) {
+            console.error("Error fetching card data:", error);
+            if (url.includes("localhost") || url.includes("127.0.0.1")) {
+              setError(
+                `Could not load data from ${url}. If this is a local development server, make sure it is running on https or copy the JSON data here.`
+              );
+            } else {
+              setError(`Failed to load data: ${error.message}`);
+            }
+            return null;
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        // Load A2A card data and populate form
+        const loadCardData = async () => {
+          if (!cardUrl.trim()) {
+            setError("Please enter a valid URL or JSON data");
+            return;
+          }
+
+          let cardData;
+          const input = cardUrl.trim();
+
+          // Check if input is JSON data
+          if (input.startsWith("{") && input.endsWith("}")) {
+            try {
+              setLoading(true);
+              setError("");
+              cardData = JSON.parse(input);
+            } catch (error) {
+              console.error("Error parsing JSON:", error);
+              setError(`Invalid JSON data: ${error.message}`);
+              setLoading(false);
+              return;
+            }
+          } else {
+            // Input is a URL
+            cardData = await fetchCardFromUrl(input);
+          }
+
+          if (cardData) {
+            // Prepare the form data object to populate all A2A fields
+            const formData = {};
+
+            // Auto-extract Agent Directory Org Repo Name from URL if it's a GitHub URL
+            if (
+              input.includes("github.com") ||
+              input.includes("githubusercontent.com")
+            ) {
+              const githubMatch = input.match(
+                /github(?:usercontent)?\.com\/([^\/]+)\/([^\/]+)/
+              );
+              if (githubMatch) {
+                const owner = githubMatch[1];
+                const repo = githubMatch[2];
+
+                // Set repo name for agentDirOrgRepo
+                formData.agentDirOrgRepo = repo;
+
+                // Set owner as author if no authors exist in the card data
+                if (!cardData.authors || cardData.authors.length === 0) {
+                  formData.authors = [owner];
+                } else {
+                  formData.authors = cardData.authors;
+                }
+              }
+            } else {
+              formData.agentDirOrgRepo = "";
+              formData.authors = cardData.authors || [];
+            }
+
+            // Basic fields
+            formData.name = cardData.name || "";
+            formData.description = cardData.description || "";
+            formData.version = cardData.version || "";
+            formData.url = cardData.url || "";
+            formData.protocolVersion = cardData.protocolVersion || "";
+
+            // Input/Output modes
+            if (
+              cardData.defaultInputModes &&
+              Array.isArray(cardData.defaultInputModes)
+            ) {
+              formData.defaultInputModes =
+                cardData.defaultInputModes.length > 0
+                  ? cardData.defaultInputModes
+                  : ["text"];
+            } else {
+              formData.defaultInputModes = ["text"];
+            }
+
+            if (
+              cardData.defaultOutputModes &&
+              Array.isArray(cardData.defaultOutputModes)
+            ) {
+              formData.defaultOutputModes =
+                cardData.defaultOutputModes.length > 0
+                  ? cardData.defaultOutputModes
+                  : ["text"];
+            } else {
+              formData.defaultOutputModes = ["text"];
+            }
+
+            // Capabilities
+            if (cardData.capabilities) {
+              formData.capabilities_pushNotifications =
+                !!cardData.capabilities.pushNotifications;
+              formData.capabilities_streaming =
+                !!cardData.capabilities.streaming;
+            }
+
+            // Skills
+            if (cardData.skills && Array.isArray(cardData.skills)) {
+              formData["extension-skills"] = cardData.skills.map((skill) => ({
+                id: skill.id || "",
+                name: skill.name || "",
+                description: skill.description || "",
+                examples: skill.examples || [""],
+                tags: skill.tags || [""],
+              }));
+            }
+
+            // OASF Skills
+            if (cardData.oasfSkills && Array.isArray(cardData.oasfSkills)) {
+              formData["oasf-skills"] = cardData.oasfSkills;
+            }
+
+            // Locators
+            if (cardData.locators && Array.isArray(cardData.locators)) {
+              formData.locators = cardData.locators;
+            }
+
+            // Call onLoadCard with all the form data at once
+            onLoadCard(formData);
+
+            setLoading(false);
+            setError("");
+          }
+        };
+
+        const handlePaste = (e) => {
+          const pastedText = e.clipboardData.getData("text");
+
+          // Check if it looks like JSON but isn't properly formatted
+          if (pastedText.includes("{") && pastedText.includes("}")) {
+            try {
+              // Try to parse and format the JSON
+              const jsonObj = JSON.parse(pastedText);
+              const formattedJson = JSON.stringify(jsonObj, null, 2);
+
+              // Prevent default paste and use formatted JSON
+              e.preventDefault();
+              setCardUrl(formattedJson);
+
+              // Dynamically adjust the height based on content
+              setTimeout(() => {
+                const lines = formattedJson.split("\n").length;
+                const newHeight = Math.min(Math.max(lines * 20, 100), 400);
+                const textarea = e.target;
+                textarea.style.height = `${newHeight}px`;
+              }, 0);
+            } catch (error) {
+              // If it's not valid JSON, just let the default paste happen
+              console.warn("Pasted content is not valid JSON:", error);
+            }
+          }
+        };
+
+        return (
+          <div className="url-input-container">
+            <div className="example-link">
+              <span>Example: </span>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCardUrl(
+                    "https://raw.githubusercontent.com/sriaradhyula/generate-agntcy-oasf-card/refs/heads/main/.well-known/agent.json"
+                  );
+                }}
+              >
+                https://raw.githubusercontent.com/sriaradhyula/generate-agntcy-oasf-card/refs/heads/main/.well-known/agent.json
+              </a>
+            </div>
+            <textarea
+              className="url-input"
+              placeholder="Enter A2A card URL (e.g. https://localhost:8000/.well-known/agent.json) or JSON data"
+              value={cardUrl}
+              onChange={(e) => setCardUrl(e.target.value)}
+              onPaste={handlePaste}
+              rows={4}
+              spellCheck={false}
+            />
+            <button
+              className="url-button"
+              onClick={loadCardData}
+              disabled={loading || !cardUrl.trim()}
+            >
+              <div className="url-button-content">
+                {loading ? (
+                  <>
+                    <div
+                      className="loading-spinner"
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        marginRight: "8px",
+                      }}
+                    />
+                    Loading...
+                  </>
+                ) : (
+                  "🔃 Load A2A Card"
+                )}
+              </div>
+            </button>
+            {error && (
+              <div
+                style={{
+                  marginTop: "12px",
+                  padding: "12px",
+                  backgroundColor: "var(--destructive-light, #fef2f2)",
+                  color: "var(--destructive, #dc2626)",
+                  border: "1px solid var(--destructive-light, #fecaca)",
+                  borderRadius: "var(--radius)",
+                  fontSize: "0.875rem",
+                }}
+              >
+                {error}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      // Form Field Component
+      function FormField({ field, value, onChange, error, formData }) {
+        const handleChange = (e) => {
+          onChange(field.key, e.target.value);
+        };
+        const handleKeyValueChange = (e) => {
+          const pairs = e.target.value
+            .split("\n")
+            .filter((line) => line.trim());
+          const obj = {};
+          pairs.forEach((pair) => {
+            const [key, ...valueParts] = pair.split("=");
+            if (key && valueParts.length > 0) {
+              obj[key.trim()] = valueParts.join("=").trim();
+            }
+          });
+          onChange(field.key, obj);
+        };
+        const handleTagsChange = (e) => {
+          const tags = e.target.value
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag);
+          onChange(field.key, tags);
+        };
+        const handleMultiSelectChange = (e) => {
+          const selectedOptions = Array.from(e.target.selectedOptions).map(
+            (option) => option.value
+          );
+          onChange(field.key, selectedOptions);
+        };
+        const renderInput = () => {
+          switch (field.type) {
+            case "checkbox":
+              return (
+                <input
+                  type="checkbox"
+                  checked={value || false}
+                  onChange={(e) => onChange(field.key, e.target.checked)}
+                  className="w-4 h-4"
+                />
+              );
+            case "dynamic-list":
+              // This is handled separately in the main field rendering
+              return null;
+            case "h4-header":
+              return (
+                <h4
+                  style={{
+                    marginTop: "24px",
+                    marginBottom: "8px",
+                    color: "var(--fg)",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {field.content === "OASF Skill List"
+                    ? [
+                        field.content + " (",
+                        React.createElement(
+                          "a",
+                          {
+                            href: "https://schema.oasf.outshift.com/",
+                            target: "_blank",
+                            style: {
+                              color: "var(--primary)",
+                              textDecoration: "underline",
+                              fontSize: "14px",
+                              fontWeight: "normal",
+                            },
+                          },
+                          "schema reference"
+                        ),
+                        ")",
+                      ]
+                    : field.content}
+                </h4>
+              );
+            case "extension-skills-list":
+            case "oasf-skills-list":
+            case "locators-list":
+            case "a2a-card-loader":
+              // These are handled separately in the main field rendering
+              return null;
+            case "textarea":
+              return (
+                <textarea
+                  className="textarea"
+                  value={value || ""}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  required={field.required}
+                />
+              );
+            case "select":
+              return (
+                <select
+                  className="select"
+                  value={value || ""}
+                  onChange={handleChange}
+                  required={field.required}
+                >
+                  <option value="">Select an option</option>
+                  {field.options?.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              );
+            case "multiselect":
+              return (
+                <select
+                  className="select"
+                  multiple
+                  value={value || []}
+                  onChange={handleMultiSelectChange}
+                  required={field.required}
+                  style={{ height: "120px" }}
+                >
+                  {field.options?.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              );
+            case "keyvalue":
+              const kvValue =
+                typeof value === "object" && value !== null
+                  ? Object.entries(value)
+                      .map(([k, v]) => `${k}=${v}`)
+                      .join("\n")
+                  : "";
+              return (
+                <textarea
+                  className="textarea"
+                  value={kvValue}
+                  onChange={handleKeyValueChange}
+                  placeholder={field.placeholder}
+                />
+              );
+            case "tags":
+              const tagsValue = Array.isArray(value) ? value.join(", ") : "";
+              return (
+                <input
+                  className="input"
+                  type="text"
+                  value={tagsValue}
+                  onChange={handleTagsChange}
+                  placeholder={field.placeholder}
+                />
+              );
+            case "number":
+              return (
+                <input
+                  className="input"
+                  type="number"
+                  value={value || ""}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  min={field.min}
+                  max={field.max}
+                  step={field.step}
+                  required={field.required}
+                />
+              );
+            case "password":
+              return (
+                <input
+                  className="input"
+                  type="password"
+                  value={value || ""}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  required={field.required}
+                />
+              );
+            case "url":
+              return (
+                <input
+                  className="input"
+                  type="url"
+                  value={value || ""}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  required={field.required}
+                />
+              );
+            default:
+              return (
+                <input
+                  className="input"
+                  type="text"
+                  value={value || ""}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  required={field.required}
+                />
+              );
+          }
+        };
+        return (
+          <div className="mb-4">
+            {field.type === "h4-header" ? (
+              <h4
+                style={{
+                  marginTop: "24px",
+                  marginBottom: "8px",
+                  color: "var(--fg)",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                }}
+              >
+                {field.content === "OASF Skill List"
+                  ? [
+                      field.content + " (",
+                      React.createElement(
+                        "a",
+                        {
+                          href: "https://schema.oasf.outshift.com/",
+                          target: "_blank",
+                          style: {
+                            color: "var(--primary)",
+                            textDecoration: "underline",
+                            fontSize: "14px",
+                            fontWeight: "normal",
+                          },
+                        },
+                        "schema reference"
+                      ),
+                      ")",
+                    ]
+                  : field.content}
+              </h4>
+            ) : field.type === "dynamic-list" ? (
+              <>
+                {field.label && (
+                  <label className="label mb-2 block">
+                    {field.label}
+                    {field.required && (
+                      <span className="text-destructive ml-1">*</span>
+                    )}
+                  </label>
+                )}
+                <div className="dynamic-list-container">
+                  {(value || [""]).map((item, index) => (
+                    <div key={index} className="dynamic-list-item">
+                      <input
+                        type="text"
+                        value={item}
+                        onChange={(e) => {
+                          const newList = [...(value || [""])];
+                          newList[index] = e.target.value;
+                          onChange(field.key, newList);
+                        }}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            const newList = [...(value || [""]), ""];
+                            onChange(field.key, newList);
+                            // Focus the new input after a short delay
+                            setTimeout(() => {
+                              const inputs = document.querySelectorAll(
+                                `[data-list-type="${
+                                  field.key
+                                }"][data-list-index="${index + 1}"]`
+                              );
+                              if (inputs.length > 0) {
+                                inputs[0].focus();
+                              }
+                            }, 10);
+                          }
+                        }}
+                        placeholder={
+                          field.key === "authors"
+                            ? "Enter author and press Enter for next entry"
+                            : field.key === "defaultInputModes"
+                            ? "Enter input mode (e.g. text, text/plain)"
+                            : field.key === "defaultOutputModes"
+                            ? "Enter output mode (e.g. text, text/plain)"
+                            : field.placeholder ||
+                              "Press Enter to add new entry"
+                        }
+                        data-list-type={field.key}
+                        data-list-index={index}
+                        style={{
+                          flex: 1,
+                          padding: "8px",
+                          border: "1px solid var(--border-color, #ccc)",
+                          borderRadius: "4px",
+                          backgroundColor: "var(--input-bg, #fff)",
+                          color: "var(--input-fg, #333)",
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if ((value || [""]).length <= 1) return;
+                          const newList = (value || [""]).filter(
+                            (_, i) => i !== index
+                          );
+                          onChange(field.key, newList);
+                        }}
+                        disabled={(value || [""]).length <= 1}
+                        style={{
+                          marginLeft: "8px",
+                          marginBottom: "14px",
+                          padding: "4px 8px",
+                          backgroundColor: "var(--Brand-Logo-Primary, #187ADC)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          alignItems: "top",
+                          justifyContent: "top",
+                          opacity: (value || [""]).length <= 1 ? 0.5 : 1,
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newList = [...(value || [""]), ""];
+                      onChange(field.key, newList);
+                    }}
+                    style={{
+                      marginTop: "8px",
+                      padding: "4px 8px",
+                      backgroundColor: "var(--primary)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    + Add{" "}
+                    {field.key === "authors"
+                      ? "Author"
+                      : field.key === "defaultInputModes"
+                      ? "Input Mode"
+                      : field.key === "defaultOutputModes"
+                      ? "Output Mode"
+                      : "Entry"}
+                  </button>
+                </div>
+              </>
+            ) : field.type === "extension-skills-list" ? (
+              <>
+                {field.label && (
+                  <label className="label mb-2 block">
+                    {field.label}
+                    {field.required && (
+                      <span className="text-destructive ml-1">*</span>
+                    )}
+                  </label>
+                )}
+                <div
+                  style={{
+                    backgroundColor: "var(--primary-light)",
+                    padding: "16px",
+                    borderRadius: "var(--radius-lg)",
+                    marginBottom: "24px",
+                    border: "1px solid var(--border-color)",
+                  }}
+                >
+                  {(
+                    value || [
+                      {
+                        id: "",
+                        name: "",
+                        description: "",
+                        examples: [""],
+                        tags: [""],
+                      },
+                    ]
+                  ).map((skill, skillIndex) => (
+                    <div key={skillIndex} className="server-container">
+                      <div className="server-header">
+                        <h3 style={{ margin: "0", flex: "1" }}>
+                          Skill {skillIndex + 1}: {skill.name || "New Skill"}
+                        </h3>
+                        {(value || []).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = (value || []).filter(
+                                (_, i) => i !== skillIndex
+                              );
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              padding: "8px 16px",
+                              backgroundColor:
+                                "var(--Brand-Logo-Primary, #187ADC)",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "var(--radius)",
+                              cursor: "pointer",
+                              fontSize: "0.875rem",
+                              fontWeight: "500",
+                              transition: "var(--transition)",
+                            }}
+                          >
+                            Remove Skill
+                          </button>
+                        )}
+                      </div>
+                      <div className="server-fields">
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Skill ID
+                          </label>
+                          <input
+                            type="text"
+                            value={skill.id || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[skillIndex] = {
+                                ...skill,
+                                id: e.target.value,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              border: "1px solid var(--border-color, #ccc)",
+                              borderRadius: "4px",
+                              backgroundColor: "var(--input-bg, #fff)",
+                              color: "var(--input-fg, #333)",
+                            }}
+                          />
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Skill Name
+                          </label>
+                          <input
+                            type="text"
+                            value={skill.name || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[skillIndex] = {
+                                ...skill,
+                                name: e.target.value,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              border: "1px solid var(--border-color, #ccc)",
+                              borderRadius: "4px",
+                              backgroundColor: "var(--input-bg, #fff)",
+                              color: "var(--input-fg, #333)",
+                            }}
+                          />
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Skill Description
+                          </label>
+                          <textarea
+                            value={skill.description || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[skillIndex] = {
+                                ...skill,
+                                description: e.target.value,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            rows={3}
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              border: "1px solid var(--border-color, #ccc)",
+                              borderRadius: "4px",
+                              backgroundColor: "var(--input-bg, #fff)",
+                              color: "var(--input-fg, #333)",
+                              resize: "vertical",
+                            }}
+                          />
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Skill Examples
+                          </label>
+                          <div className="dynamic-list-container">
+                            {(skill.examples || [""]).map(
+                              (example, exampleIndex) => (
+                                <div
+                                  key={exampleIndex}
+                                  className="dynamic-list-item"
+                                >
+                                  <input
+                                    type="text"
+                                    value={example}
+                                    onChange={(e) => {
+                                      const newList = [...(value || [])];
+                                      const newExamples = [
+                                        ...(skill.examples || [""]),
+                                      ];
+                                      newExamples[exampleIndex] =
+                                        e.target.value;
+                                      newList[skillIndex] = {
+                                        ...skill,
+                                        examples: newExamples,
+                                      };
+                                      onChange(field.key, newList);
+                                    }}
+                                    placeholder="Enter skill example"
+                                    style={{
+                                      flex: 1,
+                                      padding: "8px",
+                                      border:
+                                        "1px solid var(--border-color, #ccc)",
+                                      borderRadius: "4px",
+                                      backgroundColor: "var(--input-bg, #fff)",
+                                      color: "var(--input-fg, #333)",
+                                    }}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if ((skill.examples || [""]).length <= 1)
+                                        return;
+                                      const newList = [...(value || [])];
+                                      const newExamples = (
+                                        skill.examples || [""]
+                                      ).filter((_, i) => i !== exampleIndex);
+                                      newList[skillIndex] = {
+                                        ...skill,
+                                        examples: newExamples,
+                                      };
+                                      onChange(field.key, newList);
+                                    }}
+                                    disabled={
+                                      (skill.examples || [""]).length <= 1
+                                    }
+                                    style={{
+                                      marginLeft: "8px",
+                                      padding: "4px 8px",
+                                      backgroundColor:
+                                        "var(--Brand-Logo-Primary, #187ADC)",
+                                      color: "white",
+                                      border: "none",
+                                      borderRadius: "4px",
+                                      cursor: "pointer",
+                                      opacity:
+                                        (skill.examples || [""]).length <= 1
+                                          ? 0.5
+                                          : 1,
+                                    }}
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              )
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newList = [...(value || [])];
+                                const newExamples = [
+                                  ...(skill.examples || [""]),
+                                  "",
+                                ];
+                                newList[skillIndex] = {
+                                  ...skill,
+                                  examples: newExamples,
+                                };
+                                onChange(field.key, newList);
+                              }}
+                              style={{
+                                marginTop: "8px",
+                                padding: "4px 8px",
+                                backgroundColor: "var(--primary)",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              + Add Example
+                            </button>
+                          </div>
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Skill Tags
+                          </label>
+                          <div className="dynamic-list-container">
+                            {(skill.tags || [""]).map((tag, tagIndex) => (
+                              <div key={tagIndex} className="dynamic-list-item">
+                                <input
+                                  type="text"
+                                  value={tag}
+                                  onChange={(e) => {
+                                    const newList = [...(value || [])];
+                                    const newTags = [...(skill.tags || [""])];
+                                    newTags[tagIndex] = e.target.value;
+                                    newList[skillIndex] = {
+                                      ...skill,
+                                      tags: newTags,
+                                    };
+                                    onChange(field.key, newList);
+                                  }}
+                                  placeholder="Enter skill tag"
+                                  style={{
+                                    flex: 1,
+                                    padding: "8px",
+                                    border:
+                                      "1px solid var(--border-color, #ccc)",
+                                    borderRadius: "4px",
+                                    backgroundColor: "var(--input-bg, #fff)",
+                                    color: "var(--input-fg, #333)",
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if ((skill.tags || [""]).length <= 1)
+                                      return;
+                                    const newList = [...(value || [])];
+                                    const newTags = (skill.tags || [""]).filter(
+                                      (_, i) => i !== tagIndex
+                                    );
+                                    newList[skillIndex] = {
+                                      ...skill,
+                                      tags: newTags,
+                                    };
+                                    onChange(field.key, newList);
+                                  }}
+                                  disabled={(skill.tags || [""]).length <= 1}
+                                  style={{
+                                    marginLeft: "8px",
+                                    padding: "4px 8px",
+                                    backgroundColor:
+                                      "var(--Brand-Logo-Primary, #187ADC)",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    opacity:
+                                      (skill.tags || [""]).length <= 1
+                                        ? 0.5
+                                        : 1,
+                                  }}
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newList = [...(value || [])];
+                                const newTags = [...(skill.tags || [""]), ""];
+                                newList[skillIndex] = {
+                                  ...skill,
+                                  tags: newTags,
+                                };
+                                onChange(field.key, newList);
+                              }}
+                              style={{
+                                marginTop: "8px",
+                                padding: "4px 8px",
+                                backgroundColor: "var(--primary)",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              + Add Tag
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newSkill = {
+                        id: "",
+                        name: "",
+                        description: "",
+                        examples: [""],
+                        tags: [""],
+                      };
+                      const newList = [...(value || []), newSkill];
+                      onChange(field.key, newList);
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      backgroundColor: "var(--primary)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    + Add Skill
+                  </button>
+                </div>
+              </>
+            ) : field.type === "oasf-skills-list" ? (
+              <>
+                {field.label && (
+                  <label className="label mb-2 block">
+                    {field.label}
+                    {field.required && (
+                      <span className="text-destructive ml-1">*</span>
+                    )}
+                  </label>
+                )}
+                <div
+                  style={{
+                    backgroundColor: "var(--primary-light)",
+                    padding: "16px",
+                    borderRadius: "var(--radius-lg)",
+                    marginBottom: "24px",
+                    border: "1px solid var(--border-color)",
+                  }}
+                >
+                  {(
+                    value || [
+                      {
+                        class_uid: 10101,
+                        category_uid: 1,
+                        category_name: "Natural Language Processing",
+                        class_name: "Contextual Comprehension",
+                      },
+                    ]
+                  ).map((skill, skillIndex) => (
+                    <div key={skillIndex} className="server-container">
+                      <div className="server-header">
+                        <h3 style={{ margin: "0", flex: "1" }}>
+                          OASF Skill {skillIndex + 1}:{" "}
+                          {skill.class_name || "New OASF Skill"}
+                        </h3>
+                        {(value || []).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = (value || []).filter(
+                                (_, i) => i !== skillIndex
+                              );
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              padding: "8px 16px",
+                              backgroundColor:
+                                "var(--Brand-Logo-Primary, #187ADC)",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "var(--radius)",
+                              cursor: "pointer",
+                              fontSize: "0.875rem",
+                              fontWeight: "500",
+                              transition: "var(--transition)",
+                            }}
+                          >
+                            Remove OASF Skill
+                          </button>
+                        )}
+                      </div>
+                      <div className="server-fields">
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Class UID
+                          </label>
+                          <input
+                            type="number"
+                            value={skill.class_uid || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[skillIndex] = {
+                                ...skill,
+                                class_uid: parseInt(e.target.value) || 0,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              border: "1px solid var(--border-color, #ccc)",
+                              borderRadius: "4px",
+                              backgroundColor: "var(--input-bg, #fff)",
+                              color: "var(--input-fg, #333)",
+                            }}
+                          />
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Category UID
+                          </label>
+                          <input
+                            type="number"
+                            value={skill.category_uid || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[skillIndex] = {
+                                ...skill,
+                                category_uid: parseInt(e.target.value) || 0,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              border: "1px solid var(--border-color, #ccc)",
+                              borderRadius: "4px",
+                              backgroundColor: "var(--input-bg, #fff)",
+                              color: "var(--input-fg, #333)",
+                            }}
+                          />
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Category Name
+                          </label>
+                          <input
+                            type="text"
+                            value={skill.category_name || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[skillIndex] = {
+                                ...skill,
+                                category_name: e.target.value,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              border: "1px solid var(--border-color, #ccc)",
+                              borderRadius: "4px",
+                              backgroundColor: "var(--input-bg, #fff)",
+                              color: "var(--input-fg, #333)",
+                            }}
+                          />
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Class Name
+                          </label>
+                          <input
+                            type="text"
+                            value={skill.class_name || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[skillIndex] = {
+                                ...skill,
+                                class_name: e.target.value,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              border: "1px solid var(--border-color, #ccc)",
+                              borderRadius: "4px",
+                              backgroundColor: "var(--input-bg, #fff)",
+                              color: "var(--input-fg, #333)",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newSkill = {
+                        class_uid: 10101,
+                        category_uid: 1,
+                        category_name: "",
+                        class_name: "",
+                      };
+                      const newList = [...(value || []), newSkill];
+                      onChange(field.key, newList);
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      backgroundColor: "var(--primary)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    + Add OASF Skill
+                  </button>
+                </div>
+              </>
+            ) : field.type === "locators-list" ? (
+              <>
+                {field.label && (
+                  <label className="label mb-2 block">
+                    {field.label}
+                    {field.required && (
+                      <span className="text-destructive ml-1">*</span>
+                    )}
+                  </label>
+                )}
+                <div
+                  style={{
+                    backgroundColor: "var(--primary-light)",
+                    padding: "16px",
+                    borderRadius: "var(--radius-lg)",
+                    marginBottom: "24px",
+                    border: "1px solid var(--border-color)",
+                  }}
+                >
+                  {(
+                    value || [
+                      { type: "source_code", url: "https://github.com/" },
+                    ]
+                  ).map((locator, locatorIndex) => (
+                    <div key={locatorIndex} className="server-container">
+                      <div className="server-header">
+                        <h3 style={{ margin: "0", flex: "1" }}>
+                          Locator {locatorIndex + 1}: source_code
+                        </h3>
+                        {(value || []).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = (value || []).filter(
+                                (_, i) => i !== locatorIndex
+                              );
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              padding: "8px 16px",
+                              backgroundColor:
+                                "var(--Brand-Logo-Primary, #187ADC)",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "var(--radius)",
+                              cursor: "pointer",
+                              fontSize: "0.875rem",
+                              fontWeight: "500",
+                              transition: "var(--transition)",
+                            }}
+                          >
+                            Remove Locator
+                          </button>
+                        )}
+                      </div>
+                      <div className="server-fields">
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Type
+                          </label>
+                          <input
+                            type="text"
+                            value="source_code"
+                            readOnly
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              border: "1px solid var(--border-color, #ccc)",
+                              borderRadius: "4px",
+                              backgroundColor: "var(--input-bg, #fff)",
+                              color: "var(--input-fg, #333)",
+                              opacity: 0.7,
+                            }}
+                          />
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label
+                            style={{
+                              fontWeight: "600",
+                              display: "block",
+                              marginTop: "20px",
+                              marginBottom: "8px",
+                              color: "var(--fg)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            URL
+                          </label>
+                          <input
+                            type="url"
+                            value={locator.url || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[locatorIndex] = {
+                                ...locator,
+                                url: e.target.value,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              border: "1px solid var(--border-color, #ccc)",
+                              borderRadius: "4px",
+                              backgroundColor: "var(--input-bg, #fff)",
+                              color: "var(--input-fg, #333)",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newLocator = {
+                        type: "source_code",
+                        url: "https://github.com/",
+                      };
+                      const newList = [...(value || []), newLocator];
+                      onChange(field.key, newList);
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      backgroundColor: "var(--primary)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    + Add Locator
+                  </button>
+                </div>
+              </>
+            ) : field.type === "a2a-card-loader" ? (
+              <A2ACardLoader
+                onLoadCard={(loadedData) => {
+                  // Call bulk update
+                  onChange("bulk-update", loadedData);
+                }}
+              />
+            ) : field.type === "checkbox" ? (
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={value || false}
+                  onChange={(e) => onChange(field.key, e.target.checked)}
+                  className="w-4 h-4"
+                />
+                <span className="text-sm">{field.label}</span>
+              </label>
+            ) : (
+              <>
+                {field.label && (
+                  <label className="label mb-2 block">
+                    {field.label}
+                    {field.required && (
+                      <span className="text-destructive ml-1">*</span>
+                    )}
+                  </label>
+                )}
+                {renderInput()}
+                {error && (
+                  <p className="text-destructive text-sm mt-1">{error}</p>
+                )}
+              </>
+            )}
+          </div>
+        );
+      }
+
+      // Syntax highlighting function
+      function syntaxHighlight(json) {
+        if (!json) return "";
+        json = json.replace(
+          /(&|<|>)/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])
+        );
+        return json.replace(
+          /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(?=:)|\b(true|false)\b|null|"(.*?)"|\b([0-9]+)\b)/g,
+          (match) => {
+            if (/^".*"$/.test(match))
+              return '<span class="json-string">' + match + "</span>";
+            if (/true|false/.test(match))
+              return '<span class="json-boolean">' + match + "</span>";
+            if (/null/.test(match))
+              return '<span class="json-null">' + match + "</span>";
+            return '<span class="json-number">' + match + "</span>";
+          }
+        );
+      }
+
+      // Copy to clipboard function
+      function copyToClipboard(text) {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            // Show a temporary notification
+            const notification = document.createElement("div");
+            notification.textContent = "Copied to clipboard!";
+            notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            z-index: 1000;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+              document.body.removeChild(notification);
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Failed to copy text: ", err);
+          });
+      }
+
+      // Extension Form Component
+      function ExtensionForm({ config, data, onChange }) {
+        const [formData, setFormData] = useState(data || {});
+        const [errors, setErrors] = useState({});
+        const handleFieldChange = (fieldKey, value) => {
+          if (fieldKey === "bulk-update") {
+            const mergedData = { ...formData, ...value };
+            setFormData(mergedData);
+            onChange(mergedData);
+            return;
+          }
+
+          const newData = { ...formData, [fieldKey]: value };
+          setFormData(newData);
+          onChange(newData);
+
+          if (errors[fieldKey]) {
+            setErrors((prev) => ({ ...prev, [fieldKey]: null }));
+          }
+        };
+        const validateForm = () => {
+          const newErrors = {};
+          config.fields.forEach((field) => {
+            if (
+              field.required &&
+              (!formData[field.key] || formData[field.key] === "")
+            ) {
+              newErrors[field.key] = `${field.label} is required`;
+            }
+          });
+          setErrors(newErrors);
+          return Object.keys(newErrors).length === 0;
+        };
+        useEffect(() => {
+          setFormData(data || {});
+        }, [data]);
+        return (
+          <div className="space-y-4">
+            {config.fields.map((field) => (
+              <FormField
+                key={field.key}
+                field={field}
+                value={formData[field.key]}
+                onChange={handleFieldChange}
+                error={errors[field.key]}
+                formData={formData}
+              />
+            ))}
+          </div>
+        );
+      }
+      // Extension Card Component
+      function ExtensionCard({
+        extension,
+        onUpdate,
+        onRemove,
+        onDuplicate,
+        onToggle,
+      }) {
+        const config = extensionConfigs[extension.extensionType];
+        const isCollapsed = extension.collapsed === "true";
+        if (!config) return null;
+        return (
+          <div
+            className={`card extension-card ${
+              isCollapsed ? "collapsed" : "expanded"
+            }`}
+          >
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`extension-icon ${config.iconClass} text-white`}
+                    style={{ width: "32px", height: "32px", fontSize: "18px" }}
+                  >
+                    {config.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">{extension.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Instance #{extension.id.split("_")[1] || "1"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    className="btn btn-ghost"
+                    onClick={() => onToggle(extension.id)}
+                  >
+                    {isCollapsed ? "▼" : "▲"}
+                  </button>
+                  <button
+                    className="btn btn-ghost"
+                    onClick={() => onDuplicate(extension.id)}
+                  >
+                    📋
+                  </button>
+                  <button
+                    className="btn btn-ghost"
+                    onClick={() => onRemove(extension.id)}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+
+              {/* Form */}
+              {!isCollapsed && (
+                <ExtensionForm
+                  config={config}
+                  data={extension.data}
+                  onChange={(data) => onUpdate(extension.id, data)}
+                />
+              )}
+            </div>
+          </div>
+        );
+      }
+      function JsonPreview({ extensions, isVisible, onClose }) {
+        useEffect(() => {
+          if (isVisible) {
+            document.body.style.overflow = "hidden";
+          } else {
+            document.body.style.overflow = "unset";
+          }
+
+          // Cleanup on unmount
+          return () => {
+            document.body.style.overflow = "unset";
+          };
+        }, [isVisible]);
+
+        const generateOASFRecord = () => {
+          const features = extensions
+            .map((ext) => {
+              const config = extensionConfigs[ext.extensionType];
+              if (!config) return null;
+              return {
+                schema: config.schemaName,
+                data: ext.data,
+              };
+            })
+            .filter(Boolean);
+          return {
+            name: "Generated Agent",
+            description: "Agent generated using OASF Card Generator",
+            version: "1.0.0",
+            authors: ["OASF Generator"],
+            features,
+            metadata: {
+              generator: "OASF Card Generator",
+              generated_at: new Date().toISOString(),
+            },
+          };
+        };
+        const downloadJson = () => {
+          const record = generateOASFRecord();
+          const blob = new Blob([JSON.stringify(record, null, 2)], {
+            type: "application/json",
+          });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "oasf-record.json";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        };
+        if (!isVisible) return null;
+        return (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                onClose();
+              }
+            }}
+            onWheel={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <div
+              className="card max-w-4xl w-full h-auto max-h-[90vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 flex flex-col h-full max-h-[90vh]">
+                <div className="flex items-center justify-between mb-4 flex-shrink-0">
+                  <h2 className="text-xl font-bold">OASF Record</h2>
+                  <div className="flex items-center gap-2">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() =>
+                        copyToClipboard(
+                          JSON.stringify(generateOASFRecord(), null, 2)
+                        )
+                      }
+                    >
+                      🖨️ Copy OASF Record
+                    </button>
+                    <button className="btn btn-primary" onClick={downloadJson}>
+                      📥 Download JSON
+                    </button>
+                    <button className="btn btn-ghost" onClick={onClose}>
+                      ✕
+                    </button>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    marginTop: "10px",
+                    marginBottom: "16px",
+                    textAlign: "center",
+                    fontSize: "14px",
+                    color: "var(--fg)",
+                  }}
+                >
+                  Upload your agent card using{" "}
+                  <a
+                    href="https://docs.agntcy.org/dir/scenarios/"
+                    target="_blank"
+                    style={{
+                      textDecoration: "underline",
+                      color: "var(--primary)",
+                    }}
+                  >
+                    AGNTCY dirctl instructions
+                  </a>{" "}
+                  to reference Agent Directory at{" "}
+                  <a
+                    href="https://agent-directory.outshift.com/"
+                    target="_blank"
+                    style={{
+                      textDecoration: "underline",
+                      color: "var(--primary)",
+                    }}
+                  >
+                    agent-directory.outshift.com
+                  </a>
+                </div>
+                <div
+                  className="overflow-auto flex-1 min-h-0"
+                  style={{
+                    maxHeight: "calc(90vh - 120px)",
+                    overflowY: "auto",
+                    overflowX: "auto",
+                  }}
+                >
+                  <pre
+                    className="json-output"
+                    dangerouslySetInnerHTML={{
+                      __html: syntaxHighlight(
+                        JSON.stringify(generateOASFRecord(), null, 2)
+                      ),
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+      function App() {
+        const [activeExtensions, setActiveExtensions] = useState([]);
+        const [showPreview, setShowPreview] = useState(false);
+        const [nextId, setNextId] = useState(1);
+        const availableExtensions = Object.entries(extensionConfigs).map(
+          ([id, config]) => ({
+            id,
+            ...config,
+            category:
+              id === "observability" || id === "evaluation"
+                ? "monitoring"
+                : "runtime",
+          })
+        );
+        const addExtension = (extensionType) => {
+          const config = extensionConfigs[extensionType];
+          if (!config) return;
+
+          // Initialize with default values for A2A extension
+          let defaultData = {};
+          if (extensionType === "a2a") {
+            defaultData = {
+              defaultInputModes: ["text"],
+              defaultOutputModes: ["text"],
+            };
+          }
+
+          const newExtension = {
+            id: `${extensionType}_${nextId}`,
+            extensionType,
+            name: config.name,
+            data: defaultData,
+            collapsed: "false",
+            order: activeExtensions.length,
+          };
+          setActiveExtensions((prev) => [...prev, newExtension]);
+          setNextId((prev) => prev + 1);
+        };
+        const updateExtension = (instanceId, data) => {
+          setActiveExtensions((prev) =>
+            prev.map((ext) => (ext.id === instanceId ? { ...ext, data } : ext))
+          );
+        };
+        const removeExtension = (instanceId) => {
+          setActiveExtensions((prev) =>
+            prev.filter((ext) => ext.id !== instanceId)
+          );
+        };
+        const duplicateExtension = (instanceId) => {
+          const extension = activeExtensions.find(
+            (ext) => ext.id === instanceId
+          );
+          if (!extension) return;
+          const newExtension = {
+            ...extension,
+            id: `${extension.extensionType}_${nextId}`,
+            order: activeExtensions.length,
+          };
+          setActiveExtensions((prev) => [...prev, newExtension]);
+          setNextId((prev) => prev + 1);
+        };
+        const toggleExtension = (instanceId) => {
+          setActiveExtensions((prev) =>
+            prev.map((ext) =>
+              ext.id === instanceId
+                ? {
+                    ...ext,
+                    collapsed: ext.collapsed === "true" ? "false" : "true",
+                  }
+                : ext
+            )
+          );
+        };
+        const importJson = () => {
+          const input = document.createElement("input");
+          input.type = "file";
+          input.accept = ".json";
+          input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              try {
+                const data = JSON.parse(e.target.result);
+                if (data.features && Array.isArray(data.features)) {
+                  const newExtensions = data.features
+                    .map((feature, index) => {
+                      const schemaName = feature.schema;
+                      const extensionType = Object.keys(extensionConfigs).find(
+                        (key) => extensionConfigs[key].schemaName === schemaName
+                      );
+
+                      if (extensionType) {
+                        return {
+                          id: `${extensionType}_${nextId + index}`,
+                          extensionType,
+                          name: extensionConfigs[extensionType].name,
+                          data: feature.data || {},
+                          collapsed: "false",
+                          order: index,
+                        };
+                      }
+                      return null;
+                    })
+                    .filter(Boolean);
+                  setActiveExtensions(newExtensions);
+                  setNextId((prev) => prev + newExtensions.length);
+                }
+              } catch (error) {
+                alert("Invalid JSON file");
+              }
+            };
+            reader.readAsText(file);
+          };
+          input.click();
+        };
+        return (
+          <div className="container mx-auto py-8">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl font-bold">
+                  📦
+                </div>
+                <h1 className="text-3xl font-bold">OASF Card Generator</h1>
+              </div>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Build comprehensive OASF records by adding and configuring
+                extensions
+              </p>
+            </div>
+            {/* Extension Gallery */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-4">
+                Available Extensions
+              </h3>
+              <ExtensionGallery
+                extensions={availableExtensions}
+                onAddExtension={addExtension}
+              />
+            </div>
+            {/* Active Extensions */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold">Active Extensions</h2>
+                <div className="flex items-center gap-3">
+                  <button className="btn btn-secondary" onClick={importJson}>
+                    📁 Import JSON
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setShowPreview(true)}
+                    disabled={activeExtensions.length === 0}
+                  >
+                    ⚙️ Generate OASF Record
+                  </button>
+                </div>
+              </div>
+              {activeExtensions.length === 0 ? (
+                <div className="card p-8 text-center">
+                  <div className="text-6xl mb-4">📦</div>
+                  <h3 className="text-xl font-semibold mb-2">
+                    No Extensions Added
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Click on an extension above to add it to your OASF record
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {activeExtensions.map((extension) => (
+                    <ExtensionCard
+                      key={extension.id}
+                      extension={extension}
+                      onUpdate={updateExtension}
+                      onRemove={removeExtension}
+                      onDuplicate={duplicateExtension}
+                      onToggle={toggleExtension}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* JSON Preview Modal */}
+            <JsonPreview
+              extensions={activeExtensions}
+              isVisible={showPreview}
+              onClose={() => setShowPreview(false)}
+            />
+          </div>
+        );
+      }
+      ReactDOM.render(<App />, document.getElementById("root"));
     </script>
-</body>
+  </body>
 </html>
