@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OASF Card Generator</title>
+    <title>OASF Record Generator</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -3406,12 +3406,12 @@
             .filter(Boolean);
           return {
             name: "Generated Agent",
-            description: "Agent generated using OASF Card Generator",
+            description: "Agent generated using OASF Record Generator",
             version: "1.0.0",
             authors: ["OASF Generator"],
             features,
             metadata: {
-              generator: "OASF Card Generator",
+              generator: "OASF Record Generator",
               generated_at: new Date().toISOString(),
             },
           };
@@ -3650,7 +3650,7 @@
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl font-bold">
                   📦
                 </div>
-                <h1 className="text-3xl font-bold">OASF Card Generator</h1>
+                <h1 className="text-3xl font-bold">OASF Record Generator</h1>
               </div>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                 Build comprehensive OASF records by adding and configuring
