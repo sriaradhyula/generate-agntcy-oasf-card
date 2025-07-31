@@ -3387,11 +3387,22 @@
             document.body.style.overflow = "unset";
           }
 
+          const handleEscape = (e) => {
+            if (e.key === "Escape" && isVisible) {
+              onClose();
+            }
+          };
+
+          if (isVisible) {
+            document.addEventListener("keydown", handleEscape);
+          }
+
           // Cleanup on unmount
           return () => {
             document.body.style.overflow = "unset";
+            document.removeEventListener("keydown", handleEscape);
           };
-        }, [isVisible]);
+        }, [isVisible, onClose]);
 
         const generateOASFRecord = () => {
           const features = extensions
@@ -3433,9 +3444,29 @@
         if (!isVisible) return null;
         return (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+            style={{
+              zIndex: 9999,
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
             onClick={(e) => {
               if (e.target === e.currentTarget) {
+                const modalContent = e.currentTarget.querySelector(".card");
+                if (modalContent) {
+                  const scrollContainer =
+                    modalContent.querySelector(".overflow-auto");
+                  if (scrollContainer && scrollContainer.scrollTop > 0) {
+                    scrollContainer.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                    return;
+                  }
+                }
                 onClose();
               }
             }}
@@ -3445,6 +3476,15 @@
           >
             <div
               className="card max-w-4xl w-full h-auto max-h-[90vh] overflow-hidden"
+              style={{
+                position: "relative",
+                zIndex: 10000,
+                backgroundColor: "var(--card)",
+                border: "1px solid var(--border-color)",
+                borderRadius: "var(--radius-lg)",
+                boxShadow:
+                  "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 flex flex-col h-full max-h-[90vh]">
@@ -3464,7 +3504,28 @@
                     <button className="btn btn-primary" onClick={downloadJson}>
                       📥 Download JSON
                     </button>
-                    <button className="btn btn-ghost" onClick={onClose}>
+                    <button
+                      className="btn btn-ghost"
+                      onClick={onClose}
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        minWidth: "40px",
+                        minHeight: "40px",
+                        position: "relative",
+                        zIndex: 10001,
+                        transition: "all 0.2s ease",
+                      }}
+                      title="Close Modal (ESC or click outside)"
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "var(--destructive)";
+                        e.target.style.color = "white";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "";
+                        e.target.style.color = "";
+                      }}
+                    >
                       ✕
                     </button>
                   </div>
