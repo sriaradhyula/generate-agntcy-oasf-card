@@ -6644,7 +6644,7 @@
               console.log("Processing extensions array:", data.extensions);
               const newExtensions = data.extensions
                 .map((extension, index) => {
-                  const schemaName = extension.schema;
+                  const schemaName = extension.schema || extension.name;
                   console.log(`Extension ${index} schema:`, schemaName);
 
                   // Enhanced schema matching logic
@@ -6730,7 +6730,7 @@
             if (data.features && Array.isArray(data.features)) {
               const newExtensions = data.features
                 .map((feature, index) => {
-                  const schemaName = feature.schema;
+                  const schemaName = feature.schema || feature.name;
 
                   // Enhanced schema matching logic
                   let extensionType = Object.keys(extensionConfigs).find(
