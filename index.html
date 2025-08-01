@@ -5668,35 +5668,52 @@
           setSchemaError("");
 
           try {
-            // Get the version from oasfRecord or use default
-            const version = oasfRecord?.version?.replace("v", "") || "0.5.0";
-            const schemaUrl = `https://schema.oasf.outshift.com/sample/${version}/objects/record?profiles=`;
-
-            // Fetch the schema
-            const response = await fetch(schemaUrl);
-            if (!response.ok) {
-              throw new Error(`Failed to fetch schema: ${response.status} ${response.statusText}`);
-            }
-
-            const schemaData = await response.json();
-
             // Generate the current record
             const generatedRecord = generateOASFRecord();
+            console.log("Generated record for validation:", generatedRecord);
 
-            // Simple validation - check for required fields
-            const requiredFields = ["name", "version", "version"];
+            // Simple client-side validation - check for required fields
+            const requiredFields = ["name", "version", "authors"];
             const missingFields = requiredFields.filter(field => !generatedRecord[field]);
 
             if (missingFields.length > 0) {
               setIsValidOasf(false);
               setSchemaError(`Missing required fields: ${missingFields.join(", ")}`);
-            } else {
-              setIsValidOasf(true);
+              return;
             }
+
+            // Check if extensions array exists and has valid structure
+            if (!generatedRecord.extensions || !Array.isArray(generatedRecord.extensions)) {
+              setIsValidOasf(false);
+              setSchemaError("Extensions array is missing or invalid");
+              return;
+            }
+
+           
+            const invalidExtensions = generatedRecord.extensions.filter((ext, index) => {
+              if (!ext.schema && !ext.name) {
+                return true;
+              }
+              if (!ext.data) {
+                return true; 
+              }
+              return false;
+            });
+
+            if (invalidExtensions.length > 0) {
+              setIsValidOasf(false);
+              setSchemaError(`${invalidExtensions.length} extension(s) have invalid structure`);
+              return;
+            }
+
+            
+            setIsValidOasf(true);
+            console.log("OASF record validation passed");
+
           } catch (error) {
             console.error("Schema validation error:", error);
             setIsValidOasf(false);
-            setSchemaError(`Schema validation error: ${error.message}`);
+            setSchemaError(`Validation error: ${error.message}`);
           } finally {
             setIsValidating(false);
           }
