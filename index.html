@@ -5430,9 +5430,9 @@
           return (
             data &&
             typeof data === "object" &&
-            data.schema_version &&
             data.extensions &&
-            Array.isArray(data.extensions)
+            Array.isArray(data.extensions) &&
+            data.extensions.length > 0
           );
         };
 
@@ -5535,6 +5535,56 @@
           return formData;
         };
 
+        // Convert MCP extension data to form fields and map it to the form structure
+        const convertMcpExtensionData = (extensionData) => {
+          const formData = {};
+          
+          if (extensionData.servers && Array.isArray(extensionData.servers) && extensionData.servers.length > 0) {
+            const server = extensionData.servers[0]; // Use first server
+            
+          
+            formData.server_name = server.name || "";
+            formData.server_type = server.type === "mcp-server" ? "stdio" : (server.type || "stdio");
+            formData.command = server.command || "";
+            formData.url = server.url || "";
+            
+            if (!formData.command && server.args && Array.isArray(server.args)) {
+              formData.command = server.args.join(" ");
+            }
+            
+            if (server.env || server.environment) {
+              formData.env_vars = server.env || server.environment || {};
+            }
+          }
+          
+          return formData;
+        };
+
+        // Convert extension data based on type
+        const convertExtensionData = (extensionType, extensionData) => {
+          if (!extensionData) return {};
+          
+          switch (extensionType) {
+            case 'mcp':
+              return convertMcpExtensionData(extensionData);
+            
+            case 'model':
+              return extensionData;
+              
+            case 'prompt':
+              return extensionData;
+              
+            case 'observability':
+              return extensionData;
+              
+            case 'evaluation':
+              return extensionData;
+              
+            default:
+              return extensionData;
+          }
+        };
+
         // Function to process the import after confirmation
         const processImport = (data) => {
           try {
@@ -5590,7 +5640,8 @@
               // Process extensions
               const newExtensions = data.extensions
                 .map((extension, index) => {
-                  const schemaName = extension.schema;
+                  // Check both 'schema' and 'name' fields for schema URL
+                  const schemaName = extension.schema || extension.name;
 
                   // Enhanced schema matching logic
                   let extensionType = Object.keys(extensionConfigs).find(
@@ -5603,20 +5654,32 @@
                       // Extract the feature name from schema
                       const configSchema = extensionConfigs[key].schemaName;
                       const schemaFeature = configSchema.split('/').pop();
-                      const extensionFeature = schemaName.split('/').pop();
+                      const extensionFeature = schemaName ? schemaName.split('/').pop() : '';
 
-                      // Match if the feature names are the same
-                      return schemaFeature === extensionFeature;
+                      const extensionContainsFeature = schemaName && (
+                        schemaName.includes(`/${schemaFeature}`) || 
+                        schemaName.includes(`/features/${schemaFeature}`) ||
+                        schemaName.includes(`/runtime/${schemaFeature}`) ||
+                        schemaName.endsWith(`/${schemaFeature}`)
+                      );
+
+                      return schemaFeature === extensionFeature || extensionContainsFeature;
                     });
                   }
 
                   if (extensionType) {
                     console.log(`Matched extension: ${schemaName} to ${extensionType}`);
+                    
+                    let convertedData = extension.data || {};
+                    if (extensionType === 'mcp' && extension.data) {
+                      convertedData = { ...convertedData, ...convertExtensionData('mcp', extension.data) };
+                    }
+                    
                     return {
                       id: `${extensionType}_${nextId + index}`,
                       extensionType,
                       name: extensionConfigs[extensionType].name,
-                      data: extension.data || {},
+                      data: convertedData,
                       collapsed: "false",
                       order: index,
                     };
@@ -5647,7 +5710,7 @@
             if (data.features && Array.isArray(data.features)) {
               const newExtensions = data.features
                 .map((feature, index) => {
-                  const schemaName = feature.schema;
+                  const schemaName = feature.schema || feature.name;
 
                   // Enhanced schema matching logic
                   let extensionType = Object.keys(extensionConfigs).find(
@@ -5660,20 +5723,35 @@
                       // Extract the feature name from schema
                       const configSchema = extensionConfigs[key].schemaName;
                       const schemaFeature = configSchema.split('/').pop();
-                      const extensionFeature = schemaName.split('/').pop();
+                      const extensionFeature = schemaName ? schemaName.split('/').pop() : '';
 
-                      // Match if the feature names are the same
-                      return schemaFeature === extensionFeature;
+                      // Also try matching if the extension schema contains the feature name
+                      const extensionContainsFeature = schemaName && (
+                        schemaName.includes(`/${schemaFeature}`) || 
+                        schemaName.includes(`/features/${schemaFeature}`) ||
+                        schemaName.includes(`/runtime/${schemaFeature}`) ||
+                        schemaName.endsWith(`/${schemaFeature}`)
+                      );
+
+                      // Match if the feature names are the same or if extension schema contains feature
+                      return schemaFeature === extensionFeature || extensionContainsFeature;
                     });
                   }
 
                   if (extensionType) {
                     console.log(`Matched feature: ${schemaName} to ${extensionType}`);
+                    
+                    // Convert feature data based on type
+                    let convertedData = feature.data || {};
+                    if (extensionType === 'mcp' && feature.data) {
+                      convertedData = { ...convertedData, ...convertExtensionData('mcp', feature.data) };
+                    }
+                    
                     return {
                       id: `${extensionType}_${nextId + index}`,
                       extensionType,
                       name: extensionConfigs[extensionType].name,
-                      data: feature.data || {},
+                      data: convertedData,
                       collapsed: "false",
                       order: index,
                     };
