@@ -250,7 +250,8 @@
         color: var(--fg);
       }
       .btn-secondary:hover {
-        background: var(--border-hover);
+        background: var(--primary-hover);
+        color: white;
       }
       .btn-destructive {
         background: var(--danger);
@@ -266,6 +267,15 @@
       }
       .btn-ghost:hover {
         background-color: var(--border-color);
+      }
+
+      .btn-cancel {
+        background: var(--border-color);
+        color: var(--fg);
+      }
+      .btn-cancel:hover {
+        background: var(--danger);
+        color: white;
       }
 
       \ .btn-danger {
@@ -1909,13 +1919,13 @@
               <p className="text-gray-600 dark:text-gray-300 mb-4">{message}</p>
               <div className="flex justify-end space-x-2">
                 <button
-                  className="btn btn-danger"
+                  className="btn btn-cancel"
                   onClick={onCancel}
                 >
                   Cancel
                 </button>
                 <button
-                  className="btn btn-primary hover:bg-green-700 dark:hover:bg-green-600"
+                  className="btn btn-primary"
                   onClick={onConfirm}
                 >
                   Confirm
@@ -5801,13 +5811,13 @@
                 </div>
                 <div className="flex items-center gap-3">
                   <button
-                    className="btn btn-secondary hover:bg-green-700 dark:hover:bg-green-600"
+                    className="btn btn-secondary"
                     onClick={importJson}
                   >
                     Import JSON
                   </button>
                   <button
-                    className="btn btn-primary hover:bg-green-700 dark:hover:bg-green-600"
+                    className="btn btn-primary"
                     onClick={handleGenerateOASF}
                   >
                     Generate OASF Record
