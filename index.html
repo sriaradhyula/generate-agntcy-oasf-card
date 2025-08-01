@@ -1101,10 +1101,10 @@
           console.log(`Schema URL: ${schemaUrl}`);
           console.log(`Example URL: ${exampleUrl}`);
 
-          return { schema: schemaData, example: exampleData };
+          return { name: schemaData, example: exampleData };
         } catch (error) {
           console.error(`Error fetching schema for ${feature}:`, error);
-          return { schema: null, example: null };
+          return { name: null, example: null };
         }
       };
 
@@ -1474,7 +1474,7 @@
           icon: "🔗",
           iconClass: "a2a-icon",
           description: "Agent-to-Agent communication protocol card",
-          schemaName: "schema.oasf.agntcy.org/features/a2a",
+          schemaName: "schema.oasf.agntcy.org/features/runtime/a2a",
           alternateSchemas: [
             "schema.oasf.outshift.com/features/a2a",
             "schema.oasf.outshift.com/schema/a2a",
@@ -1563,7 +1563,7 @@
           icon: "🔌",
           iconClass: "mcp-icon",
           description: "Model Context Protocol server configuration",
-          schemaName: "schema.oasf.outshift.com/features/mcp",
+          schemaName: "schema.oasf.outshift.com/features/runtime/mcp",
           alternateSchemas: [
             "schema.oasf.outshift.com/schema/mcp",
             "schema.oasf.agntcy.org/features/runtime/mcp",
@@ -5689,13 +5689,13 @@
               return;
             }
 
-           
+
             const invalidExtensions = generatedRecord.extensions.filter((ext, index) => {
               if (!ext.schema && !ext.name) {
                 return true;
               }
               if (!ext.data) {
-                return true; 
+                return true;
               }
               return false;
             });
@@ -5706,7 +5706,7 @@
               return;
             }
 
-            
+
             setIsValidOasf(true);
             console.log("OASF record validation passed");
 
@@ -5759,7 +5759,7 @@
                 const jsonData = ext.data["json-input"] || {};
 
                 return {
-                  schema: schemaUri,
+                  name: schemaUri,
                   data: jsonData,
                 };
               }
@@ -5768,7 +5768,7 @@
               if (ext.extensionType === "a2a" && ext.data.raw_data) {
                 // Use the raw A2A card data directly
                 return {
-                  schema: config.schemaName,
+                  name: "schema.oasf.agntcy.org/features/runtime/a2a",
                   data: ext.data.raw_data,
                 };
               }
@@ -5778,16 +5778,15 @@
                 console.log("Processing MCP extension:", ext);
                 console.log("MCP data structure:", ext.data);
                 console.log("MCP servers:", ext.data.servers);
-                
+
                 // Check if servers array exists
                 if (ext.data.servers && Array.isArray(ext.data.servers)) {
                   console.log("MCP servers array found with", ext.data.servers.length, "servers");
-                  
+
                   // Ensure the MCP extension data is properly structured
                   const mcpData = {
-                    schema: config.schemaName,
                     name: config.schemaName,
-                    version: "0.5.0",
+                    name: config.schemaName,
                     data: {
                       servers: ext.data.servers.map(server => {
                         // Ensure each server has the required properties
@@ -5821,14 +5820,14 @@
                       })
                     }
                   };
-                  
+
                   console.log("Generated MCP data:", mcpData);
                   return mcpData;
                 } else {
                   console.log("MCP servers array not found or not an array");
                   // Fall back to regular extension handling
                   return {
-                    schema: config.schemaName,
+                    name: "schema.oasf.agntcy.org/features/runtime/mcp",
                     data: ext.data
                   };
                 }
@@ -5837,7 +5836,7 @@
 
               // Handle regular extensions
               return {
-                schema: config.schemaName,
+                name: config.schemaName,
                 data: ext.data,
               };
             })
@@ -6721,7 +6720,7 @@
                       order: index,
                     };
                   } else {
-                    console.log(`Could not match extension schema: ${schemaName}`);
+                    console.log(`Could not match extension name: ${schemaName}`);
                   }
                   return null;
                 })
@@ -6778,7 +6777,7 @@
                       order: index,
                     };
                   } else {
-                    console.log(`Could not match feature schema: ${schemaName}`);
+                    console.log(`Could not match feature name: ${schemaName}`);
                   }
                   return null;
                 })
