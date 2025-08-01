@@ -538,15 +538,18 @@
 
       /* Dynamic list and skills styling */
       .dynamic-list-container {
-        width: 100%;
+        margin-bottom: 10px;
       }
 
       .dynamic-list-item {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 16px;
-        margin-bottom: 8px;
+        display: flex;
         align-items: center;
+        margin-bottom: 8px;
+        gap: 8px;
+      }
+
+      .dynamic-list-item input {
+        flex: 1;
       }
 
       .skill-container {
@@ -1472,6 +1475,12 @@
           iconClass: "a2a-icon",
           description: "Agent-to-Agent communication protocol card",
           schemaName: "schema.oasf.agntcy.org/features/a2a",
+          alternateSchemas: [
+            "schema.oasf.outshift.com/features/a2a",
+            "schema.oasf.outshift.com/schema/a2a",
+            "schema.oasf.agntcy.org/0.5.0/features/a2a",
+            "schema.oasf.outshift.com/0.5.0/features/a2a"
+          ],
           fields: [
             {
               key: "a2a-card-loader",
@@ -1554,50 +1563,87 @@
           icon: "🔌",
           iconClass: "mcp-icon",
           description: "Model Context Protocol server configuration",
-          schemaName: "schema.oasf.outshift.com/schema/mcp",
+          schemaName: "schema.oasf.outshift.com/features/mcp",
+          alternateSchemas: [
+            "schema.oasf.outshift.com/schema/mcp",
+            "schema.oasf.agntcy.org/features/runtime/mcp",
+            "schema.oasf.agntcy.org/features/mcp"
+          ],
           dynamicSchema: true, // Flag to indicate this extension should use dynamic schema fetching
           // Initial fields that will be replaced by dynamic schema
           fields: [
             {
-              key: "server_name",
-              label: "Server Name",
-              type: "text",
-              required: true,
-              placeholder: "my-mcp-server",
+              key: "servers-header",
+              label: "",
+              type: "h4-header",
+              content: "MCP Servers",
+              required: false,
             },
             {
-              key: "server_type",
-              label: "Server Type",
-              type: "select",
-              options: ["http", "stdio", "sse"],
-              required: true,
+              key: "servers",
+              label: "",
+              type: "servers-list",
+              required: false,
             },
-            {
-              key: "command",
-              label: "Command",
-              type: "text",
-              placeholder: "python server.py",
-            },
-            {
-              key: "url",
-              label: "Server URL",
-              type: "url",
-              placeholder: "http://localhost:3000",
-            },
-            {
-              key: "env_vars",
-              label: "Environment Variables",
-              type: "keyvalue",
-              placeholder: "KEY=value",
-            },
+            // {
+            //   key: "tools-header",
+            //   label: "",
+            //   type: "h4-header",
+            //   content: "MCP Tools",
+            //   required: false,
+            // },
+            // {
+            //   key: "tools",
+            //   label: "",
+            //   type: "tools-list",
+            //   required: false,
+            // },
+            // {
+            //   key: "prompts-header",
+            //   label: "",
+            //   type: "h4-header",
+            //   content: "MCP Prompts",
+            //   required: false,
+            // },
+            // {
+            //   key: "prompts",
+            //   label: "",
+            //   type: "prompts-list",
+            //   required: false,
+            // },
+            // {
+            //   key: "resources-header",
+            //   label: "",
+            //   type: "h4-header",
+            //   content: "MCP Resources",
+            //   required: false,
+            // },
+            // {
+            //   key: "resources",
+            //   label: "",
+            //   type: "resources-list",
+            //   required: false,
+            // },
+            // {
+            //   key: "env_vars",
+            //   label: "Environment Variables",
+            //   type: "keyvalue",
+            //   placeholder: "KEY=value",
+            // },
           ],
         },
         model: {
-          name: "LLM Model",
-          icon: "🧠",
+          name: "Model",
+          icon: "🤖",
           iconClass: "model-icon",
-          description: "Large Language Model configuration",
+          description: "AI model configuration",
           schemaName: "schema.oasf.agntcy.org/features/model",
+          alternateSchemas: [
+            "schema.oasf.outshift.com/features/model",
+            "schema.oasf.outshift.com/schema/model",
+            "schema.oasf.agntcy.org/0.5.0/features/model",
+            "schema.oasf.outshift.com/0.5.0/features/model"
+          ],
           fields: [
             {
               key: "provider",
@@ -1657,6 +1703,12 @@
           iconClass: "prompt-icon",
           description: "Predefined prompts for agent interactions",
           schemaName: "schema.oasf.agntcy.org/features/prompt",
+          alternateSchemas: [
+            "schema.oasf.outshift.com/features/prompt",
+            "schema.oasf.outshift.com/schema/prompt",
+            "schema.oasf.agntcy.org/0.5.0/features/prompt",
+            "schema.oasf.outshift.com/0.5.0/features/prompt"
+          ],
           fields: [
             {
               key: "prompt_name",
@@ -1693,6 +1745,12 @@
           iconClass: "observability-icon",
           description: "Monitoring and observability configuration",
           schemaName: "schema.oasf.agntcy.org/features/observability",
+          alternateSchemas: [
+            "schema.oasf.outshift.com/features/observability",
+            "schema.oasf.outshift.com/schema/observability",
+            "schema.oasf.agntcy.org/0.5.0/features/observability",
+            "schema.oasf.outshift.com/0.5.0/features/observability"
+          ],
           fields: [
             {
               key: "protocols",
@@ -1730,10 +1788,16 @@
         },
         evaluation: {
           name: "Evaluation",
-          icon: "🎯",
+          icon: "🏁",
           iconClass: "evaluation-icon",
           description: "Agent evaluation and testing framework",
           schemaName: "schema.oasf.agntcy.org/features/evaluation",
+          alternateSchemas: [
+            "schema.oasf.outshift.com/features/evaluation",
+            "schema.oasf.outshift.com/schema/evaluation",
+            "schema.oasf.agntcy.org/0.5.0/features/evaluation",
+            "schema.oasf.outshift.com/0.5.0/features/evaluation"
+          ],
           fields: [
             {
               key: "evaluation_type",
@@ -1878,26 +1942,26 @@
       // Confirmation Dialog Component
       function ConfirmDialog({ isOpen, onConfirm, onCancel, title, message }) {
         const [isDarkMode, setIsDarkMode] = React.useState(false);
-        
+
         // Check for dark mode on mount and when theme changes
         React.useEffect(() => {
           const checkDarkMode = () => {
             const isDark = document.documentElement.classList.contains('dark');
             setIsDarkMode(isDark);
           };
-          
+
           // Check immediately
           checkDarkMode();
-          
+
           // Set up an observer to watch for class changes on html element
           const observer = new MutationObserver(checkDarkMode);
           observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-          
+
           return () => observer.disconnect();
         }, []);
-        
+
         if (!isOpen) return null;
-        
+
         // Define overlay style based on current dark mode state
         const overlayStyle = {
           position: 'fixed',
@@ -2850,6 +2914,10 @@
             case "skills-list":
             case "oasf-skills-list":
             case "locators-list":
+            case "tools-list":
+            case "prompts-list":
+            case "resources-list":
+            case "servers-list":
             case "a2a-card-loader":
               // These are handled separately in the main field rendering
               return null;
@@ -3148,6 +3216,901 @@
                       : field.key === "defaultOutputModes"
                       ? "Output Mode"
                       : "Entry"}
+                  </button>
+                </div>
+              </>
+            ) : field.type === "servers-list" ? (
+              <>
+                {field.label && (
+                  <label className="label mb-2 block">
+                    {field.label}
+                    {field.required && (
+                      <span className="text-destructive ml-1">*</span>
+                    )}
+                  </label>
+                )}
+                <div
+                  style={{
+                    backgroundColor: "var(--primary-light)",
+                    padding: "16px",
+                    borderRadius: "var(--radius-lg)",
+                    marginBottom: "24px",
+                    border: "1px solid var(--border-color)",
+                  }}
+                >
+                  {(
+                    value || [
+                      {
+                        args: [
+                          "--directory",
+                          "/FULL_PATH/weather/weather_mcp_server",
+                          "run",
+                          "mcp_server.py"
+                        ],
+                        name: "mcp-weather",
+                        type: "mcp-server",
+                        command: "uv",
+                        tool_configuration: {
+                          tools: [
+                            {
+                              name: "get-forecast",
+                              parameters: [
+                                {
+                                  name: "latitude",
+                                  type: "number",
+                                  required: true,
+                                  description:
+                                    "Latitude of the location (-90 to 90)."
+                                },
+                                {
+                                  name: "longitude",
+                                  type: "number",
+                                  required: true,
+                                  description:
+                                    "Longitude of the location (-180 to 180)."
+                                }
+                              ],
+                              description:
+                                "Retrieves detailed weather forecast for a specified US location."
+                            },
+                            {
+                              name: "search-data",
+                              parameters: [
+                                {
+                                  name: "query",
+                                  type: "string",
+                                  required: true,
+                                  description: "Search query string."
+                                },
+                                {
+                                  name: "limit",
+                                  type: "number",
+                                  required: false,
+                                  description:
+                                    "Maximum number of results to return."
+                                }
+                              ],
+                              description:
+                                "Search through available data records."
+                            },
+                            {
+                              name: "get-alerts",
+                              parameters: [
+                                {
+                                  name: "state",
+                                  type: "string",
+                                  required: true,
+                                  description:
+                                    "Two-letter US state code (e.g., CA, NY)."
+                                }
+                              ],
+                              description:
+                                "Retrieves active weather alerts for a specified US state."
+                            }
+                          ],
+                          prompts: [
+                            {
+                              name: "help",
+                              content:
+                                "Type 'help' for a list of available commands and tools, or use the /tools endpoint to discover tool capabilities."
+                            },
+                            {
+                              name: "greeting",
+                              content:
+                                "Hello! I can help you with weather information and forecasts."
+                            },
+                            {
+                              name: "error",
+                              content:
+                                "An error occurred while fetching weather data. Please check your input and try again."
+                            },
+                            {
+                              name: "welcome",
+                              content:
+                                "Welcome to the MCP Weather Server. Use the available tools to get weather forecasts and alerts."
+                            }
+                          ],
+                          resources: [
+                            {
+                              url: "https://modelcontextprotocol.io/docs/mcp-weather",
+                              name: "documentation",
+                              description:
+                                "Official documentation for the MCP Weather Server."
+                            },
+                            {
+                              url: "https://modelcontextprotocol.io/examples/mcp-weather",
+                              name: "examples",
+                              description:
+                                "Example requests and responses for using the server."
+                            },
+                            {
+                              url: "https://api.0p2lqg.com/docs",
+                              name: "api-docs",
+                              description: "API documentation and reference."
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  ).map((server, serverIndex) => (
+                    <div key={serverIndex} className="server-container mb-6">
+                      <div className="server-header">
+                        <h3 style={{ margin: "0", flex: "1" }}>
+                          Server {serverIndex + 1}: {server.name || "New Server"}
+                        </h3>
+                        {(value || []).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = (value || []).filter(
+                                (_, i) => i !== serverIndex
+                              );
+                              onChange(field.key, newList);
+                            }}
+                            className="btn btn-danger btn-small"
+                          >
+                            Remove Server
+                          </button>
+                        )}
+                      </div>
+                      <div className="server-fields">
+                        <div style={{ marginBottom: "16px" }}>
+                          <label className="label mb-2 block">
+                            Server Name
+                            <span className="text-destructive ml-1">*</span>
+                          </label>
+                          <input
+                            className="input"
+                            type="text"
+                            value={server.name || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[serverIndex] = {
+                                ...newList[serverIndex],
+                                name: e.target.value,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            placeholder="my-mcp-server"
+                          />
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label className="label mb-2 block">
+                            Server Type
+                            <span className="text-destructive ml-1">*</span>
+                          </label>
+                          <select
+                            className="select"
+                            value={server.type || "mcp-server"}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[serverIndex] = {
+                                ...newList[serverIndex],
+                                type: e.target.value,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                          >
+                            <option value="http">HTTP</option>
+                            <option value="stdio">STDIO</option>
+                            <option value="sse">SSE</option>
+                          </select>
+                        </div>
+                        <div style={{ marginBottom: "16px" }}>
+                          <label className="label mb-2 block">
+                            Command
+                          </label>
+                          <input
+                            className="input"
+                            type="text"
+                            value={server.command || ""}
+                            onChange={(e) => {
+                              const newList = [...(value || [])];
+                              newList[serverIndex] = {
+                                ...newList[serverIndex],
+                                command: e.target.value,
+                              };
+                              onChange(field.key, newList);
+                            }}
+                            placeholder="python server.py"
+                          />
+                        </div>
+
+                        {/* Args array */}
+                        <div style={{ marginBottom: "16px" }}>
+                          <label className="label mb-2 block">Arguments</label>
+                          <div className="dynamic-list-container">
+                            {(server.args || []).map((arg, argIndex) => (
+                              <div key={argIndex} className="dynamic-list-item">
+                                <input
+                                  className="input"
+                                  type="text"
+                                  value={arg || ""}
+                                  onChange={(e) => {
+                                    const newList = [...(value || [])];
+                                    const newArgs = [...(newList[serverIndex].args || [])];
+                                    newArgs[argIndex] = e.target.value;
+                                    newList[serverIndex] = {
+                                      ...newList[serverIndex],
+                                      args: newArgs,
+                                    };
+                                    onChange(field.key, newList);
+                                  }}
+                                  placeholder="--argument"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newList = [...(value || [])];
+                                    const newArgs = [...(newList[serverIndex].args || [])];
+                                    newArgs.splice(argIndex, 1);
+                                    newList[serverIndex] = {
+                                      ...newList[serverIndex],
+                                      args: newArgs,
+                                    };
+                                    onChange(field.key, newList);
+                                  }}
+                                  className="btn btn-danger btn-small"
+                                  disabled={(server.args || []).length <= 1}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newList = [...(value || [])];
+                                const newArgs = [...(newList[serverIndex].args || []), ""];
+                                newList[serverIndex] = {
+                                  ...newList[serverIndex],
+                                  args: newArgs,
+                                };
+                                onChange(field.key, newList);
+                              }}
+                              className="btn btn-primary btn-small"
+                            >
+                              Add Argument
+                            </button>
+                          </div>
+                        </div>
+                        {/* Tool Configuration section */}
+                        <div style={{ marginTop: "20px", marginBottom: "16px" }}>
+                          <h4 style={{ marginBottom: "10px" }}>Tool Configuration</h4>
+
+                          {/* Tools section */}
+                          <div style={{ marginBottom: "16px" }}>
+                            <h5 style={{ marginBottom: "8px" }}>Tools</h5>
+                            <div
+                              style={{
+                                backgroundColor: "var(--bg)",
+                                padding: "12px",
+                                borderRadius: "var(--radius)",
+                                border: "1px solid var(--border-color)",
+                              }}
+                            >
+                              {((server.tool_configuration || {}).tools || []).map((tool, toolIndex) => (
+                                <div key={toolIndex} className="mb-4 pb-4" style={{ borderBottom: toolIndex < ((server.tool_configuration || {}).tools || []).length - 1 ? "1px solid var(--border-color)" : "none" }}>
+                                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+                                    <h6 style={{ margin: "0" }}>Tool {toolIndex + 1}: {tool.name || "New Tool"}</h6>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const tools = [...(toolConfig.tools || [])];
+                                        tools.splice(toolIndex, 1);
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            tools: tools
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      className="btn btn-danger btn-small"
+                                    >
+                                      Remove
+                                    </button>
+                                  </div>
+
+                                  <div style={{ marginBottom: "8px" }}>
+                                    <label className="label mb-1 block">Name</label>
+                                    <input
+                                      className="input"
+                                      type="text"
+                                      value={tool.name || ""}
+                                      onChange={(e) => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const tools = [...(toolConfig.tools || [])];
+                                        tools[toolIndex] = {
+                                          ...tools[toolIndex],
+                                          name: e.target.value
+                                        };
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            tools: tools
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      placeholder="get-forecast"
+                                    />
+                                  </div>
+
+                                  <div style={{ marginBottom: "8px" }}>
+                                    <label className="label mb-1 block">Description</label>
+                                    <textarea
+                                      className="textarea"
+                                      value={tool.description || ""}
+                                      onChange={(e) => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const tools = [...(toolConfig.tools || [])];
+                                        tools[toolIndex] = {
+                                          ...tools[toolIndex],
+                                          description: e.target.value
+                                        };
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            tools: tools
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      placeholder="Tool description"
+                                    />
+                                  </div>
+
+                                  {/* Parameters section */}
+                                  <div style={{ marginTop: "10px" }}>
+                                    <label className="label mb-1 block">Parameters</label>
+                                    {(tool.parameters || []).map((param, paramIndex) => (
+                                      <div
+                                        key={paramIndex}
+                                        style={{
+                                          padding: "8px",
+                                          backgroundColor: "var(--primary-light)",
+                                          borderRadius: "var(--radius)",
+                                          marginBottom: "8px",
+                                          border: "1px solid var(--border-color)"
+                                        }}
+                                      >
+                                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                                          <span style={{ fontWeight: "500" }}>Parameter {paramIndex + 1}</span>
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const newList = [...(value || [])];
+                                              const toolConfig = newList[serverIndex].tool_configuration || {};
+                                              const tools = [...(toolConfig.tools || [])];
+                                              const params = [...(tools[toolIndex].parameters || [])];
+                                              params.splice(paramIndex, 1);
+                                              tools[toolIndex] = {
+                                                ...tools[toolIndex],
+                                                parameters: params
+                                              };
+                                              newList[serverIndex] = {
+                                                ...newList[serverIndex],
+                                                tool_configuration: {
+                                                  ...toolConfig,
+                                                  tools: tools
+                                                }
+                                              };
+                                              onChange(field.key, newList);
+                                            }}
+                                            className="btn btn-small btn-danger"
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
+
+                                        <div style={{ marginBottom: "8px" }}>
+                                          <label className="label mb-1 block">Name</label>
+                                          <input
+                                            className="input"
+                                            type="text"
+                                            value={param.name || ""}
+                                            onChange={(e) => {
+                                              const newList = [...(value || [])];
+                                              const toolConfig = newList[serverIndex].tool_configuration || {};
+                                              const tools = [...(toolConfig.tools || [])];
+                                              const params = [...(tools[toolIndex].parameters || [])];
+                                              params[paramIndex] = {
+                                                ...params[paramIndex],
+                                                name: e.target.value
+                                              };
+                                              tools[toolIndex] = {
+                                                ...tools[toolIndex],
+                                                parameters: params
+                                              };
+                                              newList[serverIndex] = {
+                                                ...newList[serverIndex],
+                                                tool_configuration: {
+                                                  ...toolConfig,
+                                                  tools: tools
+                                                }
+                                              };
+                                              onChange(field.key, newList);
+                                            }}
+                                            placeholder="parameter_name"
+                                          />
+                                        </div>
+
+                                        <div style={{ marginBottom: "8px" }}>
+                                          <label className="label mb-1 block">Type</label>
+                                          <select
+                                            className="select"
+                                            value={param.type || "string"}
+                                            onChange={(e) => {
+                                              const newList = [...(value || [])];
+                                              const toolConfig = newList[serverIndex].tool_configuration || {};
+                                              const tools = [...(toolConfig.tools || [])];
+                                              const params = [...(tools[toolIndex].parameters || [])];
+                                              params[paramIndex] = {
+                                                ...params[paramIndex],
+                                                type: e.target.value
+                                              };
+                                              tools[toolIndex] = {
+                                                ...tools[toolIndex],
+                                                parameters: params
+                                              };
+                                              newList[serverIndex] = {
+                                                ...newList[serverIndex],
+                                                tool_configuration: {
+                                                  ...toolConfig,
+                                                  tools: tools
+                                                }
+                                              };
+                                              onChange(field.key, newList);
+                                            }}
+                                          >
+                                            <option value="string">String</option>
+                                            <option value="number">Number</option>
+                                            <option value="boolean">Boolean</option>
+                                            <option value="array">Array</option>
+                                            <option value="object">Object</option>
+                                          </select>
+                                        </div>
+
+                                        <div style={{ marginBottom: "8px" }}>
+                                          <label className="label mb-1 block">Required</label>
+                                          <input
+                                            type="checkbox"
+                                            checked={param.required || false}
+                                            onChange={(e) => {
+                                              const newList = [...(value || [])];
+                                              const toolConfig = newList[serverIndex].tool_configuration || {};
+                                              const tools = [...(toolConfig.tools || [])];
+                                              const params = [...(tools[toolIndex].parameters || [])];
+                                              params[paramIndex] = {
+                                                ...params[paramIndex],
+                                                required: e.target.checked
+                                              };
+                                              tools[toolIndex] = {
+                                                ...tools[toolIndex],
+                                                parameters: params
+                                              };
+                                              newList[serverIndex] = {
+                                                ...newList[serverIndex],
+                                                tool_configuration: {
+                                                  ...toolConfig,
+                                                  tools: tools
+                                                }
+                                              };
+                                              onChange(field.key, newList);
+                                            }}
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <label className="label mb-1 block">Description</label>
+                                          <textarea
+                                            className="textarea"
+                                            value={param.description || ""}
+                                            onChange={(e) => {
+                                              const newList = [...(value || [])];
+                                              const toolConfig = newList[serverIndex].tool_configuration || {};
+                                              const tools = [...(toolConfig.tools || [])];
+                                              const params = [...(tools[toolIndex].parameters || [])];
+                                              params[paramIndex] = {
+                                                ...params[paramIndex],
+                                                description: e.target.value
+                                              };
+                                              tools[toolIndex] = {
+                                                ...tools[toolIndex],
+                                                parameters: params
+                                              };
+                                              newList[serverIndex] = {
+                                                ...newList[serverIndex],
+                                                tool_configuration: {
+                                                  ...toolConfig,
+                                                  tools: tools
+                                                }
+                                              };
+                                              onChange(field.key, newList);
+                                            }}
+                                            placeholder="Parameter description"
+                                          />
+                                        </div>
+                                      </div>
+                                    ))}
+
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const tools = [...(toolConfig.tools || [])];
+                                        const params = [...(tools[toolIndex].parameters || []), {
+                                          name: "",
+                                          type: "string",
+                                          required: false,
+                                          description: ""
+                                        }];
+                                        tools[toolIndex] = {
+                                          ...tools[toolIndex],
+                                          parameters: params
+                                        };
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            tools: tools
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      className="btn btn-primary btn-small"
+                                    >
+                                      Add Parameter
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newList = [...(value || [])];
+                                  const toolConfig = newList[serverIndex].tool_configuration || {};
+                                  const tools = [...(toolConfig.tools || []), {
+                                    name: "",
+                                    description: "",
+                                    parameters: [{
+                                      name: "",
+                                      type: "string",
+                                      required: false,
+                                      description: ""
+                                    }]
+                                  }];
+                                  newList[serverIndex] = {
+                                    ...newList[serverIndex],
+                                    tool_configuration: {
+                                      ...toolConfig,
+                                      tools: tools
+                                    }
+                                  };
+                                  onChange(field.key, newList);
+                                }}
+                                className="btn btn-primary btn-small"
+                              >
+                                Add Tool
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Prompts section */}
+                          <div style={{ marginBottom: "16px" }}>
+                            <h5 style={{ marginBottom: "8px" }}>Prompts</h5>
+                            <div
+                              style={{
+                                backgroundColor: "var(--bg)",
+                                padding: "12px",
+                                borderRadius: "var(--radius)",
+                                border: "1px solid var(--border-color)",
+                              }}
+                            >
+                              {((server.tool_configuration || {}).prompts || []).map((prompt, promptIndex) => (
+                                <div key={promptIndex} className="mb-4 pb-4" style={{ borderBottom: promptIndex < ((server.tool_configuration || {}).prompts || []).length - 1 ? "1px solid var(--border-color)" : "none" }}>
+                                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+                                    <h6 style={{ margin: "0" }}>Prompt {promptIndex + 1}: {prompt.name || "New Prompt"}</h6>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const prompts = [...(toolConfig.prompts || [])];
+                                        prompts.splice(promptIndex, 1);
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            prompts: prompts
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      className="btn btn-danger btn-small"
+                                    >
+                                      Remove
+                                    </button>
+                                  </div>
+
+                                  <div style={{ marginBottom: "8px" }}>
+                                    <label className="label mb-1 block">Name</label>
+                                    <input
+                                      className="input"
+                                      type="text"
+                                      value={prompt.name || ""}
+                                      onChange={(e) => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const prompts = [...(toolConfig.prompts || [])];
+                                        prompts[promptIndex] = {
+                                          ...prompts[promptIndex],
+                                          name: e.target.value
+                                        };
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            prompts: prompts
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      placeholder="help"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="label mb-1 block">Content</label>
+                                    <textarea
+                                      className="textarea"
+                                      value={prompt.content || ""}
+                                      onChange={(e) => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const prompts = [...(toolConfig.prompts || [])];
+                                        prompts[promptIndex] = {
+                                          ...prompts[promptIndex],
+                                          content: e.target.value
+                                        };
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            prompts: prompts
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      placeholder="Prompt content"
+                                      rows={3}
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newList = [...(value || [])];
+                                  const toolConfig = newList[serverIndex].tool_configuration || {};
+                                  const prompts = [...(toolConfig.prompts || []), {
+                                    name: "",
+                                    content: ""
+                                  }];
+                                  newList[serverIndex] = {
+                                    ...newList[serverIndex],
+                                    tool_configuration: {
+                                      ...toolConfig,
+                                      prompts: prompts
+                                    }
+                                  };
+                                  onChange(field.key, newList);
+                                }}
+                                className="btn btn-primary btn-small"
+                              >
+                                Add Prompt
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Resources section */}
+                          <div style={{ marginBottom: "16px" }}>
+                            <h5 style={{ marginBottom: "8px" }}>Resources</h5>
+                            <div
+                              style={{
+                                backgroundColor: "var(--bg)",
+                                padding: "12px",
+                                borderRadius: "var(--radius)",
+                                border: "1px solid var(--border-color)",
+                              }}
+                            >
+                              {((server.tool_configuration || {}).resources || []).map((resource, resourceIndex) => (
+                                <div key={resourceIndex} className="mb-4 pb-4" style={{ borderBottom: resourceIndex < ((server.tool_configuration || {}).resources || []).length - 1 ? "1px solid var(--border-color)" : "none" }}>
+                                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+                                    <h6 style={{ margin: "0" }}>Resource {resourceIndex + 1}: {resource.name || "New Resource"}</h6>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const resources = [...(toolConfig.resources || [])];
+                                        resources.splice(resourceIndex, 1);
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            resources: resources
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      className="btn btn-danger btn-small"
+                                    >
+                                      Remove
+                                    </button>
+                                  </div>
+
+                                  <div style={{ marginBottom: "8px" }}>
+                                    <label className="label mb-1 block">URL</label>
+                                    <input
+                                      className="input"
+                                      type="url"
+                                      value={resource.url || ""}
+                                      onChange={(e) => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const resources = [...(toolConfig.resources || [])];
+                                        resources[resourceIndex] = {
+                                          ...resources[resourceIndex],
+                                          url: e.target.value
+                                        };
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            resources: resources
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      placeholder="https://example.com/docs"
+                                    />
+                                  </div>
+
+                                  <div style={{ marginBottom: "8px" }}>
+                                    <label className="label mb-1 block">Name</label>
+                                    <input
+                                      className="input"
+                                      type="text"
+                                      value={resource.name || ""}
+                                      onChange={(e) => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const resources = [...(toolConfig.resources || [])];
+                                        resources[resourceIndex] = {
+                                          ...resources[resourceIndex],
+                                          name: e.target.value
+                                        };
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            resources: resources
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      placeholder="documentation"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="label mb-1 block">Description</label>
+                                    <textarea
+                                      className="textarea"
+                                      value={resource.description || ""}
+                                      onChange={(e) => {
+                                        const newList = [...(value || [])];
+                                        const toolConfig = newList[serverIndex].tool_configuration || {};
+                                        const resources = [...(toolConfig.resources || [])];
+                                        resources[resourceIndex] = {
+                                          ...resources[resourceIndex],
+                                          description: e.target.value
+                                        };
+                                        newList[serverIndex] = {
+                                          ...newList[serverIndex],
+                                          tool_configuration: {
+                                            ...toolConfig,
+                                            resources: resources
+                                          }
+                                        };
+                                        onChange(field.key, newList);
+                                      }}
+                                      placeholder="Resource description"
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newList = [...(value || [])];
+                                  const toolConfig = newList[serverIndex].tool_configuration || {};
+                                  const resources = [...(toolConfig.resources || []), {
+                                    url: "",
+                                    name: "",
+                                    description: ""
+                                  }];
+                                  newList[serverIndex] = {
+                                    ...newList[serverIndex],
+                                    tool_configuration: {
+                                      ...toolConfig,
+                                      resources: resources
+                                    }
+                                  };
+                                  onChange(field.key, newList);
+                                }}
+                                className="btn btn-primary btn-small"
+                              >
+                                Add Resource
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newList = [...(value || []), {
+                        name: "",
+                        type: "mcp-server",
+                        command: "",
+                        args: [],
+                        tool_configuration: {
+                          tools: [],
+                          prompts: [],
+                          resources: []
+                        }
+                      }];
+                      onChange(field.key, newList);
+                    }}
+                    className="btn btn-primary"
+                  >
+                    Add Server
                   </button>
                 </div>
               </>
@@ -4360,7 +5323,7 @@
           name: record?.name || "",
           version: record?.version || "v3",
           description: record?.description || "",
-          schema_version: record?.schema_version || "v0.5.0",
+          version: record?.version || "v0.5.0",
           skills: record?.skills || [{ id: "" }],
           authors: record?.authors || [""],
           created_at: record?.created_at || new Date().toISOString(),
@@ -4369,8 +5332,8 @@
 
         // Set OASF version in window object for SimpleSkillsList component
         useEffect(() => {
-          window.oasfVersion = formFields.schema_version.replace("v", "");
-        }, [formFields.schema_version]);
+          window.oasfVersion = formFields.version.replace("v", "");
+        }, [formFields.version]);
 
         // Update local record when record prop changes
         useEffect(() => {
@@ -4379,7 +5342,7 @@
             name: record?.name || "",
             version: record?.version || "v3",
             description: record?.description || "",
-            schema_version: record?.schema_version || "v0.5.0",
+            version: record?.version || "v0.5.0",
             skills: record?.skills || [{ id: "" }],
             authors: record?.authors || [""],
             created_at: record?.created_at || new Date().toISOString(),
@@ -4394,7 +5357,7 @@
             name: newRecord?.name || "",
             version: newRecord?.version || "v3",
             description: newRecord?.description || "",
-            schema_version: newRecord?.schema_version || "v0.5.0",
+            version: newRecord?.version || "v0.5.0",
             skills: newRecord?.skills || [{ id: "" }],
             authors: newRecord?.authors || [""],
             created_at: newRecord?.created_at || new Date().toISOString(),
@@ -4424,7 +5387,7 @@
               }
               break;
 
-            case "schema_version":
+            case "version":
               // Ensure schema version follows the pattern v0.0.0
               if (value && !value.match(/^v\d+(\.\d+)(\.\d+)?$/)) {
                 isValid = false;
@@ -4570,8 +5533,8 @@
                       <input
                         className="input"
                         type="text"
-                        value={formFields.schema_version}
-                        onChange={(e) => handleFieldChange("schema_version", e.target.value)}
+                        value={formFields.version}
+                        onChange={(e) => handleFieldChange("version", e.target.value)}
                         placeholder="Schema Version (e.g. v0.5.0)"
                       />
                     </div>
@@ -4705,35 +5668,52 @@
           setSchemaError("");
 
           try {
-            // Get the version from oasfRecord or use default
-            const version = oasfRecord?.schema_version?.replace("v", "") || "0.5.0";
-            const schemaUrl = `https://schema.oasf.outshift.com/sample/${version}/objects/record?profiles=`;
-
-            // Fetch the schema
-            const response = await fetch(schemaUrl);
-            if (!response.ok) {
-              throw new Error(`Failed to fetch schema: ${response.status} ${response.statusText}`);
-            }
-
-            const schemaData = await response.json();
-
             // Generate the current record
             const generatedRecord = generateOASFRecord();
+            console.log("Generated record for validation:", generatedRecord);
 
-            // Simple validation - check for required fields
-            const requiredFields = ["name", "version", "schema_version"];
+            // Simple client-side validation - check for required fields
+            const requiredFields = ["name", "version", "authors"];
             const missingFields = requiredFields.filter(field => !generatedRecord[field]);
 
             if (missingFields.length > 0) {
               setIsValidOasf(false);
               setSchemaError(`Missing required fields: ${missingFields.join(", ")}`);
-            } else {
-              setIsValidOasf(true);
+              return;
             }
+
+            // Check if extensions array exists and has valid structure
+            if (!generatedRecord.extensions || !Array.isArray(generatedRecord.extensions)) {
+              setIsValidOasf(false);
+              setSchemaError("Extensions array is missing or invalid");
+              return;
+            }
+
+           
+            const invalidExtensions = generatedRecord.extensions.filter((ext, index) => {
+              if (!ext.schema && !ext.name) {
+                return true;
+              }
+              if (!ext.data) {
+                return true; 
+              }
+              return false;
+            });
+
+            if (invalidExtensions.length > 0) {
+              setIsValidOasf(false);
+              setSchemaError(`${invalidExtensions.length} extension(s) have invalid structure`);
+              return;
+            }
+
+            
+            setIsValidOasf(true);
+            console.log("OASF record validation passed");
+
           } catch (error) {
             console.error("Schema validation error:", error);
             setIsValidOasf(false);
-            setSchemaError(`Schema validation error: ${error.message}`);
+            setSchemaError(`Validation error: ${error.message}`);
           } finally {
             setIsValidating(false);
           }
@@ -4764,6 +5744,7 @@
         }, [isVisible, onClose]);
 
         const generateOASFRecord = () => {
+          console.log("Generating OASF record with extensions:", extensions);
           const features = extensions
             .map((ext) => {
               const config = extensionConfigs[ext.extensionType];
@@ -4792,6 +5773,68 @@
                 };
               }
 
+              // Handle MCP extension with nested servers structure
+              if (ext.extensionType === "mcp") {
+                console.log("Processing MCP extension:", ext);
+                console.log("MCP data structure:", ext.data);
+                console.log("MCP servers:", ext.data.servers);
+                
+                // Check if servers array exists
+                if (ext.data.servers && Array.isArray(ext.data.servers)) {
+                  console.log("MCP servers array found with", ext.data.servers.length, "servers");
+                  
+                  // Ensure the MCP extension data is properly structured
+                  const mcpData = {
+                    schema: config.schemaName,
+                    name: config.schemaName,
+                    version: "0.5.0",
+                    data: {
+                      servers: ext.data.servers.map(server => {
+                        // Ensure each server has the required properties
+                        return {
+                          name: server.name || "",
+                          type: server.type || "http",
+                          command: server.command || "",
+                          args: server.args || [],
+                          tool_configuration: {
+                            tools: (server.tool_configuration?.tools || []).map(tool => ({
+                              name: tool.name || "",
+                              description: tool.description || "",
+                              parameters: (tool.parameters || []).map(param => ({
+                                name: param.name || "",
+                                type: param.type || "string",
+                                required: param.required || false,
+                                description: param.description || ""
+                              }))
+                            })),
+                            prompts: (server.tool_configuration?.prompts || []).map(prompt => ({
+                              name: prompt.name || "",
+                              content: prompt.content || ""
+                            })),
+                            resources: (server.tool_configuration?.resources || []).map(resource => ({
+                              url: resource.url || "",
+                              name: resource.name || "",
+                              description: resource.description || ""
+                            }))
+                          }
+                        };
+                      })
+                    }
+                  };
+                  
+                  console.log("Generated MCP data:", mcpData);
+                  return mcpData;
+                } else {
+                  console.log("MCP servers array not found or not an array");
+                  // Fall back to regular extension handling
+                  return {
+                    schema: config.schemaName,
+                    data: ext.data
+                  };
+                }
+              }
+
+
               // Handle regular extensions
               return {
                 schema: config.schemaName,
@@ -4805,8 +5848,7 @@
             // Use values from oasfRecord prop
             name: oasfRecord?.name || "Generated Agent",
             description: oasfRecord?.description || "Agent generated using AGNTCY OASF Record Generator",
-            version: oasfRecord?.version || "1.0.0",
-            schema_version: oasfRecord?.schema_version || "v0.5.0",
+            version: oasfRecord?.version || "0.5.0",
             authors: oasfRecord?.authors || ["Cisco Outshift Contributors"],
             skills: oasfRecord?.skills || [],
             created_at: oasfRecord?.created_at || new Date().toISOString(),
@@ -5017,7 +6059,7 @@
         const [oasfRecord, setOasfRecord] = useState({
           name: "Generated Agent",
           description: "Agent generated using AGNTCY OASF Record Generator",
-          version: "1.0.0",
+          version: "0.5.0",
           authors: ["Cisco Outshift Contributors"],
           features: [],
           metadata: {
@@ -5226,7 +6268,7 @@
               record: {
                 name: "Generated Agent",
                 description: "Agent generated using AGNTCY OASF Record Generator",
-                version: "1.0.0",
+                version: "0.5.0",
                 authors: ["Cisco Outshift Contributors"],
                 features: [],
                 metadata: {
@@ -5422,18 +6464,41 @@
               data.capabilities ||
               data.skills) &&
             !data.extensions &&
-            !data.schema_version
+            !data.version
           );
         };
 
+        // Check if imported JSON is an OASF record
         const isOASFRecord = (data) => {
-          return (
+          console.log("Checking if imported JSON is an OASF record");
+          console.log("Data:", data);
+          console.log("Version:", data?.version);
+          console.log("Extensions:", data?.extensions);
+
+          // Check if extensions array exists and has at least one item with schema or name
+          let hasValidExtensions = false;
+          if (data?.extensions && Array.isArray(data.extensions)) {
+            console.log("Extensions count:", data.extensions.length);
+            data.extensions.forEach((ext, i) => {
+              console.log(`Extension ${i}:`, ext);
+              console.log(`Extension ${i} schema:`, ext?.schema || ext?.name);
+              if (ext?.schema || ext?.name) {
+                hasValidExtensions = true;
+              }
+            });
+          }
+
+          const result =
             data &&
             typeof data === "object" &&
-            data.schema_version &&
+            data.version &&
             data.extensions &&
-            Array.isArray(data.extensions)
-          );
+            Array.isArray(data.extensions) &&
+            hasValidExtensions;
+
+          console.log("Has valid extensions:", hasValidExtensions);
+          console.log("Is OASF record:", result);
+          return result;
         };
 
         const convertA2ACardToExtensionData = (cardData) => {
@@ -5538,8 +6603,11 @@
         // Function to process the import after confirmation
         const processImport = (data) => {
           try {
+            console.log("Processing import data:", data);
+
             // Check if it's an A2A card format
             if (isA2ACardFormat(data)) {
+              console.log("Importing A2A card format");
               // Preserve the original A2A card data structure without modifications
               // Store the original data directly in the raw_data field
               const newExtension = {
@@ -5564,12 +6632,12 @@
 
             // Check if it's an OASF record
             if (isOASFRecord(data)) {
+              console.log("Importing OASF record with extensions", data);
               // Update the base OASF record information
               const baseRecordData = {
                 name: data.name || "Generated Agent",
                 description: data.description || "Agent generated using AGNTCY OASF Record Generator",
-                version: data.version || "1.0.0",
-                schema_version: data.schema_version || "v0.5.0",
+                version: data.version || "0.5.0",
                 authors: data.authors || ["Cisco Outshift Contributors"],
                 skills: data.skills || [],
                 created_at: data.created_at || new Date().toISOString(),
@@ -5581,29 +6649,61 @@
               };
 
               // Update the OASF record state
+              console.log("Setting OASF record data:", baseRecordData);
               setOasfRecord(baseRecordData);
 
               // Update the OASF version state (remove 'v' prefix if present)
-              const versionString = data.schema_version || "v0.5.0";
+              const versionString = data.version || "v0.5.0";
+              console.log("Setting OASF version:", versionString.replace(/^v/, ""));
               setOasfVersion(versionString.replace(/^v/, ""));
 
               // Process extensions
+              console.log("Processing extensions array:", data.extensions);
               const newExtensions = data.extensions
                 .map((extension, index) => {
-                  const schemaName = extension.schema;
+                  const schemaName = extension.schema || extension.name;
+                  console.log(`Extension ${index} schema:`, schemaName);
 
                   // Enhanced schema matching logic
                   let extensionType = Object.keys(extensionConfigs).find(
                     (key) => extensionConfigs[key].schemaName === schemaName
                   );
+                  console.log(`Initial extension type match for ${schemaName}:`, extensionType);
 
-                  // If exact match not found, try matching by schema pattern
+                  // If exact match not found, check alternate schemas
                   if (!extensionType) {
+                    console.log(`No exact match found for ${schemaName}, checking alternate schemas`);
+                    extensionType = Object.keys(extensionConfigs).find(key => {
+                      // Check if this extension has alternate schemas
+                      if (extensionConfigs[key].alternateSchemas &&
+                          Array.isArray(extensionConfigs[key].alternateSchemas)) {
+                        // Check if schema matches any of the alternates
+                        const isMatch = extensionConfigs[key].alternateSchemas.includes(schemaName);
+                        if (isMatch) {
+                          console.log(`Found match in alternate schemas for ${key}:`, schemaName);
+                        }
+                        return isMatch;
+                      }
+                      return false;
+                    });
+                  }
+
+                  // If still no match, try matching by schema pattern
+                  if (!extensionType) {
+                    console.log(`No alternate schema match found for ${schemaName}, trying pattern matching`);
                     extensionType = Object.keys(extensionConfigs).find(key => {
                       // Extract the feature name from schema
                       const configSchema = extensionConfigs[key].schemaName;
                       const schemaFeature = configSchema.split('/').pop();
-                      const extensionFeature = schemaName.split('/').pop();
+                      const extensionFeature = schemaName ? schemaName.split('/').pop() : '';
+
+                      console.log(`Comparing features for ${key}: ${schemaFeature} vs ${extensionFeature}`);
+
+                      // Special case for MCP with runtime path
+                      if (schemaName && schemaName.includes('/runtime/mcp') && key === 'mcp') {
+                        console.log('Found MCP runtime schema, matching to MCP extension');
+                        return true;
+                      }
 
                       // Match if the feature names are the same
                       return schemaFeature === extensionFeature;
@@ -5647,7 +6747,7 @@
             if (data.features && Array.isArray(data.features)) {
               const newExtensions = data.features
                 .map((feature, index) => {
-                  const schemaName = feature.schema;
+                  const schemaName = feature.schema || feature.name;
 
                   // Enhanced schema matching logic
                   let extensionType = Object.keys(extensionConfigs).find(
