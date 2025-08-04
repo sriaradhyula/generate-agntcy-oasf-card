@@ -1474,7 +1474,7 @@
           icon: "🔗",
           iconClass: "a2a-icon",
           description: "Agent-to-Agent communication protocol card",
-          schemaName: "schema.oasf.agntcy.org/features/runtime/a2a",
+          schemaName: "schema.oasf.agntcy.org/features/a2a",
           alternateSchemas: [
             "schema.oasf.outshift.com/features/a2a",
             "schema.oasf.outshift.com/schema/a2a",
@@ -1563,7 +1563,7 @@
           icon: "🔌",
           iconClass: "mcp-icon",
           description: "Model Context Protocol server configuration",
-          schemaName: "schema.oasf.outshift.com/features/runtime/mcp",
+          schemaName: "schema.oasf.agntcy.org/features/mcp",
           alternateSchemas: [
             "schema.oasf.outshift.com/schema/mcp",
             "schema.oasf.agntcy.org/features/runtime/mcp",
@@ -5768,7 +5768,7 @@
               if (ext.extensionType === "a2a" && ext.data.raw_data) {
                 // Use the raw A2A card data directly
                 return {
-                  name: "schema.oasf.agntcy.org/features/runtime/a2a",
+                  name: "schema.oasf.agntcy.org/features/a2a",
                   data: ext.data.raw_data,
                 };
               }
@@ -5827,7 +5827,7 @@
                   console.log("MCP servers array not found or not an array");
                   // Fall back to regular extension handling
                   return {
-                    name: "schema.oasf.agntcy.org/features/runtime/mcp",
+                    name: "schema.oasf.agntcy.org/features/mcp",
                     data: ext.data
                   };
                 }
