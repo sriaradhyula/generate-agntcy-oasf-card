@@ -1,3 +1,5 @@
+# ⚠️⚠️ Sep 24th 2025 - This tools has been deprecated and incorporated into https://agent-directory.outshift.com/record-composer
+
 # Simple AGNTCY OASF Record Editor 🎉
 
 **Published URL: https://sriaradhyula.github.io/generate-agntcy-oasf-card/**
